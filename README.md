@@ -18,4 +18,10 @@ Notifications on entries and exits are sent to the user via Telegram, so the use
 ---
 
 
-TODO: 1. alpaca api keys, 2. main.py bot logic (trailing stop-loss option?), 3. test configs with paper trading, 4. telegram custom notifications...
+TODO1: 1. main.py bot logic, 2. trailing stop-loss logic
+
+TODO2: 1. "$volume / intraday price (rounded up) = quantity" logic in main, 2. "close all open positions at x time" logic in main  
+
+TODO3: 1. alpaca api keys, 2. test logic/configs with paper trading
+
+TODO4: 1. telegram custom notifications...   
