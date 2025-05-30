@@ -10,7 +10,7 @@ The Hybrid Trading Bot is a semi-automated bot which, rather than screening the 
 **The user could work a full time job with a normal sleep schedule while the bot executes their strategies autonomously, literally from dawn till dusk.** The user would simply have to run a screener and set new conditions for the bot once a day after work.
 
 ## Trade Statistics and Notifications
-Entry and exit data are piped to a CSV file for easy export. The user can utilize this to learn about new strategies and to optimize existing strategies. 
+Entry and exit data are piped to a CSV file for easy export. The user can utilize this to generate statistics and optimize their strategies or to experiment with new strategies.
 
 Notifications on entries and exits are sent to the user via Telegram, so the user can monitor the bot's activity throughout the day.
 
