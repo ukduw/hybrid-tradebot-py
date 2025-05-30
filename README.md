@@ -9,6 +9,8 @@ The Hybrid Trading Bot is a semi-automated bot which, rather than screening the 
 
 **The user could work a full time job with a normal sleep schedule while the bot executes their strategies autonomously, literally from dawn till dusk.** The user would simply have to run a screener and set new conditions for the bot once a day after work.
 
+The bot also simplifies position size management. The user can input a different dollar amount per position, allowing for per-ticker risk management. The program then determines the position size automatically by dividing the inputted dollar amount by the intraday price and rounding up.
+
 ## Trade Statistics and Notifications
 Entry and exit data are piped to a CSV file for easy export. The user can utilize this to generate statistics and optimize their strategies or to experiment with new strategies.
 
