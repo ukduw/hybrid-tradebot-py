@@ -19,7 +19,7 @@ def place_order(symbol, qty, side="buy"):
         "qty": qty,
         "side": side,
         "type": "market",
-        "time_in_force": "day"
+        "time_in_force": "gtc"
     }
     response = requests.post(f"{BASE_URL}/v2/orders", json=order, headers=HEADERS)
     return response.json()

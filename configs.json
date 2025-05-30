@@ -4,13 +4,13 @@
       "entry_price": 170.0,
       "stop_loss": 165.0,
       "take_profit": 175.0,
-      "dollar_value": 1
+      "dollar_value": 100
     },
     {
       "symbol": "MSFT",
       "entry_price": 320.0,
       "stop_loss": 310.0,
       "take_profit": 335.0,
-      "dollar_value": 2
+      "dollar_value": 200
     }
   ]
