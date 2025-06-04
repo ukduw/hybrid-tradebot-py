@@ -19,8 +19,8 @@ def prompt_configs(defaults=None):
         "symbol": symbol,
         "entry_price": float(entry),
         "stop_loss": float(stop),
-        "trailing_stop_percentage": float(trailing_stop_percentage),
-        "dollar_value": float(dollar_value)
+        "trailing_stop_percentage": float(trailing_stop_percentage or defaults['trailing_stop_percentage']),
+        "dollar_value": float(dollar_value or defaults['dollar_value'])
     }
 
 def main():
