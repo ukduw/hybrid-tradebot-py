@@ -3,14 +3,14 @@
       "symbol": "AAPL",
       "entry_price": 170.0,
       "stop_loss": 165.0,
-      "take_profit": 175.0,
+      "trailing_stop_percentage": 1.5,
       "dollar_value": 100
     },
     {
       "symbol": "MSFT",
       "entry_price": 320.0,
       "stop_loss": 310.0,
-      "take_profit": 335.0,
+      "trailing_stop_percentage": 1.5,
       "dollar_value": 200
     }
   ]
