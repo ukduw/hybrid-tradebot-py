@@ -23,3 +23,8 @@ Entry and exit data are piped to a CSV file for easy export. The user can utiliz
 Push notifications are sent to the user's phone on entry/exit so the user can monitor the bot's activity throughout the day. The notifications contain the ticker, number of shares, order type, entry/exit point:
 - e.g. "50 AAPL Market buy placed at $203.53"
 
+
+&nbsp;
+---
+Currently uses CLI for user config inputs.   
+Ideally, GUI would have real-time candlestick charting, where users could simply click the chart to set entry and exit targets per stock.
