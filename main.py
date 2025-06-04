@@ -8,12 +8,12 @@ import csv
 
 from alpaca_utils import get_current_price, place_order, close_position, close_all_positions
 
-# TRAILING STOP PLACEHOLDER (1.5%) IN CONFIG - REMEMBER TO CHANGE IT!
+
+# TRAILING STOP PLACEHOLDER (1.5%) IN CONFIG CLI DEFAULTS - REMEMBER TO CHANGE IT!
+# alpaca api keys, test logic/configs with paper trading
+# scheduling: start, stop running at x time
 
 # pushbullet notis
-
-# SCHEDULING: START, STOP RUNNING AT X TIME
-# alpaca api keys, test logic/configs with paper trading
 
 eastern = pytz.timezone("US/Eastern")
 exit_open_positions_at = datetime.now(eastern).replace(hour=15, minute=55, second=0, microsecond=0)
