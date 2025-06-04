@@ -9,12 +9,17 @@ The Hybrid Trading Bot is a semi-automated bot which, rather than screening the 
 
 A trader cannot make 10 plays simultaneously or constantly be "on the ball" from 04:00 - 20:00 market time, but the bot can. This allows traders to capture opportunities that they had the right strategy for but would otherwise have missed. 
 
-**The user could work a full time job with a normal sleep schedule while the bot executes their strategies autonomously, literally from dawn till dusk.** The user would simply have to run a screener and set new conditions for the bot once a day after work.
+**The user could work a full time job with a normal sleep schedule while the bot executes their strategies autonomously, literally from dawn till dusk.** The user would simply have to run a screener and set new conditions for the bot once a day after work. Emotional trading is also eliminated, ensuring that all trades are made strictly according to the user's strategies.
 
-The bot also simplifies position size management. The user can input a different dollar amount per position, allowing for per-ticker risk management. The program then determines the position size automatically by dividing the inputted dollar amount by the intraday price and rounding up. It also eliminates emotional trading and ensures that all trades are made strictly according to the user's strategies.
+## Profit-Taking and Risk Management
+Trailing stop-loss logic allows winning plays to run, protecting profits against downturns. The default setting is for the trailing stop to only activate when the %Change is 15% over the entry. This is to allow for fluctuations around the entry price, where the only price action that should result in an exit is the stop-loss being hit. The trailing stop-loss is a profit-taking measure that should only activate if the ticker is a confirmed winner. These settings can be changed/removed to suit different strategies.
 
-## Trade Statistics and Notifications
+Position size management is simplified. The user can input a different dollar amount per ticker. The program then determines each position size automatically: 
+- Rounded Up(Dollar Value / Entry Price) = Quantity
+
+## CSV Export and Push Notifications
 Entry and exit data are piped to a CSV file for easy export. The user can utilize this to generate statistics and optimize their strategies or to experiment with new strategies.
 
-Notifications on entries and exits are sent to the user via Telegram, so the user can monitor the bot's activity throughout the day.
+Push notifications are sent to the user's phone on entry/exit so the user can monitor the bot's activity throughout the day. The notifications contain the ticker, number of shares, order type, entry/exit point:
+- e.g. "50 AAPL Market buy placed at $203.53"
 
