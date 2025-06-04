@@ -1,7 +1,14 @@
 import requests
 import datetime, pytz
 import csv
-from alpaca_keys import API_KEY, SECRET_KEY, BASE_URL
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+API_KEY = os.getenv("API_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
+BASE_URL = os.getenv("BASE_URL")
 
 HEADERS = {
     "APCA-API-KEY-ID": API_KEY,
