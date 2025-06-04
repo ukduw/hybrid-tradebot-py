@@ -1,4 +1,6 @@
 import requests
+import datetime, pytz
+import csv
 from alpaca_keys import API_KEY, SECRET_KEY, BASE_URL
 
 HEADERS = {
@@ -40,7 +42,12 @@ def close_all_positions():
         print(f"Failsed to close positions: {response.status_code} {response.text}")
 
     if response.status_code in [200, 207]:
+        eastern = pytz.timezone("US/Eastern")
+        now = datetime.now(eastern)
         results = response.json()
         for r in results:
             print(f"Closed: {r.get('symbol')} - Qty: {r.get('qty')}")
+            with open("trade_log", mode="a", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerow(f"{now}, {r.get('symbol')}, {r.get('qty')}, EOD Exit; break even")
 

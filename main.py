@@ -4,19 +4,20 @@ import math
 import time
 import datetime
 import pytz
+import csv
 
 from alpaca_utils import get_current_price, place_order, close_position, close_all_positions
 
 # TRAILING STOP PLACEHOLDER (1.5%) IN CONFIG - REMEMBER TO CHANGE IT!
 
 # pushbullet notis
-# PIPE ENTRY/EXIT DATA TO CSV
 
 # SCHEDULING: START, STOP RUNNING AT X TIME
 # alpaca api keys, test logic/configs with paper trading
 
-eastern = pytz.timzone("US/Eastern")
+eastern = pytz.timezone("US/Eastern")
 exit_open_positions_at = datetime.now(eastern).replace(hour=15, minute=55, second=0, microsecond=0)
+now = datetime.now(eastern)
 
 positions_closed = False
 
@@ -51,6 +52,9 @@ def monitor_trade(config):
                 print(f"{qty} [{symbol}] Market buy placed at {price}")
                 in_position = True
                 day_high = price
+                with open("trade_log", mode="a", newline="") as file:
+                    writer = csv.writer(file)
+                    writer.writerow(f"{now}, {symbol}, Entry, {qty}, {price}")
             
             elif in_position:
                 if price <= stop: 
@@ -63,6 +67,9 @@ def monitor_trade(config):
                     if day_high >= entry * 1.15 and price <= day_high * (100 - trailing_stop)/100:
                         close_position(symbol)
                         print(f"[{symbol}] take-profit hit. Exiting.")
+                        with open("trade_log", mode="a", newline="") as file:
+                            writer = csv.writer(file)
+                            writer.writerow(f"{now}, {symbol}, Exit, {qty}, {price}")
                         break
 
             time.sleep(5)
