@@ -1,5 +1,6 @@
 ## Install and Run:
-placeholder   
+placeholder
+venv, requirements install, env apis...   
 placeholder   
 
 ## Hybrid Trading Bot
