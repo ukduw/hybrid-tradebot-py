@@ -23,11 +23,9 @@ Run hybrid bot:
 ## Hybrid Trading Bot
 This project is made for traders with some experience and established strategies, as well as for new traders to use with paper trading to learn and experiment with new strategies. 
 
-The Hybrid Trading Bot is a semi-automated bot which, rather than screening the entire universe of stocks for any setup that matches the user's conditions, functions on a case by case basis. It requires the user to specify entry and exit conditions and profit-taking and stop-loss logic on a per ticker basis. 
+The Hybrid Trading Bot is a semi-automated bot which, rather than scanning a vast universe of stocks and automatically trading any stock that meets the user’s criteria, this bot allows the user to specify entry and exit conditions, including profit goal and stop-loss, per ticker on a case-by-case basis. This allows the user to enter and exit multiple trades simultaneously and capture opportunities they had the right strategy for, but would otherwise have missed, and especially opportunities with time-sensitive trade executions. 
 
-A trader cannot make 10 plays simultaneously or constantly be "on the ball" from 04:00 - 20:00 market time, but the bot can. This allows traders to capture opportunities that they had the right strategy for but would otherwise have missed. 
-
-**The user could work a full time job with a normal sleep schedule while the bot executes their strategies autonomously, literally from dawn till dusk.** The user would simply have to run a screener and set new conditions for the bot once a day after work. Emotional trading is also eliminated, ensuring that all trades are made strictly according to the user's strategies.
+A trader cannot make 10 plays simultaneously or constantly be "on the ball" from 04:00 - 20:00 market time, but the bot can. **The user could work a full time job with a normal sleep schedule while the bot executes their strategies autonomously, literally from dawn till dusk.** The user would simply have to run a screener and set new conditions for the bot once a day after work. Emotional trading is also eliminated, ensuring that all trades are made strictly according to the user's strategies.
 
 ## Profit-Taking and Risk Management
 Trailing stop-loss logic allows winning plays to run, protecting profits against downturns. The default setting is for the trailing stop to only activate when the %Change is 15% over the entry. This is to allow for fluctuations around the entry price, where the only price action that should result in an exit is the stop-loss being hit. The trailing stop-loss is a profit-taking measure that should only activate if the ticker is a confirmed winner. These settings can be changed/removed to suit different strategies.
