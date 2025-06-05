@@ -1,6 +1,6 @@
 ## Install and Run:
 placeholder
-venv, requirements install, env apis...   
+venv, requirements install, env apis (alpaca, pushbullet)...   
 placeholder   
 
 ## Hybrid Trading Bot
