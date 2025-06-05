@@ -1,7 +1,23 @@
 ## Install and Run:
-placeholder
-venv, requirements install, env apis (alpaca, pushbullet)...   
-placeholder   
+`python3 -m venv venv`   
+`source venv/bin/activate`
+
+`pip install -r requirements.txt`
+
+Make .env file:
+```
+API_KEY = "your-alpaca-api-key"
+SECRET_KEY = "your-alpaca-secret-key"
+BASE_URL = "https://paper-api.alpaca.markets" # paper trading
+
+PUSHBULLET_API_KEY = "your-pushbullet-api-key-here"
+```
+
+Run config CLI:   
+`python3 config_CLI.py`
+
+Run hybrid bot:   
+`python3 main.py`
 
 ## Hybrid Trading Bot
 This project is made for traders with some experience and established strategies, as well as for new traders to use with paper trading to learn and experiment with new strategies. 
