@@ -6,14 +6,20 @@ import datetime
 import pytz
 import csv
 
+from pushbullet import Pushbullet
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
+pb = Pushbullet(PB_API_KEY)
+
 from alpaca_utils import get_current_price, place_order, close_position, close_all_positions
 
 
 # TRAILING STOP PLACEHOLDER (1.5%) IN CONFIG CLI DEFAULTS - REMEMBER TO CHANGE IT!
 # alpaca api keys, test logic/configs with paper trading
 # scheduling: start, stop running at x time
-
-# pushbullet notis
 
 eastern = pytz.timezone("US/Eastern")
 exit_open_positions_at = datetime.now(eastern).replace(hour=15, minute=55, second=0, microsecond=0)
@@ -55,11 +61,16 @@ def monitor_trade(config):
                 with open("trade_log", mode="a", newline="") as file:
                     writer = csv.writer(file)
                     writer.writerow(f"{now}, {symbol}, Entry, {qty}, {price}")
+                pb.push_note("Hybrid bot", f"{qty} [{symbol}] Market buy placed at {price}")
             
             elif in_position:
                 if price <= stop: 
                     close_position(symbol)
                     print(f"[{symbol}] stop-loss hit. Exiting.")
+                    with open("trade_log", mode="a", newline="") as file:
+                        writer = csv.writer(file)
+                        writer.writerow(f"{now}, {symbol}, Exit, {qty}, {price}")
+                    pb.push_note(f"[{symbol}] stop-loss hit. Exiting.")
                     break
                 else:
                     if price > day_high:
@@ -70,6 +81,7 @@ def monitor_trade(config):
                         with open("trade_log", mode="a", newline="") as file:
                             writer = csv.writer(file)
                             writer.writerow(f"{now}, {symbol}, Exit, {qty}, {price}")
+                        pb.push_note(f"[{symbol}] take-profit hit. Exiting.")
                         break
 
             time.sleep(5)
