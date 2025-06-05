@@ -12,8 +12,9 @@ BASE_URL = "https://paper-api.alpaca.markets" # paper trading
 
 PUSHBULLET_API_KEY = "your-pushbullet-api-key-here"
 ```
+Sign up with Alpaca and Pushbullet for API keys; must download Pushbullet app to receive push notifications.
 
-Run config CLI:   
+Run config CLI (to input trade parameters):   
 `python3 config_CLI.py`
 
 Run hybrid bot:   
