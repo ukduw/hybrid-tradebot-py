@@ -1,10 +1,12 @@
 import json
+import datetime, pytz
 
 CONFIG_FILE = "configs.json"
 
-# per day configs must be DATED and saved, .txt
-    # date,ticker,entry,stop,trailing_percentage,dollar_value
-    # 2025-06-07,AAPL,203.54,195.80,2.5,3000
+eastern = pytz.timezone("US/Eastern")
+with_time = datetime.datetime.now(eastern)
+split = str(with_time).split(" ")
+now = split[0]
 
 def prompt_configs(defaults=None):
     if defaults is None:
@@ -41,9 +43,15 @@ def main():
     with open(CONFIG_FILE, "w") as file:
         json.dump(configs, file, indent=2)
     
+    with open("config-log/config-log.txt", mode="a", newline="") as log:
+        for c in configs:
+            log.write("\n" + f"{now},{c['symbol']},{c['entry_price']},{c['stop_loss']},{c['trailing_stop_percentage']},{c['dollar_value']}")
+    
     print("New configs saved to configs.json: ")
     for c in configs:
         print(f" - {c['symbol']}: Entry {c['entry_price']}, Stop {c['stop_loss']}, Trail {c['trailing_stop_percentage']}%, Qty ${c['dollar_value']}")
 
 if __name__ == "__main__":
     main()
+
+
