@@ -2,6 +2,10 @@ import json
 
 CONFIG_FILE = "configs.json"
 
+# per day configs must be DATED and saved, .txt
+    # date,ticker,entry,stop,trailing_percentage,dollar_value
+    # 2025-06-07,AAPL,203.54,195.80,2.5,3000
+
 def prompt_configs(defaults=None):
     if defaults is None:
         defaults = {
