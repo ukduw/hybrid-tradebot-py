@@ -84,11 +84,11 @@ def monitor_trade(config):
                         pb.push_note(f"[{symbol}] take-profit hit. Exiting.")
                         break
 
-            time.sleep(5)
+            time.sleep(2)
 
         except Exception as e:
             print(f"[{symbol}] Error: {e}")
-            time.sleep(5)
+            time.sleep(2)
 
     
 with open("configs.json") as f:
