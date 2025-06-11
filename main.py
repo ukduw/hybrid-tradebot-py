@@ -19,6 +19,11 @@ from alpaca_utils import get_current_price, place_order, close_position, close_a
 
 # TRAILING STOP PLACEHOLDER (1.5%) IN CONFIG CLI DEFAULTS - REMEMBER TO CHANGE IT!
 
+# schedule pc on 03:50? - EST possible?
+# auto login
+# cron
+    # bot 04:00 - 16:00 (EST)
+    # screener 17:00 (EST)
 
 eastern = pytz.timezone("US/Eastern")
 exit_open_positions_at = datetime.now(eastern).replace(hour=15, minute=55, second=0, microsecond=0)
