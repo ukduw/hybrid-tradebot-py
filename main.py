@@ -18,7 +18,9 @@ from alpaca_utils import get_current_price, place_order, close_position, close_a
 
 
 # TRAILING STOP PLACEHOLDER (1.5%) IN CONFIG CLI DEFAULTS - REMEMBER TO CHANGE IT!
-    # use logic? - trail % as function of range?
+    # use logic? - trail % as function of x day range as % of intraday price...?
+    # position $ logic? - modulate based on potential loss? (stop - entry %)
+        # still prefer user input position size over potential loss...
 
 
 eastern = pytz.timezone("US/Eastern")
