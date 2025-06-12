@@ -18,12 +18,8 @@ from alpaca_utils import get_current_price, place_order, close_position, close_a
 
 
 # TRAILING STOP PLACEHOLDER (1.5%) IN CONFIG CLI DEFAULTS - REMEMBER TO CHANGE IT!
+    # use logic? - trail % as function of range?
 
-# just keep pc on...
-# schedule 2 restarts, weekend (no need for auto-login...)
-# cron
-    # bot 04:00 - 16:00 (EST)
-    # screener 17:00 (EST)
 
 eastern = pytz.timezone("US/Eastern")
 exit_open_positions_at = datetime.now(eastern).replace(hour=15, minute=55, second=0, microsecond=0)
