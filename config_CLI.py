@@ -8,10 +8,11 @@ with_time = datetime.datetime.now(eastern)
 split = str(with_time).split(" ")
 now = split[0]
 
+
 def prompt_configs(defaults=None):
     if defaults is None:
         defaults = {
-            "trailing_stop_percentage": 1.5,
+            "trailing_stop_percentage": 5,
             "dollar_value": 5000
         }
 

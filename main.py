@@ -17,10 +17,7 @@ pb = Pushbullet(PB_API_KEY)
 from alpaca_utils import get_current_price, place_order, close_position, close_all_positions
 
 
-# TRAILING STOP PLACEHOLDER (1.5%) IN CONFIG CLI DEFAULTS - REMEMBER TO CHANGE IT!
-    # use logic? - trail % as function of x day range as % of intraday price...?
-    # position $ logic? - modulate based on potential loss? (stop - entry %)
-        # still prefer user input position size over potential loss...
+# TRAILING STOP PLACEHOLDER IN CONFIG CLI DEFAULTS - REMEMBER TO CHANGE IT DURING TESTING!
 
 
 eastern = pytz.timezone("US/Eastern")
