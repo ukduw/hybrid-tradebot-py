@@ -8,7 +8,7 @@ Make .env file:
 ```
 API_KEY = "your-alpaca-api-key"
 SECRET_KEY = "your-alpaca-secret-key"
-LIVE_TRADING = False # paper trading
+USE_PAPER_TRADING = True # paper trading
 
 PUSHBULLET_API_KEY = "your-pushbullet-api-key-here"
 ```
