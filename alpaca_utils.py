@@ -48,4 +48,4 @@ def close_all_positions():
                 writer = csv.writer(file)
                 writer.writerow(f"{now}, {r.get('symbol')}, {r.get('qty')}, EOD Exit; break even")
     except Exception as e:
-        print(f"Failsed to close positions: {e}")
+        print(f"Failed to close positions: {e}")
