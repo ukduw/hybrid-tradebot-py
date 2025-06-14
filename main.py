@@ -16,10 +16,6 @@ pb = Pushbullet(PB_API_KEY)
 
 from alpaca_utils import get_current_price, place_order, close_position, close_all_positions
 
-
-# TRAILING STOP PLACEHOLDER IN CONFIG CLI DEFAULTS - REMEMBER TO CHANGE IT DURING TESTING!
-
-
 eastern = pytz.timezone("US/Eastern")
 exit_open_positions_at = datetime.now(eastern).replace(hour=15, minute=55, second=0, microsecond=0)
 now = datetime.now(eastern)
