@@ -13,9 +13,9 @@ import os
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
-LIVE_TRADING = os.getenv("LIVE_TRADING")
+USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 
-trading_client = TradingClient(API_KEY, SECRET_KEY, paper=LIVE_TRADING)
+trading_client = TradingClient(API_KEY, SECRET_KEY, paper=USE_PAPER_TRADING)
 data_client = StockHistoricalDataClient(API_KEY, SECRET_KEY)
 
 def get_current_price(symbol):
