@@ -19,11 +19,9 @@ trading_client = TradingClient(API_KEY, SECRET_KEY, paper=LIVE_TRADING)
 data_client = StockHistoricalDataClient(API_KEY, SECRET_KEY)
 
 def get_current_price(symbol):
-    url = f"https://data.alpaca.markets/v2/stocks/{symbol}/quotes/latest"
-    headers = HEADERS.copy()
-    headers["accept"] = "application/json"
-    response = requests.get(url, headers=headers)
-    return float(response.json()["quotes"]["ap"])
+    request = QuoteLatestRequest(symbol_or_symbols=symbol)
+    latest_quote = data_client.get_stock_latest_quote(request)
+    return float(latest_quote[symbol].askprice)
 
 def place_order(symbol, qty, side="buy"):
     order = {
