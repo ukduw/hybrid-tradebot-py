@@ -23,16 +23,16 @@ def get_current_price(symbol):
     latest_quote = data_client.get_stock_latest_quote(request)
     return float(latest_quote[symbol].askprice)
 
-def place_order(symbol, qty, side="buy"):
-    order = {
-        "symbol": symbol, 
-        "qty": qty,
-        "side": side,
-        "type": "market",
-        "time_in_force": "gtc"
-    }
-    response = requests.post(f"{BASE_URL}/v2/orders", json=order, headers=HEADERS)
-    return response.json()
+def place_order(symbol, qty):
+    order_data = MarketOrderRequest(
+        symbol = symbol,
+        qty = qty,
+        side = OrderSide.BUY,
+        type = OrderType.MARKET,
+        time_in_force = TimeInForce.GTC
+    )
+    order = trading_client.submit_order(order_data)
+    return order
 
 def close_position(symbol):
     url = f"{BASE_URL}/v2/positions/{symbol}"
