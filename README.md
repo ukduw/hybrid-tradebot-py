@@ -8,7 +8,7 @@ Make .env file:
 ```
 API_KEY = "your-alpaca-api-key"
 SECRET_KEY = "your-alpaca-secret-key"
-BASE_URL = "https://paper-api.alpaca.markets" # paper trading
+LIVE_TRADING = False # paper trading
 
 PUSHBULLET_API_KEY = "your-pushbullet-api-key-here"
 ```
@@ -44,5 +44,3 @@ Push notifications are sent to the user's phone on entry/exit so the user can mo
 ---
 Currently uses CLI for user config inputs.   
 Ideally, GUI would have real-time candlestick charting, where users could simply click the chart to set entry and exit targets per stock.
-
-Also uses raw HTTP requests over Alpaca's Python SDK because I've encountered examples of obsolete code that no longer work with an updated library or API. This way, there are minimal dependencies; I want this to work long-term and give more control over debugging.
