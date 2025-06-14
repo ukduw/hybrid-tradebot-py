@@ -35,8 +35,7 @@ def place_order(symbol, qty):
     return order
 
 def close_position(symbol):
-    url = f"{BASE_URL}/v2/positions/{symbol}"
-    return requests.delete(url, headers=HEADERS).json()
+    return trading_client.close_position(symbol)
 
 def close_all_positions():
     url = f"{BASE_URL}/v2/positions"
