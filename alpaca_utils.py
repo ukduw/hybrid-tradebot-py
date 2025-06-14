@@ -38,23 +38,14 @@ def close_position(symbol):
     return trading_client.close_position(symbol)
 
 def close_all_positions():
-    url = f"{BASE_URL}/v2/positions"
-    response = requests.delete(url, headers=HEADERS)
-
-    if response.status_code == 207:
-        print("!!! Partial success closing positions")
-    elif response.status_code == 200:
-        print("All positions closed.")
-    else:
-        print(f"Failsed to close positions: {response.status_code} {response.text}")
-
-    if response.status_code in [200, 207]:
+    try:
+        results = trading_client.close_all_positions()    
         eastern = pytz.timezone("US/Eastern")
         now = datetime.now(eastern)
-        results = response.json()
         for r in results:
-            print(f"Closed: {r.get('symbol')} - Qty: {r.get('qty')}")
+            print(f"Closed: {r.symbol} - Qty: {r.qty}")
             with open("trade_log", mode="a", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow(f"{now}, {r.get('symbol')}, {r.get('qty')}, EOD Exit; break even")
-
+    except Exception as e:
+        print(f"Failsed to close positions: {e}")
