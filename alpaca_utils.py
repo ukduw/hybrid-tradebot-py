@@ -1,4 +1,9 @@
-import requests
+from alpaca.data.historical import StockHistoricalDataClient
+from alpaca.data.requests import QuoteLatestRequest
+from alpaca.trading.client import TradingClient
+from alpaca.trading.requests import MarketOrderRequest
+from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
+
 import datetime, pytz
 import csv
 
@@ -8,12 +13,10 @@ import os
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
-BASE_URL = os.getenv("BASE_URL")
+LIVE_TRADING = os.getenv("LIVE_TRADING")
 
-HEADERS = {
-    "APCA-API-KEY-ID": API_KEY,
-    "APCA-API-SECRET-KEY": SECRET_KEY
-}
+trading_client = TradingClient(API_KEY, SECRET_KEY, paper=LIVE_TRADING)
+data_client = StockHistoricalDataClient(API_KEY, SECRET_KEY)
 
 def get_current_price(symbol):
     url = f"https://data.alpaca.markets/v2/stocks/{symbol}/quotes/latest"
