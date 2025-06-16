@@ -31,6 +31,9 @@ price_stream = PriceStream(symbols)
 price_stream.start()
 
 # Re-entry logic? - i.e. set in_position back to false on exit, re-initiate loop...
+# FINNHUB IS SO MUCH WORSE... restore previous versions
+    # Look into using alpaca to automate trade execution on tradingview alert
+    # Gist: custom alert sends webhook (http POST), python web server middleware(?), then uses alpaca api to execute
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
@@ -59,7 +62,7 @@ def monitor_trade(setup):
                 break
 
             if not in_position and price >= entry:
-                place_order(symbol, qty)
+                #place_order(symbol, qty)
                 print(f"{qty} [{symbol}] Market buy placed at {price}")
                 in_position = True
                 day_high = price
