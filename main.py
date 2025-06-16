@@ -4,7 +4,6 @@ import math
 import time
 import datetime
 import pytz
-import csv
 
 from pushbullet import Pushbullet
 from dotenv import load_dotenv
@@ -14,7 +13,8 @@ load_dotenv()
 PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
 pb = Pushbullet(PB_API_KEY)
 
-from alpaca_utils import start_price_stream, get_current_price, place_order, close_position, close_all_positions
+from finnhub_price_stream import PriceStream
+from alpaca_utils import place_order, close_position, close_all_positions
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -27,10 +27,9 @@ with open("configs.json") as f:
     trade_setups = json.load(f)
 
 symbols = [setup["symbol"] for setup in trade_setups]
-threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
+price_stream = PriceStream(symbols)
+price_stream.start()
 
-# Finnhub.io for data, Alpaca for trade executions
-    # Big refactor...
 # Re-entry logic? - i.e. set in_position back to false on exit, re-initiate loop...
 
 def monitor_trade(setup):
@@ -45,7 +44,7 @@ def monitor_trade(setup):
     print(f"[{symbol}] Monitoring...")
 
     while True:
-        price = get_current_price(symbol)
+        price = price_stream.get_current_price(symbol)
         if price is None:
             continue
 
