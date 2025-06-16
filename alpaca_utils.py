@@ -1,8 +1,11 @@
-from alpaca.data.historical import StockHistoricalDataClient
-from alpaca.data.requests import QuoteLatestRequest
+from alpaca.data.live import StockDataStream
+from alpaca.data.models import Trade
+
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
+
+import asyncio
 
 import datetime, pytz
 import csv
@@ -15,13 +18,26 @@ API_KEY = os.getenv("API_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
 USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 
+STREAM_URL = "wws://stream.data.alpaca.markets/v2/iex"
+latest_prices = {}
+
 trading_client = TradingClient(API_KEY, SECRET_KEY, paper=USE_PAPER_TRADING)
-data_client = StockHistoricalDataClient(API_KEY, SECRET_KEY)
+stock_stream = StockDataStream(API_KEY, SECRET_KEY, base_url=STREAM_URL)
+
+async def handle_trade(trade: Trade):
+    symbol = trade.symbol
+    price = trade.price
+    latest_prices[symbol] = price
+
+def start_price_stream(symbols):
+    for symbol in symbols:
+        stock_stream.subscribe_trades(handle_trade, symbol)
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(stock_stream._run_forever())
 
 def get_current_price(symbol):
-    request = QuoteLatestRequest(symbol_or_symbols=symbol)
-    latest_quote = data_client.get_stock_latest_quote(request)
-    return float(latest_quote[symbol].askprice)
+    return latest_prices.get(symbol)
 
 def place_order(symbol, qty):
     order_data = MarketOrderRequest(
