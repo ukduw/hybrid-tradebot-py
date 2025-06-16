@@ -1,6 +1,11 @@
+from alpaca.data.live import StockDataStream
+from alpaca.data.models import Trade
+
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
+
+import asyncio
 
 import datetime, pytz
 import csv
@@ -13,7 +18,27 @@ API_KEY = os.getenv("API_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
 USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 
+latest_prices = {}
+
 trading_client = TradingClient(API_KEY, SECRET_KEY, paper=USE_PAPER_TRADING)
+stock_stream = StockDataStream(API_KEY, SECRET_KEY)
+
+async def handle_trade(trade: Trade):
+    symbol = trade.symbol
+    price = trade.price
+    latest_prices[symbol] = price
+    print(f"[WebSocket] {trade.symbol} @ {trade.price}")
+
+def start_price_stream(symbols):
+    for symbol in symbols:
+        stock_stream.subscribe_trades(handle_trade, symbol)
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(stock_stream._run_forever())
+
+def get_current_price(symbol):
+    return latest_prices.get(symbol)
 
 
 def place_order(symbol, qty):

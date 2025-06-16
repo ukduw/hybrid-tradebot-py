@@ -13,8 +13,7 @@ load_dotenv()
 PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
 pb = Pushbullet(PB_API_KEY)
 
-from finnhub_price_stream import PriceStream
-from alpaca_utils import place_order, close_position, close_all_positions
+from alpaca_utils import start_price_stream, get_current_price, place_order, close_position, close_all_positions
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -27,8 +26,7 @@ with open("configs.json") as f:
     trade_setups = json.load(f)
 
 symbols = [setup["symbol"] for setup in trade_setups]
-price_stream = PriceStream(symbols)
-price_stream.start()
+threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
 
 # Re-entry logic? - i.e. set in_position back to false on exit, re-initiate loop...
 # FINNHUB IS SO MUCH WORSE... restore previous versions
@@ -47,7 +45,7 @@ def monitor_trade(setup):
     print(f"[{symbol}] Monitoring...")
 
     while True:
-        price = price_stream.get_current_price(symbol)
+        price = get_current_price(symbol)
         if price is None:
             continue
 
