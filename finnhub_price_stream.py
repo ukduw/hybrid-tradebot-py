@@ -8,7 +8,7 @@ import os
 
 load_dotenv()
 FINNHUB_TOKEN = os.getenv("FINNHUB_TOKEN")
-FINNHUB_WS_URL = f"wws://ws.finnhub.io?token={FINNHUB_TOKEN}"
+FINNHUB_WS_URL = f"wss://ws.finnhub.io?token={FINNHUB_TOKEN}"
 
 
 class PriceStream:
