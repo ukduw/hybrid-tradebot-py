@@ -29,6 +29,10 @@ with open("configs.json") as f:
 symbols = [setup["symbol"] for setup in trade_setups]
 threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
 
+# Tradier - doesn't have Alpaca's IEX limit...
+    # Big refactor...
+# Fix CSV writes - maybe just switch to .txt
+# Re-entry logic? - i.e. set in_position back to false on exit
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
