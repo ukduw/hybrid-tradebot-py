@@ -10,9 +10,11 @@ API_KEY = "your-alpaca-api-key"
 SECRET_KEY = "your-alpaca-secret-key"
 USE_PAPER_TRADING = True # paper trading
 
+FINNHUB_TOKEN = "your-finnhub-api-key"
+
 PUSHBULLET_API_KEY = "your-pushbullet-api-key-here"
 ```
-Sign up with Alpaca and Pushbullet for API keys; must download Pushbullet app to receive push notifications.
+Sign up with Alpaca (trade execution), Finnhub (real-time data) and Pushbullet for API keys; must download Pushbullet app to receive push notifications.
 
 Run config CLI (to input trade parameters):   
 `python3 config_CLI.py`
@@ -33,8 +35,8 @@ Trailing stop-loss logic allows winning plays to run, protecting profits against
 Position size management is simplified. The user can input a different dollar amount per ticker. The program then determines each position size automatically: 
 - Rounded Up(Dollar Value / Entry Price) = Quantity
 
-## CSV Export and Push Notifications
-Entry and exit data are piped to a CSV file for easy export. The user can utilize this to generate statistics and optimize their strategies or to experiment with new strategies.
+## Trade Log Export and Push Notifications
+Entry and exit data are piped to a text file for easy export. The user can utilize this to generate statistics and optimize their strategies or to experiment with new strategies.
 
 Push notifications are sent to the user's phone on entry/exit so the user can monitor the bot's activity throughout the day. The notifications contain the ticker, number of shares, order type, entry/exit point:
 - e.g. "50 AAPL Market buy placed at $203.53"
