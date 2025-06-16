@@ -23,6 +23,13 @@ exit_open_positions_at = now.replace(hour=15, minute=55, second=0, microsecond=0
 positions_closed = False
 
 
+with open("configs.json") as f:
+    trade_setups = json.load(f)
+
+symbols = [setup["symbol"] for setup in trade_setups]
+threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
+
+
 def monitor_trade(setup):
     symbol = setup["symbol"]
     entry = setup["entry_price"]
@@ -80,19 +87,13 @@ def monitor_trade(setup):
                         pb.push_note(f"[{symbol}] take-profit hit. Exiting.")
                         break
 
-            time.sleep(2)
+            time.sleep(1)
 
         except Exception as e:
             print(f"[{symbol}] Error: {e}")
-            time.sleep(2)
+            time.sleep(1)
 
     
-with open("configs.json") as f:
-    trade_setups = json.load(f)
-
-symbols = [setup["symbol"] for setup in trade_setups]
-threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
-
 for setup in trade_setups:
     t = threading.Thread(target=monitor_trade, args=(setup,))
     t.start()

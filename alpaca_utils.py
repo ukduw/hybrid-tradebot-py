@@ -27,6 +27,7 @@ async def handle_trade(trade: Trade):
     symbol = trade.symbol
     price = trade.price
     latest_prices[symbol] = price
+    print(f"[WebSocket] {trade.symbol} @ {trade.price}")
 
 def start_price_stream(symbols):
     for symbol in symbols:
@@ -57,7 +58,7 @@ def close_all_positions():
     try:
         results = trading_client.close_all_positions()    
         eastern = pytz.timezone("US/Eastern")
-        now = datetime.now(eastern)
+        now = datetime.datetime.now(eastern)
         for r in results:
             print(f"Closed: {r.symbol} - Qty: {r.qty}")
             with open("trade_log", mode="a", newline="") as file:
