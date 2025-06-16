@@ -31,7 +31,6 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 
 # Tradier - doesn't have Alpaca's IEX limit...
     # Big refactor...
-# Fix CSV writes - maybe just switch to .txt
 # Re-entry logic? - i.e. set in_position back to false on exit
 
 def monitor_trade(setup):
@@ -65,18 +64,16 @@ def monitor_trade(setup):
                 print(f"{qty} [{symbol}] Market buy placed at {price}")
                 in_position = True
                 day_high = price
-                with open("trade_log", mode="a", newline="") as file:
-                    writer = csv.writer(file)
-                    writer.writerow(f"{now},{symbol},Entry,{qty},{price}")
+                with open("trade-log/trade_log.txt", "a") as file:
+                    file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
                 pb.push_note("Hybrid bot", f"{qty} [{symbol}] Market buy placed at {price}")
             
             elif in_position:
                 if price <= stop: 
                     close_position(symbol)
                     print(f"[{symbol}] stop-loss hit. Exiting.")
-                    with open("trade_log", mode="a", newline="") as file:
-                        writer = csv.writer(file)
-                        writer.writerow(f"{now}, {symbol}, Exit, {qty}, {price}")
+                    with open("trade-log/trade_log.txt", "a") as file:
+                        file.write(f"{now},{symbol},Exit,{qty},{price}" + "\n")
                     pb.push_note(f"[{symbol}] stop-loss hit. Exiting.")
                     break
                 else:
@@ -85,9 +82,8 @@ def monitor_trade(setup):
                     if day_high >= entry * 1.15 and price <= day_high * (100 - trailing_stop)/100:
                         close_position(symbol)
                         print(f"[{symbol}] take-profit hit. Exiting.")
-                        with open("trade_log", mode="a", newline="") as file:
-                            writer = csv.writer(file)
-                            writer.writerow(f"{now}, {symbol}, Exit, {qty}, {price}")
+                        with open("trade-log/trade_log.txt", "a") as file:
+                            file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
                         pb.push_note(f"[{symbol}] take-profit hit. Exiting.")
                         break
 
