@@ -10,11 +10,9 @@ API_KEY = "your-alpaca-api-key"
 SECRET_KEY = "your-alpaca-secret-key"
 USE_PAPER_TRADING = True # paper trading
 
-FINNHUB_TOKEN = "your-finnhub-api-key"
-
 PUSHBULLET_API_KEY = "your-pushbullet-api-key-here"
 ```
-Sign up with Alpaca (trade execution), Finnhub (real-time data) and Pushbullet for API keys; must download Pushbullet app to receive push notifications.
+Sign up with Alpaca and Pushbullet for API keys; must download Pushbullet app to receive push notifications.
 
 Run config CLI (to input trade parameters):   
 `python3 config_CLI.py`
