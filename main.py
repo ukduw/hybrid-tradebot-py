@@ -14,7 +14,7 @@ load_dotenv()
 PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
 pb = Pushbullet(PB_API_KEY)
 
-from alpaca_utils import get_current_price, place_order, close_position, close_all_positions
+from alpaca_utils import start_price_stream, get_current_price, place_order, close_position, close_all_positions
 
 eastern = pytz.timezone("US/Eastern")
 exit_open_positions_at = datetime.now(eastern).replace(hour=15, minute=55, second=0, microsecond=0)
@@ -35,6 +35,10 @@ def monitor_trade(config):
     print(f"[{symbol}] Monitoring...")
 
     while True:
+        price = get_current_price(symbol)
+        if price is None:
+            continue
+
         try:
             now = datetime.now(eastern)
             if now >= exit_open_positions_at:
@@ -44,9 +48,6 @@ def monitor_trade(config):
                     positions_closed = True
                     print("End of day - all positions closed.")
                 break
-
-            price = get_current_price(symbol)
-
 
             if not in_position and price >= entry:
                 place_order(symbol, qty, "buy")
@@ -88,6 +89,9 @@ def monitor_trade(config):
     
 with open("configs.json") as f:
     trade_setups = json.load(f)
+
+symbols = [setup["symbol"] for setup in trade_setups]
+threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
 
 for setup in trade_setups:
     t = threading.Thread(target=monitor_trade, args=(setup,))
