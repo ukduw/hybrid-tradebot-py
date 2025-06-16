@@ -47,7 +47,7 @@ def monitor_trade(setup):
             continue
 
         try:
-            now = datetime.now(eastern)
+            now = datetime.datetime.now(eastern)
             if now >= exit_open_positions_at:
                 global positions_closed
                 if not positions_closed:
