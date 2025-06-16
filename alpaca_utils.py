@@ -18,11 +18,10 @@ API_KEY = os.getenv("API_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
 USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 
-STREAM_URL = "wws://stream.data.alpaca.markets/v2/iex"
 latest_prices = {}
 
 trading_client = TradingClient(API_KEY, SECRET_KEY, paper=USE_PAPER_TRADING)
-stock_stream = StockDataStream(API_KEY, SECRET_KEY, base_url=STREAM_URL)
+stock_stream = StockDataStream(API_KEY, SECRET_KEY)
 
 async def handle_trade(trade: Trade):
     symbol = trade.symbol
@@ -33,7 +32,8 @@ def start_price_stream(symbols):
     for symbol in symbols:
         stock_stream.subscribe_trades(handle_trade, symbol)
 
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     loop.run_until_complete(stock_stream._run_forever())
 
 def get_current_price(symbol):

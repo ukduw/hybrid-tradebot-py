@@ -17,18 +17,18 @@ pb = Pushbullet(PB_API_KEY)
 from alpaca_utils import start_price_stream, get_current_price, place_order, close_position, close_all_positions
 
 eastern = pytz.timezone("US/Eastern")
-exit_open_positions_at = datetime.now(eastern).replace(hour=15, minute=55, second=0, microsecond=0)
-now = datetime.now(eastern)
+now = datetime.datetime.now(eastern)
+exit_open_positions_at = now.replace(hour=15, minute=55, second=0, microsecond=0)
 
 positions_closed = False
 
 
-def monitor_trade(config):
-    symbol = config.symbol
-    entry = config.entry_price
-    stop = config.stop_loss
-    trailing_stop = config.trailing_stop_percentage
-    qty = math.ceil(config.dollar_value / config.entry_price)
+def monitor_trade(setup):
+    symbol = setup["symbol"]
+    entry = setup["entry_price"]
+    stop = setup["stop_loss"]
+    trailing_stop = setup["trailing_stop_percentage"]
+    qty = math.ceil(setup["dollar_value"] / setup["entry_price"])
     day_high = entry
     in_position = False
 
