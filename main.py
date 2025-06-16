@@ -57,7 +57,7 @@ def monitor_trade(setup):
                 break
 
             if not in_position and price >= entry:
-                place_order(symbol, qty, "buy")
+                place_order(symbol, qty)
                 print(f"{qty} [{symbol}] Market buy placed at {price}")
                 in_position = True
                 day_high = price
