@@ -63,7 +63,7 @@ def monitor_trade(setup):
                 day_high = price
                 with open("trade_log", mode="a", newline="") as file:
                     writer = csv.writer(file)
-                    writer.writerow(f"{now}, {symbol}, Entry, {qty}, {price}")
+                    writer.writerow(f"{now},{symbol},Entry,{qty},{price}")
                 pb.push_note("Hybrid bot", f"{qty} [{symbol}] Market buy placed at {price}")
             
             elif in_position:
