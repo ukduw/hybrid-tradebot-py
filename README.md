@@ -12,7 +12,8 @@ USE_PAPER_TRADING = True # paper trading
 
 PUSHBULLET_API_KEY = "your-pushbullet-api-key-here"
 ```
-Sign up with Alpaca and Pushbullet for API keys; must download Pushbullet app to receive push notifications.
+Sign up with Alpaca and Pushbullet for API keys; must download Pushbullet app to receive push notifications.   
+NOTE: Alpaca's free market data is limited to IEX data only.
 
 Run config CLI (to input trade parameters):   
 `python3 config_CLI.py`
