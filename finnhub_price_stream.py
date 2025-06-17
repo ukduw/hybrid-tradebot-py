@@ -26,19 +26,28 @@ class PriceStream:
 
     async def _subscribe_symbols(self):
         for symbol in self.symbols:
+            print(f"Subscribing to {symbol}")
             await self.ws.send(json.dumps({"type": "subscribe", "symbol": symbol}))
+            await asyncio.sleep(1)
 
     async def _handle_messages(self):
         while True:
             try:
                 message = await self.ws.recv()
                 data = json.loads(message)
+                async for message in self.ws:
+                    print("RAW MESAGE: ", message)
                 if data["type"] == "trade":
                     for t in data["data"]:
                         symbol = t["s"]
                         price = t["p"]
+                        print(f"[{symbol}] Updated price: {price}")
                         with self.lock:
                             self.latest_prices[symbol] = price
+                elif data["type"] == "ping":
+                    await self.ws.send(json.dumps({"type": "pong"}))
+                else:
+                    print("Unhandled data type: ", data)
             except Exception as e:
                 print("WebSocket error: ", e)
                 break
