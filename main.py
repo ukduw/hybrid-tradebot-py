@@ -70,7 +70,7 @@ def monitor_trade(setup):
                     close_all_positions()
                     positions_closed = True
                     print("End of day - all positions closed.")
-                return
+                break
 
             if not in_position and can_enter_trade() and price >= entry:
                 #place_order(symbol, qty)
@@ -82,7 +82,7 @@ def monitor_trade(setup):
                 pb.push_note("Hybrid bot", f"{qty} [{symbol}] Market buy placed at {price}")
             elif not in_position and price >= entry:
                 print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
-                return
+                break
 
             elif in_position:
                 if price <= stop: 
@@ -91,7 +91,7 @@ def monitor_trade(setup):
                     with open("trade-log/trade_log.txt", "a") as file:
                         file.write(f"{now},{symbol},Exit,{qty},{price}" + "\n")
                     pb.push_note(f"[{symbol}] stop-loss hit. Exiting.")
-                    return
+                    break
                 else:
                     if price > day_high:
                         day_high = price
@@ -101,7 +101,7 @@ def monitor_trade(setup):
                         with open("trade-log/trade_log.txt", "a") as file:
                             file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
                         pb.push_note(f"[{symbol}] take-profit hit. Exiting.")
-                        return
+                        break
 
             time.sleep(1)
 
