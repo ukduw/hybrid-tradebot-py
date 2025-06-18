@@ -41,6 +41,12 @@ symbols = [setup["symbol"] for setup in trade_setups]
 threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
 
 # Need to pay for data - 99/month...
+# what kind of logic could capture the rest of a run after a large pullback...? noticed current logic missing those
+    # increasing trailing stop % doesn't seem appropriate... would simply increase rate of getting stopped out lower, turn some wins to break-evens...
+    # maybe a timer if confirmed winner? (i.e. stats show ~1hr+ so round trade in <1hr is suboptimal)
+        # probably lose smaller winners
+        # not appropriate for very early premarket volatility... appropriate for later premarket
+            # needs datetime logic?
 
 # No need for GUI/re-entry logic:
     # Use Alpaca to automate trade execution on tradingview alert
