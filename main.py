@@ -21,6 +21,18 @@ exit_open_positions_at = now.replace(hour=15, minute=55, second=0, microsecond=0
 
 positions_closed = False
 
+day_trade_counter = 0
+day_trade_lock = threading.Lock()
+
+def can_enter_trade():
+    global day_trade_counter
+    with day_trade_lock:
+        if day_trade_counter < 1:
+            day_trade_counter += 1
+            return True
+        else: 
+            return False
+
 
 with open("configs.json") as f:
     trade_setups = json.load(f)
@@ -29,6 +41,7 @@ symbols = [setup["symbol"] for setup in trade_setups]
 threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
 
 # Need to pay for data - 99/month...
+
 # No need for GUI/re-entry logic:
     # Use Alpaca to automate trade execution on tradingview alert
     # Gist: custom alert sends webhook (http POST), python web server middleware(?), then uses alpaca api to execute
@@ -57,17 +70,20 @@ def monitor_trade(setup):
                     close_all_positions()
                     positions_closed = True
                     print("End of day - all positions closed.")
-                break
+                return
 
-            if not in_position and price >= entry:
-                place_order(symbol, qty)
+            if not in_position and can_enter_trade() and price >= entry:
+                #place_order(symbol, qty)
                 print(f"{qty} [{symbol}] Market buy placed at {price}")
                 in_position = True
                 day_high = price
                 with open("trade-log/trade_log.txt", "a") as file:
                     file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
                 pb.push_note("Hybrid bot", f"{qty} [{symbol}] Market buy placed at {price}")
-            
+            elif not in_position and price >= entry:
+                print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
+                return
+
             elif in_position:
                 if price <= stop: 
                     close_position(symbol)
@@ -75,7 +91,7 @@ def monitor_trade(setup):
                     with open("trade-log/trade_log.txt", "a") as file:
                         file.write(f"{now},{symbol},Exit,{qty},{price}" + "\n")
                     pb.push_note(f"[{symbol}] stop-loss hit. Exiting.")
-                    break
+                    return
                 else:
                     if price > day_high:
                         day_high = price
@@ -85,7 +101,7 @@ def monitor_trade(setup):
                         with open("trade-log/trade_log.txt", "a") as file:
                             file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
                         pb.push_note(f"[{symbol}] take-profit hit. Exiting.")
-                        break
+                        return
 
             time.sleep(1)
 
