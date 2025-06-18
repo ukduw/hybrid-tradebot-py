@@ -15,7 +15,7 @@ PUSHBULLET_API_KEY = "your-pushbullet-api-key-here"
 Sign up with Alpaca and Pushbullet for API keys; must download Pushbullet app to receive push notifications.   
 NOTE: Alpaca's free market data is limited to IEX data only.   
 
-NOTE: I've added a PDT rule protection that counts the number of day trades. It's currently limited to 1, so the user can spread their trades over 3 days. If this isn't needed, comment out these lines in main.py: 24-34, can_enter_trade() condition in line 75, and 83-85.   
+NOTE: I've added a PDT rule protection that counts the number of day trades. It's currently limited to 1, so the user can spread their trades over 3 days; the counter must be reset to 0 manually each day. If this isn't needed, comment out these lines in main.py: 24-34, can_enter_trade() condition in line 75, and 83-85.   
 
 Run config CLI (to input trade parameters):   
 `python3 config_CLI.py`
