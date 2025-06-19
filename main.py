@@ -41,18 +41,20 @@ symbols = [setup["symbol"] for setup in trade_setups]
 threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
 
 # Need to pay for data - 99/month...
-# what kind of logic could capture the rest of a run after a large pullback...? noticed current logic missing those
-    # increasing trailing stop % doesn't seem appropriate... would simply increase rate of getting stopped out lower, turn some wins to break-evens...
+# Needs logic to capture rest of a run after a trailing stop-triggering pullback
     # maybe a timer if confirmed winner? (i.e. stats show ~1hr+ so round trade in <1hr is suboptimal)
         # probably lose smaller winners
+            # worthwhile trade-off, but may have to be reverted during slow market conditions with no spiking...)
         # not appropriate for very early premarket volatility... appropriate for later premarket and on
             # needs datetime logic - e.g. if before x time, normal trailing stop logic, else timeout THEN trailing stop logic?
+            # this would need another condition if timeout overlaps with close_all_positions() time
 
 # Update: forget the webhook, py web server tv-alpaca approach...
-    # NO EXTENDED HOURS, alert limit (another ~30/month to raise to 100 alert limit), etc.
+    # NO EXTENDED HOURS, alert limit (another ~30/month subscription to raise to 100 alert limit), etc...
 # Real time monitor_trade() update on configs.json change is preferrable
-    # Via util that's called within monitor_trade() loop?
+    # Util that's called within monitor_trade() loop?
     # Would the configs have to be re-read per thread, per loop though... performance hit?
+    # Read errors if json edited while being read...?
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
