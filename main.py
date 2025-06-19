@@ -53,8 +53,11 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
     # NO EXTENDED HOURS, alert limit (another ~30/month subscription to raise to 100 alert limit), etc...
 # Real time monitor_trade() update on configs.json change is preferrable
     # Util that's called within monitor_trade() loop?
-    # Would the configs have to be re-read per thread, per loop though... performance hit?
+    # Would the configs have to be re-read per thread, per loop though... performance hit likely negligible
     # Read errors if json edited while being read...?
+        # If ~25 threads are re-reading per second, this is a real problem...
+        # Error catching try/except needed
+# Is there a way to re-read only if json has been confirmed to have been changed...?
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
