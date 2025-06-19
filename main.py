@@ -76,6 +76,10 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 # Combination logic?
     # necessary: TIMEFRAME
     # preference: Time-based (0), then some combination of 1, 2, or 3?
+        # e.g. if before x time, normal trail
+            # elif 15+% gain, 30% position normal trail (3), remainder timeout? (0) + dynamic structure-based stop on swing low? (2)
+            # (timeframe + time (0) + partial-take profit (3) + structure-based trail (2))
+            # (timeframe, 0 + 3 + 2)
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
