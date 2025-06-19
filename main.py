@@ -21,6 +21,7 @@ exit_open_positions_at = now.replace(hour=15, minute=55, second=0, microsecond=0
 
 positions_closed = False
 
+
 day_trade_counter = 0
 day_trade_lock = threading.Lock()
 
@@ -34,10 +35,26 @@ def can_enter_trade():
             return False
 
 
-with open("configs.json") as f:
-    trade_setups = json.load(f)
+CONFIG_PATH = "configs.json"
+last_config_mtime = None
+with open("configs.json", "r") as f:
+    cached_configs = json.load(f)
 
-symbols = [setup["symbol"] for setup in trade_setups]
+def load_configs_on_modification():
+    global last_config_mtime, cached_configs
+    try:
+        mtime = os.path.getmtime(CONFIG_PATH)
+        if last_config_mtime is None or mtime != last_config_mtime:
+            last_config_mtime = mtime
+            with open(CONFIG_PATH, "r") as f:
+                cached_configs = json.load(f)
+            print("[MOD] Configs updated")
+    except Exception as e:
+        print(f"[LOOP] Configs mid-modification: {e}")
+    return cached_configs
+
+
+symbols = [setup["symbol"] for setup in cached_configs]
 threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
 
 # Need to pay for data - 99/month...
@@ -49,16 +66,6 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
         # not appropriate for very early premarket volatility... appropriate for later premarket and on
             # needs datetime logic - e.g. if before x time, normal trailing stop logic, else timeout THEN trailing stop logic?
             # this would need another condition if timeout overlaps with close_all_positions() time
-
-# Update: forget the webhook, py web server tv-alpaca approach...
-    # NO EXTENDED HOURS, alert limit (another ~30/month subscription to raise to 100 alert limit), etc...
-# Real time monitor_trade() update on configs.json change is preferrable
-    # Util that's called within monitor_trade() loop?
-    # i think the parameters have to be defined within the loop itself then? so they can update on the loop that the util returns a new json
-# os.path.getmtime(path) to re-read json only if it's modified
-    # I think this still needs a try/except
-    # Returns timestamp AS SOON AS file write begins, NOT ON COMPLETION
-    # So, will still lead to read errors DURING modification... needs except block to skip/timeout and try re-reading on another loop?
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
@@ -124,6 +131,6 @@ def monitor_trade(setup):
             time.sleep(1)
 
     
-for setup in trade_setups:
+for setup in cached_configs:
     t = threading.Thread(target=monitor_trade, args=(setup,))
     t.start()
