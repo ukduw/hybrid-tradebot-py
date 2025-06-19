@@ -44,7 +44,7 @@ def load_configs_on_modification():
     global last_config_mtime, cached_configs
     try:
         mtime = os.path.getmtime(CONFIG_PATH)
-        if last_config_mtime is None or mtime != last_config_mtime:
+        if mtime != last_config_mtime:
             last_config_mtime = mtime
             with open(CONFIG_PATH, "r") as f:
                 cached_configs = json.load(f)
@@ -69,18 +69,27 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
-    entry = setup["entry_price"]
-    stop = setup["stop_loss"]
-    trailing_stop = setup["trailing_stop_percentage"]
-    qty = math.ceil(setup["dollar_value"] / setup["entry_price"])
-    day_high = entry
     in_position = False
 
     print(f"[{symbol}] Monitoring...")
 
     while True:
+        configs = load_configs_on_modification()
+        updated_setup = next((s for s in configs if s["symbol"] == symbol), None)
+
+        if not updated_setup:
+            print(f"[{symbol}] Removed from configs. Stopping thread.")
+            return
+        
+        entry = updated_setup["entry_price"]
+        stop = updated_setup["stop_loss"]
+        trailing_stop = updated_setup["trailing_stop_percentage"]
+        qty = math.ceil(updated_setup["dollar_value"] / updated_setup["entry_price"])
+        day_high = entry
+
         price = get_current_price(symbol)
         if price is None:
+            time.sleep(2)
             continue
 
         try:
