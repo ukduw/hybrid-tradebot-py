@@ -73,7 +73,9 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
     # 2. structure-based trailing stop (e.g. EMA support, swing lows...)
     # 3. partial-take profit... not my preference, but remainder of position can have looser trail?
     # 4. momentum-based (e.g. exit on % loss of volume? RSI, MACD... unlikely)
-
+# Combination logic?
+    # necessary: TIMEFRAME
+    # preference: Time-based (0), then some combination of 1, 2, or 3?
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
