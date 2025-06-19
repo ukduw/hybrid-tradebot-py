@@ -48,9 +48,9 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
         # not appropriate for very early premarket volatility... appropriate for later premarket
             # needs datetime logic?
 
-# No need for GUI/re-entry logic:
-    # Use Alpaca to automate trade execution on tradingview alert
-    # Gist: custom alert sends webhook (http POST), python web server middleware(?), then uses alpaca api to execute
+# Update: forget the webhook, py web server tv-alpaca approach...
+    # NO EXTENDED HOURS, alert limit (another ~30/month to raise to 100 alert limit), etc.
+# Real time monitor_trade() update on configs.json change is preferrable
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
