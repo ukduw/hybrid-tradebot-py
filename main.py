@@ -59,13 +59,11 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 
 # Need to pay for data - 99/month...
 
-# Needs logic to capture rest of a run after a trailing stop-triggering pullback
-# maybe a timer if confirmed winner? (i.e. stats show ~1hr+ so round trade in <1hr is suboptimal)
-    # probably lose smaller winners
-        # worthwhile trade-off, but may have to be reverted during slow market conditions with no spiking...
+# Timer if confirmed winner? (i.e. stats show ~1hr+ so round trade in <1hr is suboptimal)
+    # will lose smaller winners - has to be reverted during slow market conditions with no spiking...
 # not appropriate for very early premarket volatility... appropriate for later premarket and on
-    # needs datetime logic - e.g. if before x time, normal trailing stop logic, else timeout on entry THEN trailing stop logic?
-    # this would need another condition if timeout overlaps with close_all_positions() time
+    # needs datetime logic - e.g. if before x time (US/Eastern, EDT), normal trailing stop logic, else timeout on entry THEN trailing stop logic?
+    # (NECESSARY) this would need another condition if timeout overlaps with close_all_positions() time
 
 # time-based logic still important given how different stocks trade per time frame, but...
 # test, research:
@@ -74,7 +72,7 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 # Combination logic?
     # necessary: TIMEFRAME
     # preference: Time-based (0), then some combination of 1, 2, or 3?
-        # e.g. if before x time, normal trail
+        # e.g. if before x time (early premarket), normal trail
             # elif 15+% gain, 30% position normal trail (3), remainder timeout? (0) + dynamic structure-based stop on swing low? (2)
             # (timeframe + time (0) + partial-take profit (3) + structure-based trail (2))
             # (timeframe, 0 + 3 + 2)
