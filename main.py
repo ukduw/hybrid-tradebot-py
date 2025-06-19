@@ -60,12 +60,12 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 # Need to pay for data - 99/month...
 
 # Needs logic to capture rest of a run after a trailing stop-triggering pullback
-    # maybe a timer if confirmed winner? (i.e. stats show ~1hr+ so round trade in <1hr is suboptimal)
-        # probably lose smaller winners
-            # worthwhile trade-off, but may have to be reverted during slow market conditions with no spiking...)
-        # not appropriate for very early premarket volatility... appropriate for later premarket and on
-            # needs datetime logic - e.g. if before x time, normal trailing stop logic, else timeout THEN trailing stop logic?
-            # this would need another condition if timeout overlaps with close_all_positions() time
+# maybe a timer if confirmed winner? (i.e. stats show ~1hr+ so round trade in <1hr is suboptimal)
+    # probably lose smaller winners
+        # worthwhile trade-off, but may have to be reverted during slow market conditions with no spiking...
+# not appropriate for very early premarket volatility... appropriate for later premarket and on
+    # needs datetime logic - e.g. if before x time, normal trailing stop logic, else timeout THEN trailing stop logic?
+    # this would need another condition if timeout overlaps with close_all_positions() time
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
