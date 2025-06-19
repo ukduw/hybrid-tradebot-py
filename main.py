@@ -41,6 +41,7 @@ symbols = [setup["symbol"] for setup in trade_setups]
 threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
 
 # Need to pay for data - 99/month...
+
 # Needs logic to capture rest of a run after a trailing stop-triggering pullback
     # maybe a timer if confirmed winner? (i.e. stats show ~1hr+ so round trade in <1hr is suboptimal)
         # probably lose smaller winners
@@ -53,11 +54,11 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
     # NO EXTENDED HOURS, alert limit (another ~30/month subscription to raise to 100 alert limit), etc...
 # Real time monitor_trade() update on configs.json change is preferrable
     # Util that's called within monitor_trade() loop?
-    # Would the configs have to be re-read per thread, per loop though... performance hit likely negligible
-    # Read errors if json edited while being read...?
-        # If ~25 threads are re-reading per second, this is a real problem...
-        # Error catching try/except needed
-# Is there a way to re-read only if json has been confirmed to have been changed...?
+    # i think the parameters have to be defined within the loop itself then? so they can update on the loop that the util returns a new json
+# os.path.getmtime(path) to re-read json only if it's modified
+    # I think this still needs a try/except
+    # Returns timestamp AS SOON AS file write begins, NOT ON COMPLETION
+    # So, will still lead to read errors DURING modification... needs except block to skip/timeout and try re-reading on another loop?
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
