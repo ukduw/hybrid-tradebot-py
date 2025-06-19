@@ -64,8 +64,16 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
     # probably lose smaller winners
         # worthwhile trade-off, but may have to be reverted during slow market conditions with no spiking...
 # not appropriate for very early premarket volatility... appropriate for later premarket and on
-    # needs datetime logic - e.g. if before x time, normal trailing stop logic, else timeout THEN trailing stop logic?
+    # needs datetime logic - e.g. if before x time, normal trailing stop logic, else timeout on entry THEN trailing stop logic?
     # this would need another condition if timeout overlaps with close_all_positions() time
+
+# time-based logic still important given how different stocks trade per time frame, but...
+# test, research:
+    # 1. volatility-adjusted trailing stop (e.g. average true range to dynamically set trail %)
+    # 2. structure-based trailing stop (e.g. EMA support, swing lows...)
+    # 3. partial-take profit... not my preference, but remainder of position can have looser trail?
+    # 4. momentum-based (e.g. exit on % loss of volume? RSI, MACD... unlikely)
+
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
