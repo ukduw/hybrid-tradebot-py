@@ -45,12 +45,14 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
     # increasing trailing stop % doesn't seem appropriate... would simply increase rate of getting stopped out lower, turn some wins to break-evens...
     # maybe a timer if confirmed winner? (i.e. stats show ~1hr+ so round trade in <1hr is suboptimal)
         # probably lose smaller winners
-        # not appropriate for very early premarket volatility... appropriate for later premarket
-            # needs datetime logic?
+        # not appropriate for very early premarket volatility... appropriate for later premarket and on
+            # needs datetime logic - e.g. if before x time, normal trailing stop logic, else timeout THEN trailing stop logic?
 
 # Update: forget the webhook, py web server tv-alpaca approach...
     # NO EXTENDED HOURS, alert limit (another ~30/month to raise to 100 alert limit), etc.
 # Real time monitor_trade() update on configs.json change is preferrable
+    # Via util that's called within monitor_trade() loop?
+    # Would the configs have to be re-read per thread, per loop though... performance hit?
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
