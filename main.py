@@ -125,7 +125,7 @@ def monitor_trade(setup):
                 return
 
             elif in_position:
-                if price <= stop: 
+                if price < stop: 
                     close_position(symbol)
                     print(f"[{symbol}] stop-loss hit. Exiting.")
                     with open("trade-log/trade_log.txt", "a") as file:
