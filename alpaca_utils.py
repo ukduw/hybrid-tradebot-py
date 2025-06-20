@@ -23,6 +23,7 @@ latest_prices = {}
 trading_client = TradingClient(API_KEY, SECRET_KEY, paper=USE_PAPER_TRADING)
 stock_stream = StockDataStream(API_KEY, SECRET_KEY)
     # change to AlpacaDataStream - 1s bars vs tick data... loop is 1/s so no point wasting resources getting every tick
+        # bar - close, high, low
     # needs paid 99/month data...
 
 async def handle_trade(trade: Trade):
