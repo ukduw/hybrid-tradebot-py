@@ -22,12 +22,14 @@ latest_prices = {}
 
 trading_client = TradingClient(API_KEY, SECRET_KEY, paper=USE_PAPER_TRADING)
 stock_stream = StockDataStream(API_KEY, SECRET_KEY)
+    # change to AlpacaDataStream - 1s bars vs tick data... loop is 1/s so no point wasting resources getting every tick
+    # needs paid 99/month data...
 
 async def handle_trade(trade: Trade):
     symbol = trade.symbol
     price = trade.price
     latest_prices[symbol] = price
-    print(f"[WebSocket] {trade.symbol} @ {trade.price}")
+    print(f"[WebSocket] {trade.symbol} @ {trade.price}") # take out after testing
 
 def start_price_stream(symbols):
     for symbol in symbols:
@@ -35,7 +37,7 @@ def start_price_stream(symbols):
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    loop.run_until_complete(stock_stream._run_forever())
+    loop.run_until_complete(stock_stream.run())
 
 def get_current_price(symbol):
     return latest_prices.get(symbol)
