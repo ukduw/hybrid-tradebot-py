@@ -91,6 +91,10 @@ def monitor_trade(setup):
             print(f"[{symbol}] Removed from configs. Stopping thread.")
             return
         
+        #if updated_setup != setup:
+            #in_position = False
+            #setup = updated_setup
+
         entry = updated_setup["entry_price"]
         stop = updated_setup["stop_loss"]
         trailing_stop = updated_setup["trailing_stop_percentage"]
