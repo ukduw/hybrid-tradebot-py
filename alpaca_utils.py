@@ -24,15 +24,15 @@ latest_prices = {}
 trading_client = TradingClient(API_KEY, SECRET_KEY, paper=USE_PAPER_TRADING)
 stock_stream = StockDataStream(API_KEY, SECRET_KEY, feed='sip') # iex for free data...
 
-async def handle_trade(trade: Trade):
-    symbol = trade.symbol
-    price = trade.price
+async def handle_bar(bar: Bar):
+    symbol = bar.symbol
+    price = bar.close
     latest_prices[symbol] = price
-    print(f"[WebSocket] {trade.symbol} @ {trade.price}") # take out after testing
+    print(f"[BAR] {symbol}: {price} @ {bar.timestamp}") # take out after testing
 
 def start_price_stream(symbols):
     for symbol in symbols:
-        stock_stream.subscribe_trades(handle_trade, symbol)
+        stock_stream.subscribe_trades(handle_bar, symbol)
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
