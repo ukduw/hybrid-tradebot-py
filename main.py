@@ -57,25 +57,21 @@ def load_configs_on_modification():
 symbols = [setup["symbol"] for setup in cached_configs]
 threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
 
-# Need to pay for data - 99/month...
+# profit-taking logic
+    # if before x time (e.g. 6AM, US/Eastern (EDT)), normal trail logic
+    # elif +15% from entry, ~1hr timeout(?), swing low exit
+        # any need for partial take-profit...?
+# again, needs to be easy to revert when market is slow...
+# needs additional logic for if timeout overlaps with close_all_positions() time
 
-# Timer if confirmed winner? (i.e. stats show ~1hr+ so round trade in <1hr is suboptimal)
-    # will lose smaller winners - has to be reverted during slow market conditions with no spiking...
-# not appropriate for very early premarket volatility... appropriate for later premarket and on
-    # needs datetime logic - e.g. if before x time (US/Eastern, EDT), normal trailing stop logic, else timeout on entry THEN trailing stop logic?
-    # (NECESSARY) this would need another condition if timeout overlaps with close_all_positions() time
+# 1s bar data is far too granular for ~1hr strategies...
+# i think i need to stream, e.g., 5min bars for broader trends, 1s for entry/exit
+    # need to combine both for exit logic?
+    # actually, which is more efficient: 1) streaming 1s AND 5min, 2) calculating 5min FROM 1s...?
 
-# time-based logic still important given how different stocks trade per time frame, but...
-# test, research:
-    # 2. structure-based trailing stop (e.g. EMA support, swing lows...)
-    # 3. partial-take profit... not my preference, but remainder of position can have looser trail?
-# Combination logic?
-    # necessary: TIMEFRAME
-    # preference: Time-based (0), then some combination of 1, 2, or 3?
-        # e.g. if before x time (early premarket), normal trail
-            # elif 15+% gain, 30% position normal trail (3), remainder timeout? (0) + dynamic structure-based stop on swing low? (2)
-            # (timeframe + time (0) + partial-take profit (3) + structure-based trail (2))
-            # (timeframe, 0 + 3 + 2)
+# ...pandas?
+# look into AWS - this laptop too sus for all these threads...
+
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
