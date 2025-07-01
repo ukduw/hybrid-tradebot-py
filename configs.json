@@ -1,9 +1,212 @@
 [
   {
-    "symbol": "AAPL",
-    "entry_price": 202.55,
-    "stop_loss": 194.2,
-    "trailing_stop_percentage": 1.5,
-    "dollar_value": 5000.0
+    "symbol": "DHAI",
+    "entry_price": 0.2701,
+    "stop_loss": 0.2473,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "VSEE",
+    "entry_price": 1.25,
+    "stop_loss": 1.15,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "GNPX",
+    "entry_price": 0.2297,
+    "stop_loss": 0.2191,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "LPTX",
+    "entry_price": 0.2985,
+    "stop_loss": 0.2709,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "HUSA",
+    "entry_price": 10.7,
+    "stop_loss": 10.34,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "ECDA",
+    "entry_price": 0.283,
+    "stop_loss": 0.2547,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "ONMD",
+    "entry_price": 0.6498,
+    "stop_loss": 0.609,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "SRFM",
+    "entry_price": 3.8,
+    "stop_loss": 3.52,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "IBIO",
+    "entry_price": 0.7806,
+    "stop_loss": 0.7508,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "PSTV",
+    "entry_price": 0.3429,
+    "stop_loss": 0.3199,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "ULY",
+    "entry_price": 7.11,
+    "stop_loss": 6.53,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "LFWD",
+    "entry_price": 0.659,
+    "stop_loss": 0.6159,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "XTIA",
+    "entry_price": 1.75,
+    "stop_loss": 1.68,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "ICU",
+    "entry_price": 0.4502,
+    "stop_loss": 0.4071,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "ASTI",
+    "entry_price": 2.56,
+    "stop_loss": 2.3,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "BIAF",
+    "entry_price": 0.2869,
+    "stop_loss": 0.2645,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "AEMD",
+    "entry_price": 1.29,
+    "stop_loss": 1.2,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "ALT",
+    "entry_price": 4.03,
+    "stop_loss": 3.75,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "MBRX",
+    "entry_price": 0.3247,
+    "stop_loss": 0.3082,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "BBLG",
+    "entry_price": 4.1,
+    "stop_loss": 3.68,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "GCTK",
+    "entry_price": 6.16,
+    "stop_loss": 5.73,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "CYN",
+    "entry_price": 13.97,
+    "stop_loss": 12.78,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "PET",
+    "entry_price": 0.1806,
+    "stop_loss": 0.1615,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "ARTL",
+    "entry_price": 11.97,
+    "stop_loss": 10.81,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "IPDN",
+    "entry_price": 3.14,
+    "stop_loss": 2.94,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "KLTO",
+    "entry_price": 1.12,
+    "stop_loss": 1.0,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "MNTS",
+    "entry_price": 1.24,
+    "stop_loss": 1.13,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "INMB",
+    "entry_price": 2.2,
+    "stop_loss": 1.93,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "GNLN",
+    "entry_price": 4.65,
+    "stop_loss": 4.26,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
+  },
+  {
+    "symbol": "VOR",
+    "entry_price": 1.8,
+    "stop_loss": 1.69,
+    "trailing_stop_percentage": 5.0,
+    "dollar_value": 4000.0
   }
 ]
