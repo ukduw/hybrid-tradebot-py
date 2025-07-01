@@ -1,3 +1,0 @@
-date,ticker,entry,stop,trailing_percentage,dollar_value
-2025-06-07,AAPL,204.0,196.0,2.5,5000.0
-2025-06-07,AAPL,202.55,194.2,1.5,5000.0
