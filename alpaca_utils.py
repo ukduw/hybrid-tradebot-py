@@ -33,7 +33,7 @@ async def handle_bar(bar: Bar):
 
 def start_price_stream(symbols):
     for symbol in symbols:
-        stock_stream.subscribe_bars(handle_bar, symbol, TimeFrame("1Sec"))
+        stock_stream.subscribe_bars(handle_bar, symbol, TimeFrame(1, 'Min'))
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
