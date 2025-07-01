@@ -13,7 +13,7 @@ def prompt_configs(defaults=None):
     if defaults is None:
         defaults = {
             "trailing_stop_percentage": 5,
-            "dollar_value": 5000
+            "dollar_value": 4000
         }
 
     symbol = input(f"Stock symbol: ").upper()
