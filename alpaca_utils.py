@@ -23,7 +23,7 @@ USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 latest_prices = {}
 
 trading_client = TradingClient(API_KEY, SECRET_KEY, paper=USE_PAPER_TRADING)
-stock_stream = StockDataStream(API_KEY, SECRET_KEY, feed=DataFeed.SIP) # iex for free data...
+stock_stream = StockDataStream(API_KEY, SECRET_KEY, feed=DataFeed.IEX) # iex for free data...
 
 async def handle_bar(bar: Bar):
     symbol = bar.symbol
@@ -33,7 +33,7 @@ async def handle_bar(bar: Bar):
 
 def start_price_stream(symbols):
     for symbol in symbols:
-        stock_stream.subscribe_bars(handle_bar, symbol, TimeFrame.Second)
+        stock_stream.subscribe_bars(handle_bar, symbol, TimeFrame("1Sec"))
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
