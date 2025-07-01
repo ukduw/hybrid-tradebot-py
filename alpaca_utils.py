@@ -1,5 +1,5 @@
 from alpaca.data.live import StockDataStream
-from alpaca.data.live import DataFeed
+from alpaca.data.enums import DataFeed
 from alpaca.data.timeframe import TimeFrame
 from alpaca.data.models import Bar
 
