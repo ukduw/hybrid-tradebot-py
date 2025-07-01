@@ -1,4 +1,5 @@
 from alpaca.data.live import StockDataStream
+from alpaca.data.live import DataFeed
 from alpaca.data.timeframe import TimeFrame
 from alpaca.data.models import Bar
 
@@ -22,7 +23,7 @@ USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 latest_prices = {}
 
 trading_client = TradingClient(API_KEY, SECRET_KEY, paper=USE_PAPER_TRADING)
-stock_stream = StockDataStream(API_KEY, SECRET_KEY, feed='sip') # iex for free data...
+stock_stream = StockDataStream(API_KEY, SECRET_KEY, feed=DataFeed.SIP) # iex for free data...
 
 async def handle_bar(bar: Bar):
     symbol = bar.symbol
