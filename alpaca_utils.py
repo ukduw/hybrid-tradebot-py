@@ -1,7 +1,5 @@
 from alpaca.data.live import StockDataStream
-from alpaca.data.enums import DataFeed
-from alpaca.data.timeframe import TimeFrame
-from alpaca.data.models import Bar
+from alpaca.data.models import Trade
 
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest
@@ -23,17 +21,17 @@ USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 latest_prices = {}
 
 trading_client = TradingClient(API_KEY, SECRET_KEY, paper=USE_PAPER_TRADING)
-stock_stream = StockDataStream(API_KEY, SECRET_KEY, feed=DataFeed.IEX) # iex for free data...
+stock_stream = StockDataStream(API_KEY, SECRET_KEY)
 
-async def handle_bar(bar: Bar):
-    symbol = bar.symbol
-    price = bar.close
+async def handle_trade(trade: Trade):
+    symbol = trade.symbol
+    price = trade.price
     latest_prices[symbol] = price
-    print(f"[BAR] {symbol}: {price} @ {bar.timestamp}") # take out after testing
+    print(f"[WebSocket] {trade.symbol} @ {trade.price}") # take out after testing
 
 def start_price_stream(symbols):
     for symbol in symbols:
-        stock_stream.subscribe_bars(handle_bar, symbol, TimeFrame(1, 'Min'))
+        stock_stream.subscribe_trades(handle_trade, symbol)
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
