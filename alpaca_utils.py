@@ -1,6 +1,9 @@
 from alpaca.data.live import StockDataStream
 from alpaca.data.models import Trade
 
+from alpaca.data.models import Bar
+from alpaca.data.timeframe import TimeFrame
+
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
