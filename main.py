@@ -73,6 +73,15 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 # look into AWS - this laptop too sus for all these threads...
 
 
+# # # # # # #
+# before more complex profit-taking...
+# refactor trading logic to be event-driven
+    # essentially, put below logic into handle_trade in the utils...
+
+# too big - make a new module for just handle_trade, import it into alpaca_utils
+# in main, run start_price_stream threads
+
+
 def monitor_trade(setup):
     symbol = setup["symbol"]
     in_position = False
