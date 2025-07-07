@@ -44,19 +44,6 @@ def start_price_stream(symbols):
     except Exception as e:
         print(f"[WebSocket] Unexpected error: {e}")
 
-@stock_stream.on_disconnect
-async def on_disconnect():
-    print("[WebSocket] Disconnected")
-    await asyncio.sleep(5)
-    try:
-        await stock_stream.run()
-    except Exception as e:
-        print(f"[WebSocket Reconnect failed: {e}]")
-    
-@stock_stream.on_error
-async def on_error(error):
-    print(f"[WebSocket] Error: {error}")
-
 
 def stop_price_stream(symbol):
     stock_stream.unsubscribe_trades(handle_trade, symbol)
