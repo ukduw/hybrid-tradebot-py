@@ -120,7 +120,7 @@ def monitor_trade(setup):
                 with open("trade-log/trade_log.txt", "a") as file:
                     file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
                 pb.push_note("Hybrid bot", f"{qty} [{symbol}] Market buy placed at {price}")
-            elif not in_position and price >= entry:
+            elif not in_position and price > entry:
                 print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
                 return
 
