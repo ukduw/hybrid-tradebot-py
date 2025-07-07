@@ -28,8 +28,8 @@ day_trade_lock = threading.Lock()
 def can_enter_trade():
     global day_trade_counter
     with day_trade_lock:
-        if counter < 1:
-            counter += 1
+        if day_trade_counter < 1:
+            day_trade_counter += 1
             return True
         else: 
             return False
