@@ -58,6 +58,10 @@ async def on_error(error):
     print(f"[WebSocket] Error: {error}")
 
 
+def stop_price_stream(symbol):
+    stock_stream.unsubscribe_trades(handle_trade, symbol)
+
+
 def get_current_price(symbol):
     return latest_prices.get(symbol)
 
