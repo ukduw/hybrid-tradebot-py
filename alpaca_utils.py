@@ -57,7 +57,21 @@ def is_premarket():
     now = datetime.datetime.now().time()
     return (datetime.datetime.time(4,0) <= now < datetime.datetime.time(9, 30))
 
-def place_order(symbol, qty):
+def place_order(symbol, qty, entry):
+    premarket = is_premarket()
+
+    if premarket:
+        order_data = MarketOrderRequest(
+            symbol = symbol,
+            qty = qty,
+            side = OrderSide.BUY,
+            type = OrderType.LIMIT,
+            time_in_force = TimeInForce.DAY,
+            limit_price = entry * 1.02,
+            extended_hours=True
+        )
+    
+
     order_data = MarketOrderRequest(
         symbol = symbol,
         qty = qty,
