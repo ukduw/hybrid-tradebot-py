@@ -19,8 +19,6 @@ eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
 exit_open_positions_at = now.replace(hour=15, minute=55, second=0, microsecond=0)
 
-positions_closed = False
-
 
 day_trade_counter = 0
 day_trade_lock = threading.Lock()
@@ -114,11 +112,8 @@ def monitor_trade(setup):
         try:
             now = datetime.datetime.now(eastern)
             if now >= exit_open_positions_at:
-                global positions_closed
-                if not positions_closed:
-                    close_all_positions()
-                    positions_closed = True
-                    print("End of day - all positions closed.")
+                close_all_positions()
+                print("End of day - all positions closed.")
                 stop_price_stream(symbol)
                 return
 
