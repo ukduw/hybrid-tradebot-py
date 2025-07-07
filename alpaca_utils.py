@@ -31,7 +31,7 @@ async def handle_trade(trade: Trade):
     symbol = trade.symbol
     price = trade.price
     latest_prices[symbol] = price
-    print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
+    # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
 def start_price_stream(symbols):
     for symbol in symbols:
@@ -52,6 +52,10 @@ def stop_price_stream(symbol):
 def get_current_price(symbol):
     return latest_prices.get(symbol)
 
+
+def is_premarket():
+    now = datetime.datetime.now().time()
+    return (datetime.datetime.time(4,0) <= now < datetime.datetime.time(9, 30))
 
 def place_order(symbol, qty):
     order_data = MarketOrderRequest(
