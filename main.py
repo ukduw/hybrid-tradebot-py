@@ -22,9 +22,11 @@ exit_open_positions_at = now.replace(hour=15, minute=55, second=0, microsecond=0
 positions_closed = False
 
 
+day_trade_counter = 0
 day_trade_lock = threading.Lock()
 
 def can_enter_trade(counter):
+    global day_trade_counter
     with day_trade_lock:
         if counter < 1:
             counter += 1
@@ -83,7 +85,6 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 def monitor_trade(setup):
     symbol = setup["symbol"]
     in_position = False
-    day_trade_counter = 0
 
     print(f"[{symbol}] Monitoring...")
 
@@ -121,7 +122,7 @@ def monitor_trade(setup):
                 stop_price_stream(symbol)
                 return
 
-            if not in_position and can_enter_trade(day_trade_counter) and price > entry:
+            if not in_position and can_enter_trade() and price > entry:
                 place_order(symbol, qty)
                 print(f"{qty} [{symbol}] Market buy placed at {price}")
                 in_position = True
