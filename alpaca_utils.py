@@ -1,5 +1,6 @@
 from alpaca.data.live import StockDataStream
 from alpaca.data.models import Trade
+from alpaca.data.enums import DataFeed
 
 from alpaca.data.models import Bar
 from alpaca.data.timeframe import TimeFrame
@@ -23,14 +24,14 @@ USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 
 latest_prices = {}
 
-trading_client = TradingClient(API_KEY, SECRET_KEY, paper=USE_PAPER_TRADING)
-stock_stream = StockDataStream(API_KEY, SECRET_KEY)
+trading_client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=USE_PAPER_TRADING)
+stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=DataFeed.SIP)
 
 async def handle_trade(trade: Trade):
     symbol = trade.symbol
     price = trade.price
     latest_prices[symbol] = price
-    print(f"[WebSocket] {trade.symbol} @ {trade.price}") # take out after testing
+    print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
 def start_price_stream(symbols):
     for symbol in symbols:
@@ -38,7 +39,24 @@ def start_price_stream(symbols):
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    loop.run_until_complete(stock_stream.run())
+    try:
+        loop.run_until_complete(stock_stream.run())
+    except Exception as e:
+        print(f"[WebSocket] Unexpected error: {e}")
+
+@stock_stream.on_disconnect
+async def on_disconnect():
+    print("[WebSocket] Disconnected")
+    await asyncio.sleep(5)
+    try:
+        await stock_stream.run()
+    except Exception as e:
+        print(f"[WebSocket Reconnect failed: {e}]")
+    
+@stock_stream.on_error
+async def on_error(error):
+    print(f"[WebSocket] Error: {error}")
+
 
 def get_current_price(symbol):
     return latest_prices.get(symbol)
