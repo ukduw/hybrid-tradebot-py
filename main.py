@@ -25,7 +25,7 @@ positions_closed = False
 day_trade_counter = 0
 day_trade_lock = threading.Lock()
 
-def can_enter_trade(counter):
+def can_enter_trade():
     global day_trade_counter
     with day_trade_lock:
         if counter < 1:
@@ -123,7 +123,7 @@ def monitor_trade(setup):
                 return
 
             if not in_position and can_enter_trade() and price > entry:
-                place_order(symbol, qty)
+                # place_order(symbol, qty)
                 print(f"{qty} [{symbol}] Market buy placed at {price}")
                 in_position = True
                 day_high = price
