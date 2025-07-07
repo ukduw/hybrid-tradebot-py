@@ -70,18 +70,18 @@ def place_order(symbol, qty, entry):
             limit_price = entry * 1.02,
             extended_hours=True
         )
-    
-
-    order_data = MarketOrderRequest(
-        symbol = symbol,
-        qty = qty,
-        side = OrderSide.BUY,
-        type = OrderType.MARKET,
-        time_in_force = TimeInForce.DAY,
-        extended_hours=True
-    )
+    else:
+        order_data = MarketOrderRequest(
+            symbol = symbol,
+            qty = qty,
+            side = OrderSide.BUY,
+            type = OrderType.MARKET,
+            time_in_force = TimeInForce.DAY,
+            extended_hours = False
+        )
     order = trading_client.submit_order(order_data)
     return order
+
 
 def close_position(symbol):
     return trading_client.close_position(symbol)
