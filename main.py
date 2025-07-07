@@ -98,9 +98,9 @@ def monitor_trade(setup):
         day_high = entry
 
         price = get_current_price(symbol)
-        # if price is None:
-            # time.sleep(2)
-            # continue
+        if price is None:
+            time.sleep(2)
+            continue
 
         try:
             now = datetime.datetime.now(eastern)
