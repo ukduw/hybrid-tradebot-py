@@ -13,7 +13,7 @@ load_dotenv()
 PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
 pb = Pushbullet(PB_API_KEY)
 
-from alpaca_utils import start_price_stream, get_current_price, place_order, close_position, close_all_positions
+from alpaca_utils import start_price_stream, get_current_price, stop_price_stream, place_order, close_position, close_all_positions
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -98,9 +98,9 @@ def monitor_trade(setup):
         day_high = entry
 
         price = get_current_price(symbol)
-        if price is None:
-            time.sleep(2)
-            continue
+        # if price is None:
+            # time.sleep(2)
+            # continue
 
         try:
             now = datetime.datetime.now(eastern)
@@ -110,6 +110,7 @@ def monitor_trade(setup):
                     close_all_positions()
                     positions_closed = True
                     print("End of day - all positions closed.")
+                stop_price_stream(symbol)
                 return
 
             if not in_position and can_enter_trade() and price > entry:
@@ -122,6 +123,7 @@ def monitor_trade(setup):
                 pb.push_note("Hybrid bot", f"{qty} [{symbol}] Market buy placed at {price}")
             elif not in_position and price > entry:
                 print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
+                stop_price_stream(symbol)
                 return
 
             elif in_position:
