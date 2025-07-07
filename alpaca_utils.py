@@ -46,7 +46,7 @@ def start_price_stream(symbols):
 
 
 def stop_price_stream(symbol):
-    stock_stream.unsubscribe_trades(handle_trade, symbol)
+    stock_stream.unsubscribe_trades(symbol)
 
 
 def get_current_price(symbol):
