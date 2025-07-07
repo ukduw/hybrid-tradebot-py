@@ -59,7 +59,7 @@ def place_order(symbol, qty):
         qty = qty,
         side = OrderSide.BUY,
         type = OrderType.MARKET,
-        time_in_force = TimeInForce.GTC,
+        time_in_force = TimeInForce.DAY,
         extended_hours=True
     )
     order = trading_client.submit_order(order_data)
