@@ -54,7 +54,8 @@ def get_current_price(symbol):
 
 
 def is_premarket():
-    now = datetime.datetime.now().time()
+    eastern = pytz.timezone("US/Eastern")
+    now = datetime.datetime.now(eastern).time()
     return (datetime.time(4,0) <= now < datetime.time(9, 30))
 
 def place_order(symbol, qty):
