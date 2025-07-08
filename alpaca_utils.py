@@ -7,6 +7,7 @@ from alpaca.data.timeframe import TimeFrame
 
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest
+from alpaca.trading.requests import LimitOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
 
 import asyncio
@@ -63,14 +64,14 @@ def place_order(symbol, qty):
     tick = get_current_price(symbol)
 
     if premarket:
-        order_data = MarketOrderRequest(
+        order_data = LimitOrderRequest(
             symbol = symbol,
             qty = qty,
             side = OrderSide.BUY,
             type = OrderType.LIMIT,
             time_in_force = TimeInForce.DAY,
             limit_price = tick * 1.02,
-            extended_hours=True
+            extended_hours = True
         )
     else:
         order_data = MarketOrderRequest(
@@ -85,8 +86,24 @@ def place_order(symbol, qty):
     return order
 
 
-def close_position(symbol):
-    return trading_client.close_position(symbol)
+def close_position(symbol, qty):
+    premarket = is_premarket()
+    tick = get_current_price(symbol)
+
+    if premarket:
+        order_data = LimitOrderRequest(
+            symbol = symbol,
+            qty = qty,
+            side = OrderSide.SELL,
+            type = OrderType.Limit,
+            time_in_force = TimeInForce.DAY,
+            limit_price = tick * 0.98,
+            extended_hours = True
+        )
+        order = trading_client.submit_order(order_data)
+        return order
+    else:
+        return trading_client.close_position(symbol)
 
 def close_all_positions():
     try:
