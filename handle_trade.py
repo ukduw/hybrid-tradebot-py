@@ -46,9 +46,6 @@ async def handle_trade(trade: Trade):
     qty = math.ceil(configs_json["dollar_value"] / configs_json["entry_price"])
     day_high = entry
 
-    if price > day_high:
-        day_high = price
-
     if symbol not in in_position:
         in_position[symbol] = False
 
@@ -79,6 +76,16 @@ async def handle_trade(trade: Trade):
                 file.write(f"{now},{symbol},Exit,{qty},{price}" + "\n")
             pb.push_note(f"[{symbol}] stop-loss hit. Exiting.")
             return
+        else:
+            if price > day_high:
+                day_high = price
+            if day_high >= entry * 1.15 and price <= day_high * (100 - trailing_stop)/100:
+                close_position(symbol)
+                print(f"[{symbol}] take-profit hit. Exiting.")
+                with open("trade-log/trade_log.txt", "a") as file:
+                    file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
+                pb.push_note(f"[{symbol}] take-profit hit. Exiting.")
+                return
 
 
 
