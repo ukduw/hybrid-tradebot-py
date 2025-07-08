@@ -11,7 +11,7 @@ PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
 pb = Pushbullet(PB_API_KEY)
 
 from alpaca_utils import close_all_positions, stop_price_stream
-from alpaca_utils import place_order
+from alpaca_utils import place_order, close_position
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -71,8 +71,14 @@ async def handle_trade(trade: Trade):
         stop_price_stream(symbol)
         return
     
-    # elif condition:
-        # ...
+    elif in_position:
+        if price < stop: 
+            close_position(symbol)
+            print(f"[{symbol}] stop-loss hit. Exiting.")
+            with open("trade-log/trade_log.txt", "a") as file:
+                file.write(f"{now},{symbol},Exit,{qty},{price}" + "\n")
+            pb.push_note(f"[{symbol}] stop-loss hit. Exiting.")
+            return
 
 
 
