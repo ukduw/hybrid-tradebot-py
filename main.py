@@ -71,15 +71,6 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 # look into AWS - this laptop too sus for all these threads...
 
 
-# # # # # # #
-# before more complex profit-taking...
-# refactor trading logic to be event-driven
-    # essentially, put below logic into handle_trade in the utils...
-
-# too big - make a new module for just handle_trade, import it into alpaca_utils
-# in main, run start_price_stream threads
-
-
 def monitor_trade(setup):
     symbol = setup["symbol"]
     in_position = False
@@ -118,7 +109,7 @@ def monitor_trade(setup):
                 return
 
             if not in_position and can_enter_trade() and price > entry:
-                # place_order(symbol, qty)
+                place_order(symbol, qty)
                 print(f"{qty} [{symbol}] Market buy placed at {price}")
                 in_position = True
                 day_high = price
@@ -132,7 +123,7 @@ def monitor_trade(setup):
 
             elif in_position:
                 if price < stop: 
-                    close_position(symbol)
+                    close_position(symbol, qty)
                     print(f"[{symbol}] stop-loss hit. Exiting.")
                     with open("trade-log/trade_log.txt", "a") as file:
                         file.write(f"{now},{symbol},Exit,{qty},{price}" + "\n")
