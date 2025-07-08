@@ -2,7 +2,16 @@ from alpaca.data.models import Trade
 
 import json, math, pytz, datetime, threading
 
+from pushbullet import Pushbullet
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
+pb = Pushbullet(PB_API_KEY)
+
 from alpaca_utils import close_all_positions, stop_price_stream
+from alpaca_utils import place_order
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -50,10 +59,18 @@ async def handle_trade(trade: Trade):
         stop_price_stream(symbol)
         return
 
-    #if not position_open[symbol] and can_enter_trade() and price > entry:
-        # await place_order(symbol)
-        # print(f"{qty} [{symbol}] Market buy placed at {price}")
-        # in_position[symbol] = True
+    if not in_position[symbol] and can_enter_trade() and price > entry:
+        await place_order(symbol)
+        print(f"{qty} [{symbol}] BUY @ {price}")
+        in_position[symbol] = True
+        with open("trade-log/trade_log.txt", "a") as file:
+            file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
+        pb.push_note("Hybrid bot", f"{qty} [{symbol}] Market buy placed at {price}")
+    elif not in_position[symbol] and price > entry:
+        print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
+        stop_price_stream(symbol)
+        return
+    
     # elif condition:
         # ...
 
