@@ -1,6 +1,6 @@
 from alpaca.data.models import Trade
 
-import json
+import json, math
 
 with open("configs.json", "r") as f:
     configs_json = json.load(f)
@@ -12,6 +12,12 @@ async def handle_trade(trade: Trade):
     price = trade.price
     print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
+    entry = configs_json["entry_price"]
+    stop = configs_json["stop_loss"]
+    trailing_stop = configs_json["trailing_stop_percentage"]
+    qty = math.ceil(configs_json["dollar_value"] / configs_json["entry_price"])
+    day_high = entry
+
     if symbol not in in_position:
         in_position[symbol] = False
 
@@ -21,7 +27,6 @@ async def handle_trade(trade: Trade):
         # in_position[symbol] = True
     # elif condition:
         # ...
-
 
 
 
