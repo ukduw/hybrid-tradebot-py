@@ -1,6 +1,10 @@
 from alpaca.data.models import Trade
 
-import json, math
+import json, math, pytz, datetime
+
+eastern = pytz.timezone("US/Eastern")
+now = datetime.datetime.now(eastern)
+exit_open_positions_at = now.replace(hour=15, minute=55, second=0, microsecond=0)
 
 with open("configs.json", "r") as f:
     configs_json = json.load(f)
