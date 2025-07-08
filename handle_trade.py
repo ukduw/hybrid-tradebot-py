@@ -2,6 +2,8 @@ from alpaca.data.models import Trade
 
 import json, math, pytz, datetime, threading
 
+from alpaca_utils import close_all_positions, stop_price_stream
+
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
 exit_open_positions_at = now.replace(hour=15, minute=55, second=0, microsecond=0)
@@ -40,6 +42,13 @@ async def handle_trade(trade: Trade):
 
     if symbol not in in_position:
         in_position[symbol] = False
+
+    now = datetime.datetime.now(eastern)
+    if now >= exit_open_positions_at:
+        close_all_positions()
+        print("End of day - all positions closed.")
+        stop_price_stream(symbol)
+        return
 
     #if not position_open[symbol] and can_enter_trade() and price > entry:
         # await place_order(symbol)
