@@ -1,5 +1,10 @@
 from alpaca.data.models import Trade
 
+import json
+
+with open("configs.json", "r") as f:
+    configs_json = json.load(f)
+
 in_position = {}
 
 async def handle_trade(trade: Trade):
