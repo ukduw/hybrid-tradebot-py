@@ -1,4 +1,4 @@
-import datetime, pytz
+import datetime, pytz, json
 
 CONFIG_FILE = "configs.json"
 
@@ -39,6 +39,9 @@ def main():
         cont = input("Add another trade? (y/n): ").strip().lower()
         if cont != "y":
             break
+
+    with open(CONFIG_FILE, "w") as file:
+        json.dump(configs, file, indent=2)
 
     print("New configs saved to configs.json: ")
     for c in configs:
