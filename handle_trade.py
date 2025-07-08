@@ -35,6 +35,9 @@ async def handle_trade(trade: Trade):
     qty = math.ceil(configs_json["dollar_value"] / configs_json["entry_price"])
     day_high = entry
 
+    if price > day_high:
+        day_high = price
+
     if symbol not in in_position:
         in_position[symbol] = False
 
