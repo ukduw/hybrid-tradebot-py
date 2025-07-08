@@ -1,4 +1,3 @@
-import json
 import datetime, pytz
 
 CONFIG_FILE = "configs.json"
@@ -41,13 +40,6 @@ def main():
         if cont != "y":
             break
 
-    # with open(CONFIG_FILE, "w") as file:
-    #    json.dump(configs, file, indent=2)
-    
-    #with open("config-log/config-log.txt", mode="a", newline="") as log:
-    #    for c in configs:
-    #        log.write("\n" + f"{now},{c['symbol']},{c['entry_price']},{c['stop_loss']},{c['trailing_stop_percentage']},{c['dollar_value']}")
-    
     print("New configs saved to configs.json: ")
     for c in configs:
         print(f" - {c['symbol']}: Entry {c['entry_price']}, Stop {c['stop_loss']}, Trail {c['trailing_stop_percentage']}%, Qty ${c['dollar_value']}")
