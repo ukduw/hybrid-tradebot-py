@@ -1,6 +1,6 @@
 from alpaca.data.models import Trade
 
-import json, math, pytz, datetime
+import json, math, pytz, datetime, threading
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -10,6 +10,19 @@ with open("configs.json", "r") as f:
     configs_json = json.load(f)
 
 in_position = {}
+
+day_trade_counter = 0
+day_trade_lock = threading.Lock()
+
+def can_enter_trade():
+    global day_trade_counter
+    with day_trade_lock:
+        if day_trade_counter < 1:
+            day_trade_counter += 1
+            return True
+        else: 
+            return False
+        
 
 async def handle_trade(trade: Trade):
     symbol = trade.symbol
@@ -25,7 +38,7 @@ async def handle_trade(trade: Trade):
     if symbol not in in_position:
         in_position[symbol] = False
 
-    #if not position_open[symbol] and price > entry (IMPORT CONFIG JSON):
+    #if not position_open[symbol] and can_enter_trade() and price > entry:
         # await place_order(symbol)
         # print(f"{qty} [{symbol}] Market buy placed at {price}")
         # in_position[symbol] = True
