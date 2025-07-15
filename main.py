@@ -4,6 +4,7 @@ import math
 import time
 import datetime
 import pytz
+import traceback
 
 from pushbullet import Pushbullet
 from dotenv import load_dotenv
@@ -143,10 +144,14 @@ def monitor_trade(setup):
             time.sleep(1)
 
         except Exception as e:
-            print(f"[{symbol}] Error: {e}")
-            time.sleep(1)
+            print(f"[{symbol}] Error: {e}", flush=True)
+            # check systemd logs for traceback...
+            traceback.print_exc()
+            stop_price_stream(symbol)
 
     
-for setup in cached_configs:
-    t = threading.Thread(target=monitor_trade, args=(setup,))
-    t.start()
+
+if __name__ == "__main__":
+    for setup in cached_configs:
+        t = threading.Thread(target=monitor_trade, args=(setup,))
+        t.start()
