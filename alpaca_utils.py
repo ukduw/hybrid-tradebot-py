@@ -13,7 +13,6 @@ from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
 import asyncio
 
 import datetime, pytz
-import csv
 
 from dotenv import load_dotenv
 import os
@@ -24,6 +23,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 
 latest_prices = {}
+print_counter = 0
 
 trading_client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=USE_PAPER_TRADING)
 stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=DataFeed.SIP)
@@ -32,7 +32,10 @@ async def handle_trade(trade: Trade):
     symbol = trade.symbol
     price = trade.price
     latest_prices[symbol] = price
-    # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
+
+    print_counter += 1
+    if print_counter <= 50:
+        print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
 def start_price_stream(symbols):
     for symbol in symbols:
@@ -112,8 +115,7 @@ def close_all_positions():
         now = datetime.datetime.now(eastern)
         for r in results:
             print(f"Closed: {r.symbol} - Qty: {r.qty}")
-            with open("trade_log", mode="a", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow(f"{now}, {r.get('symbol')}, {r.get('qty')}, EOD Exit; break even")
+            with open("trade-log/trade_log.txt", "a") as file:
+                file.write(f"{now}, {r.get('symbol')}, {r.get('qty')}, EOD Exit; break even" + "\n")
     except Exception as e:
         print(f"Failed to close positions: {e}")
