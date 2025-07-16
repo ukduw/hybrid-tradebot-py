@@ -13,6 +13,7 @@ from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
 import asyncio
 
 import datetime, pytz
+from decimal import Decimal, ROUND_UP, ROUND_DOWN
 
 from dotenv import load_dotenv
 import os
@@ -71,7 +72,7 @@ def place_order(symbol, qty):
             side = OrderSide.BUY,
             type = OrderType.LIMIT,
             time_in_force = TimeInForce.DAY,
-            limit_price = tick * 1.02,
+            limit_price = float(Decimal(tick * 1.02).quantize(Decimal("0.01"), rounding=ROUND_UP)) if tick >= 1.00 else float(Decimal(tick * 1.02).quantize(Decimal("0.0001"), rounding=ROUND_UP)),
             extended_hours = True
         )
     else:
@@ -98,7 +99,7 @@ def close_position(symbol, qty):
             side = OrderSide.SELL,
             type = OrderType.Limit,
             time_in_force = TimeInForce.DAY,
-            limit_price = tick * 0.98,
+            limit_price = float(Decimal(tick * 0.98).quantize(Decimal("0.01"), rounding=ROUND_DOWN)) if tick >= 1.00 else float(Decimal(tick * 0.98).quantize(Decimal("0.0001"), rounding=ROUND_DOWN)),
             extended_hours = True
         )
         order = trading_client.submit_order(order_data)
