@@ -46,7 +46,9 @@ def start_price_stream(symbols):
 
 
 def stop_price_stream(symbol):
-    stock_stream.unsubscribe_trades(symbol)
+    if symbol in stock_stream._handlers.get("trades", {}):
+        stock_stream.unsubscribe_trades(symbol)
+        print(f"[{symbol}] price stream unsubscribed")
 
 
 def get_current_price(symbol):
