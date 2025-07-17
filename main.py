@@ -24,15 +24,6 @@ exit_open_positions_at = now.replace(hour=15, minute=55, second=0, microsecond=0
 day_trade_counter = 0
 day_trade_lock = threading.Lock()
 
-def can_enter_trade():
-    global day_trade_counter
-    with day_trade_lock:
-        if day_trade_counter < 1:
-            day_trade_counter += 1
-            return True
-        else: 
-            return False
-
 
 CONFIG_PATH = "configs.json"
 last_config_mtime = None
@@ -114,15 +105,18 @@ def monitor_trade(setup):
                 return
 
             if not in_position:
-                if can_enter_trade() and price > entry:
-                    place_order(symbol, qty)
-                    print(f"{qty} [{symbol}] BUY @ {price}")
-                    in_position = True
-                    day_high = price
-                    with open("trade-log/trade_log.txt", "a") as file:
-                        file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
-                    pb.push_note("Hybrid bot", f"{qty} [{symbol}] BUY @ {price}")
-                elif not can_enter_trade() and price > entry:
+                if day_trade_counter < 1 and price > entry:
+                    with day_trade_lock:
+                        if day_trade_counter < 1:
+                            place_order(symbol, qty)
+                            print(f"{qty} [{symbol}] BUY @ {price}")
+                            in_position = True
+                            day_high = price
+                            with open("trade-log/trade_log.txt", "a") as file:
+                                file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
+                            pb.push_note("Hybrid bot", f"{qty} [{symbol}] BUY @ {price}")
+                            day_trade_counter += 1
+                elif not day_trade_counter < 1 and price > entry:
                     print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
                     stop_price_stream(symbol)
                     return
