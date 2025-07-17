@@ -18,12 +18,13 @@ from decimal import Decimal, ROUND_UP, ROUND_DOWN
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv(dotenv_path="/home/edliu/edliu/hybrid-tradebot-py/.env")
 API_KEY = os.getenv("API_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
 USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 
 latest_prices = {}
+day_high = {}
 
 trading_client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=USE_PAPER_TRADING)
 stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=DataFeed.SIP)
@@ -32,7 +33,8 @@ async def handle_trade(trade: Trade):
     symbol = trade.symbol
     price = trade.price
     latest_prices[symbol] = price
-    print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
+    day_high[symbol] = price if symbol not in day_high or price > day_high[symbol] else day_high[symbol]
+    # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
 def start_price_stream(symbols):
     for symbol in symbols:
@@ -54,6 +56,9 @@ def stop_price_stream(symbol):
 
 def get_current_price(symbol):
     return latest_prices.get(symbol)
+
+def get_day_high(symbol):
+    return day_high.get(symbol)
 
 
 def is_premarket():
