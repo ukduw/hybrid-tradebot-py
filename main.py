@@ -14,7 +14,7 @@ load_dotenv()
 PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
 pb = Pushbullet(PB_API_KEY)
 
-from alpaca_utils import start_price_stream, get_current_price, stop_price_stream, place_order, close_position, close_all_positions
+from alpaca_utils import start_price_stream, get_current_price, get_day_high, stop_price_stream, place_order, close_position, close_all_positions
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -94,10 +94,14 @@ def monitor_trade(setup):
         stop = updated_setup["stop_loss"]
         trailing_stop = updated_setup["trailing_stop_percentage"]
         qty = math.ceil(updated_setup["dollar_value"] / updated_setup["entry_price"])
-        day_high = entry
+        # day_high = entry
 
         price = get_current_price(symbol)
         if price is None:
+            time.sleep(2)
+            continue
+        day_high = get_day_high(symbol)
+        if day_high is None:
             time.sleep(2)
             continue
 
@@ -131,8 +135,8 @@ def monitor_trade(setup):
                     pb.push_note(f"[{symbol}] stop-loss hit. Exiting.")
                     return
                 else:
-                    if price > day_high:
-                        day_high = price
+                    # if price > day_high:
+                        # day_high = price
                     if day_high >= entry * 1.15 and price <= day_high * (100 - trailing_stop)/100:
                         close_position(symbol)
                         print(f"[{symbol}] take-profit hit. Exiting.")
