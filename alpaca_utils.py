@@ -18,7 +18,7 @@ from decimal import Decimal, ROUND_UP, ROUND_DOWN
 from dotenv import load_dotenv
 import os
 
-load_dotenv(dotenv_path="/home/edliu/edliu/hybrid-tradebot-py/.env")
+load_dotenv()
 API_KEY = os.getenv("API_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
 USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
