@@ -112,10 +112,10 @@ def monitor_trade(setup):
                             print(f"{qty} [{symbol}] BUY @ {price}")
                             in_position = True
                             day_high = price
+                            day_trade_counter += 1
                             with open("trade-log/trade_log.txt", "a") as file:
                                 file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
                             pb.push_note("Hybrid bot", f"{qty} [{symbol}] BUY @ {price}")
-                            day_trade_counter += 1
                 elif not day_trade_counter < 1 and price > entry:
                     print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
                     stop_price_stream(symbol)
