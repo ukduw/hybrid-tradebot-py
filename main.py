@@ -111,12 +111,12 @@ def monitor_trade(setup):
 
             if not in_position and can_enter_trade() and price > entry:
                 place_order(symbol, qty)
-                print(f"{qty} [{symbol}] Market buy placed at {price}")
+                print(f"{qty} [{symbol}] BUY @ {price}")
                 in_position = True
                 day_high = price
                 with open("trade-log/trade_log.txt", "a") as file:
                     file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
-                pb.push_note("Hybrid bot", f"{qty} [{symbol}] Market buy placed at {price}")
+                pb.push_note("Hybrid bot", f"{qty} [{symbol}] BUY @ {price}")
             elif not in_position and price > entry:
                 print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
                 stop_price_stream(symbol)
