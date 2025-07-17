@@ -113,20 +113,21 @@ def monitor_trade(setup):
                 stop_price_stream(symbol)
                 return
 
-            if not in_position and can_enter_trade() and price > entry:
-                place_order(symbol, qty)
-                print(f"{qty} [{symbol}] BUY @ {price}")
-                in_position = True
-                day_high = price
-                with open("trade-log/trade_log.txt", "a") as file:
-                    file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
-                pb.push_note("Hybrid bot", f"{qty} [{symbol}] BUY @ {price}")
-            elif not in_position and price > entry:
-                print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
-                stop_price_stream(symbol)
-                return
+            if not in_position:
+                if can_enter_trade() and price > entry:
+                    place_order(symbol, qty)
+                    print(f"{qty} [{symbol}] BUY @ {price}")
+                    in_position = True
+                    day_high = price
+                    with open("trade-log/trade_log.txt", "a") as file:
+                        file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
+                    pb.push_note("Hybrid bot", f"{qty} [{symbol}] BUY @ {price}")
+                elif not can_enter_trade() and price > entry:
+                    print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
+                    stop_price_stream(symbol)
+                    return
 
-            elif in_position:
+            if in_position:
                 if price < stop: 
                     close_position(symbol, qty)
                     print(f"[{symbol}] stop-loss hit. Exiting.")
