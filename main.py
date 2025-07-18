@@ -106,6 +106,7 @@ def monitor_trade(setup):
 
             if not in_position:
                 if day_trade_counter < 1 and price > entry:
+                    global day_trade_counter
                     with day_trade_lock:
                         if day_trade_counter < 1:
                             place_order(symbol, qty)
