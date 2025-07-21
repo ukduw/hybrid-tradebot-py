@@ -10,7 +10,7 @@ from pushbullet import Pushbullet
 from dotenv import load_dotenv
 import os
 
-load_dotenv(dotenv_path="/home/edliu/edliu/hybrid-tradebot-py/.env")
+load_dotenv()
 PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
 pb = Pushbullet(PB_API_KEY)
 
@@ -134,7 +134,7 @@ def monitor_trade(setup):
                     # if price > day_high:
                         # day_high = price
                     if day_high >= entry * 1.15 and price <= day_high * (100 - trailing_stop)/100:
-                        close_position(symbol)
+                        close_position(symbol, qty)
                         print(f"[{symbol}] take-profit hit. Exiting.")
                         with open("trade-log/trade_log.txt", "a") as file:
                             file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
