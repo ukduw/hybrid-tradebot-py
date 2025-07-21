@@ -110,7 +110,7 @@ def close_position(symbol, qty):
         order = trading_client.submit_order(order_data)
         return order
     else:
-        return trading_client.close_position(symbol)
+        return trading_client.close_position(symbol, qty)
 
 def close_all_positions():
     try:
