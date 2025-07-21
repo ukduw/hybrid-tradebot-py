@@ -10,7 +10,7 @@ from pushbullet import Pushbullet
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv(dotenv_path="/home/edliu/edliu/hybrid-tradebot-py/.env")
 PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
 pb = Pushbullet(PB_API_KEY)
 
@@ -105,8 +105,8 @@ def monitor_trade(setup):
                 return
 
             if not in_position:
+                global day_trade_counter
                 if day_trade_counter < 1 and price > entry:
-                    global day_trade_counter
                     with day_trade_lock:
                         if day_trade_counter < 1:
                             place_order(symbol, qty)
