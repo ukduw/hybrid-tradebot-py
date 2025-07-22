@@ -128,7 +128,7 @@ def monitor_trade(setup):
                     print(f"[{symbol}] stop-loss hit. Exiting.")
                     with open("trade-log/trade_log.txt", "a") as file:
                         file.write(f"{now},{symbol},Exit,{qty},{price}" + "\n")
-                    pb.push_note(f"[{symbol}] stop-loss hit. Exiting.")
+                    pb.push_note("Hybrid bot", f"[{symbol}] stop-loss hit. Exiting.")
                     return
                 else:
                     # if price > day_high:
@@ -138,7 +138,7 @@ def monitor_trade(setup):
                         print(f"[{symbol}] take-profit hit. Exiting.")
                         with open("trade-log/trade_log.txt", "a") as file:
                             file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
-                        pb.push_note(f"[{symbol}] take-profit hit. Exiting.")
+                        pb.push_note("Hybrid bot", f"[{symbol}] take-profit hit. Exiting.")
                         return
 
             time.sleep(1)
