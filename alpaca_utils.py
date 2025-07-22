@@ -102,7 +102,7 @@ def close_position(symbol, qty):
             symbol = symbol,
             qty = qty,
             side = OrderSide.SELL,
-            type = OrderType.Limit,
+            type = OrderType.LIMIT,
             time_in_force = TimeInForce.DAY,
             limit_price = float(Decimal(tick * 0.98).quantize(Decimal("0.01"), rounding=ROUND_DOWN)) if tick >= 1.00 else float(Decimal(tick * 0.98).quantize(Decimal("0.0001"), rounding=ROUND_DOWN)),
             extended_hours = True
