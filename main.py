@@ -54,13 +54,13 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 # again, needs to be easy to revert when market is slow...
 # needs additional logic for if timeout overlaps with close_all_positions() time
 
-# 1s bar data is far too granular for ~1hr strategies...
-# i think i need to stream, e.g., 5min bars for broader trends, 1s for entry/exit
+# 5min bars for broader trends, tick data for entry/exit
     # need to combine both for exit logic?
     # actually, which is more efficient: 1) streaming 1s AND 5min, 2) calculating 5min FROM 1s...?
 
 # ...pandas?
-# look into AWS - this laptop too sus for all these threads...
+# more testing/time in market to determine best profit-taking parameters...
+# write event-driven version in meantime...
 
 
 def monitor_trade(setup):
