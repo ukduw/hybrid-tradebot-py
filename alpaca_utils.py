@@ -77,7 +77,7 @@ def place_order(symbol, qty):
             side = OrderSide.BUY,
             type = OrderType.LIMIT,
             time_in_force = TimeInForce.DAY,
-            limit_price = float(Decimal(tick * 1.02).quantize(Decimal("0.01"), rounding=ROUND_UP)) if tick >= 1.00 else float(Decimal(tick * 1.02).quantize(Decimal("0.0001"), rounding=ROUND_UP)),
+            limit_price = float(Decimal(tick * 1.01).quantize(Decimal("0.01"), rounding=ROUND_UP)) if tick >= 1.00 else float(Decimal(tick * 1.01).quantize(Decimal("0.0001"), rounding=ROUND_UP)),
             extended_hours = True
         )
     else:
@@ -104,7 +104,7 @@ def close_position(symbol, qty):
             side = OrderSide.SELL,
             type = OrderType.LIMIT,
             time_in_force = TimeInForce.DAY,
-            limit_price = float(Decimal(tick * 0.98).quantize(Decimal("0.01"), rounding=ROUND_DOWN)) if tick >= 1.00 else float(Decimal(tick * 0.98).quantize(Decimal("0.0001"), rounding=ROUND_DOWN)),
+            limit_price = float(Decimal(tick * 0.99).quantize(Decimal("0.01"), rounding=ROUND_DOWN)) if tick >= 1.00 else float(Decimal(tick * 0.99).quantize(Decimal("0.0001"), rounding=ROUND_DOWN)),
             extended_hours = True
         )
         order = trading_client.submit_order(order_data)
