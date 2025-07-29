@@ -111,12 +111,6 @@ def start_price_stream(symbols):
 
 
 
-# in main.py:
-
-# for symbol in symbols:
-    # stock_stream.subscribe_trades(handle_trade, symbol)
-# or just use start_price_stream...
-
 
 
 # how to deal with config updates...?
