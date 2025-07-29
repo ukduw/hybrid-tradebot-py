@@ -34,15 +34,6 @@ in_position = {}
 
 day_trade_counter = 0
 day_trade_lock = threading.Lock()
-
-def can_enter_trade():
-    global day_trade_counter
-    with day_trade_lock:
-        if day_trade_counter < 1:
-            day_trade_counter += 1
-            return True
-        else: 
-            return False
         
 
 
@@ -67,35 +58,43 @@ async def handle_trade(trade: Trade):
         stop_price_stream(symbol)
         return
 
-    if not in_position[symbol] and can_enter_trade() and price > entry:
-        await place_order(symbol)
-        print(f"{qty} [{symbol}] BUY @ {price}")
-        in_position[symbol] = True
-        with open("trade-log/trade_log.txt", "a") as file:
-            file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
-        pb.push_note("Hybrid bot", f"{qty} [{symbol}] Market buy placed at {price}")
-    elif not in_position[symbol] and price > entry:
-        print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
-        stop_price_stream(symbol)
-        return
-    
-    elif in_position:
+
+    if not in_position[symbol]:
+        global day_trade_counter
+        if day_trade_counter < 1 and price > entry:
+            with day_trade_lock:
+                if day_trade_counter < 1:
+                    place_order(symbol, qty)
+                    print(f"{qty} [{symbol}] BUY @ {price}")
+                    in_position[symbol] = True
+                    day_trade_counter += 1
+                    with open("trade-log/trade_log.txt", "a") as file:
+                        file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
+                    pb.push_note("Hybrid bot", f"{qty} [{symbol}] BUY @ {price}")
+        elif not day_trade_counter < 1 and price > entry:
+            print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
+            stop_price_stream(symbol)
+            with open("trade-log/trade_log.txt", "a") as file:
+                file.write(f"{now},{symbol},SKIP,{qty},{price}" + "\n")
+            return
+
+    if in_position[symbol]:
         if price < stop: 
-            close_position(symbol)
+            close_position(symbol, qty)
             print(f"[{symbol}] stop-loss hit. Exiting.")
             with open("trade-log/trade_log.txt", "a") as file:
                 file.write(f"{now},{symbol},Exit,{qty},{price}" + "\n")
-            pb.push_note(f"[{symbol}] stop-loss hit. Exiting.")
+            pb.push_note("Hybrid bot", f"[{symbol}] stop-loss hit. Exiting.")
             return
         else:
             if price > day_high:
                 day_high = price
             if day_high >= entry * 1.15 and price <= day_high * (100 - trailing_stop)/100:
-                close_position(symbol)
+                close_position(symbol, qty)
                 print(f"[{symbol}] take-profit hit. Exiting.")
                 with open("trade-log/trade_log.txt", "a") as file:
                     file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
-                pb.push_note(f"[{symbol}] take-profit hit. Exiting.")
+                pb.push_note("Hybrid bot", f"[{symbol}] take-profit hit. Exiting.")
                 return
 
 
