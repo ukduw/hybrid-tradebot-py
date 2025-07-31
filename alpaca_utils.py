@@ -26,6 +26,8 @@ USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 latest_prices = {}
 day_high = {}
 
+eastern = pytz.timezone("US/Eastern")
+
 trading_client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=USE_PAPER_TRADING)
 stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=DataFeed.SIP)
 
@@ -35,6 +37,10 @@ async def handle_trade(trade: Trade):
     latest_prices[symbol] = price
     day_high[symbol] = price if symbol not in day_high or price > day_high[symbol] else day_high[symbol]
     # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
+
+    now = datetime.datetime.now(eastern)
+    with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+        file.write(f"{now},{trade.symbol},{trade.price}" + "\n")
 
 def start_price_stream(symbols):
     for symbol in symbols:
