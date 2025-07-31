@@ -9,8 +9,8 @@ from pushbullet import Pushbullet
 from dotenv import load_dotenv
 import os
 
-from alpaca_utils import close_all_positions, stop_price_stream
-from alpaca_utils import place_order, close_position
+from alpaca_utils_testing import close_all_positions, stop_price_stream
+from alpaca_utils_testing import place_order, close_position
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
