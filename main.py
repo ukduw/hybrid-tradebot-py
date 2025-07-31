@@ -89,7 +89,7 @@ def monitor_trade(setup):
     symbol = setup["symbol"]
     in_position = False
 
-    print(f"[{symbol}] Monitoring...")
+    print(f"[{symbol}] Monitoring... {setup["entry_price"]}, {setup["stop_loss"]}")
 
     while True:
         configs = load_configs_on_modification()
