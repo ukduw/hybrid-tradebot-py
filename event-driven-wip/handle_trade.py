@@ -101,6 +101,7 @@ async def handle_trade(trade: Trade):
 def start_price_stream(symbols):
     for symbol in symbols:
         stock_stream.subscribe_trades(handle_trade, symbol)
+        print(f"[{symbol}] Monitoring...")
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
