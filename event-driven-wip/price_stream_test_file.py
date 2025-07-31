@@ -14,7 +14,6 @@ from dotenv import load_dotenv
 import os
 
 eastern = pytz.timezone("US/Eastern")
-now = datetime.datetime.now(eastern)
 
 symbols = ["BKKT", ] # change for testing
 
@@ -28,7 +27,8 @@ trading_client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=USE
 stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=DataFeed.SIP)
 
 async def handle_trade(trade: Trade):
-    print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
+    now = datetime.datetime.now(eastern)
+    print(f"[WebSocket] {trade.symbol} @ {trade.price}")
     with open("event-driven-wip/price_stream_test_log.txt", "a") as file:
         file.write(f"{now},{trade.symbol},{trade.price}" + "\n")
 
