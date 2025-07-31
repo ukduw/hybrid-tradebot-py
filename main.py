@@ -83,7 +83,10 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 # will change price stream to log each tick and manually cross-reference with entries...
     # e.g. catch ghost/malformed trades - if this is the case, possible solution is waiting for n ticks above threshold 
     # e.g. momentary <1s spikes/drops that do not show via candlesticks (shouldn't there be a wick anyways...?) - if so... smoothing threshold??
-    
+
+# unrelated TODO: re-connect logic in case of network failure
+    # saved traceback for later...
+
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
