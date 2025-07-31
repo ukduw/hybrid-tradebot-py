@@ -4,6 +4,9 @@ import time
 import datetime
 import pytz
 import traceback
+import asyncio
+import signal
+import sys
 
 from pushbullet import Pushbullet
 from dotenv import load_dotenv
@@ -13,7 +16,7 @@ load_dotenv()
 PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
 pb = Pushbullet(PB_API_KEY)
 
-from alpaca_utils import start_price_stream, get_current_price, get_day_high, stop_price_stream, place_order, close_position, close_all_positions
+from alpaca_utils import start_price_stream, get_current_price, get_day_high, stop_price_stream, place_order, close_position, close_all_positions, stock_stream
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -45,6 +48,8 @@ def load_configs_on_modification():
 
 symbols = [setup["symbol"] for setup in cached_configs]
 threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
+
+shutdown_event = threading.Event()
 
 # profit-taking logic
     # if before x time (e.g. 6AM, US/Eastern (EDT)), momentum logic
@@ -178,7 +183,34 @@ def monitor_trade(setup):
 
     
 
+# systemctl stop / ctrl+c cleanup
+def handle_shutdown(signum, frame):
+    print("Shutting down...")
+    shutdown_event.set()
+
+    try:
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(stock_stream.unsubscribe_all())
+        loop.run_until_complete(stock_stream.stop_ws())
+    except Exception as e:
+        print(f"[Shutdown] Error during cleanup: {e}")
+    finally:
+        print("Cleanup complete. Exiting...")
+        sys.exit(0)
+
+signal.signal(signal.SIGTERM, handle_shutdown)
+signal.signal(signal.SIGINT, handle_shutdown)
+
+
+
 if __name__ == "__main__":
     for setup in cached_configs:
         t = threading.Thread(target=monitor_trade, args=(setup,))
         t.start()
+
+    try:
+        while not shutdown_event.is_set():
+            shutdown_event.wait(1)
+    except KeyboardInterrupt:
+        handle_shutdown(None, None)
+
