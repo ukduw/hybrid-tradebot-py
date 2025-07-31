@@ -47,19 +47,26 @@ symbols = [setup["symbol"] for setup in cached_configs]
 threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start()
 
 # profit-taking logic
-    # if before x time (e.g. 6AM, US/Eastern (EDT)), normal trail logic
-    # elif +15% from entry, ~1hr timeout(?), swing low exit
+    # if before x time (e.g. 6AM, US/Eastern (EDT)), momentum logic
+    # elif +15% from entry(?), swing low exit
         # any need for partial take-profit...?
-# again, needs to be easy to revert when market is slow...
-# needs additional logic for if timeout overlaps with close_all_positions() time
-
-# 5min bars for broader trends, tick data for entry/exit
-    # need to combine both for exit logic?
-    # actually, which is more efficient: 1) streaming 1s AND 5min, 2) calculating 5min FROM 1s...?
+# combination logic: momentum AND swing low for all, regardless of time?
 
 # ...pandas?
 # more testing/time in market to determine best profit-taking parameters...
 # write event-driven version in meantime...
+
+
+# testing notes:
+    # 1. more complex profit-taking NEEDED - even BIG wins entered at perfect time are not captured with current method; early volatility reaches take-profit condition far too soon...
+        # forget 1hr timeout method... use 5min or 10min candles for swing low instead?
+        # is the 15% condition still needed?
+        # maybe early (time-based) momentum take-profit? in addition to swing low after x time
+        # re-entry logic?
+    # 2. a lot of very-early premarket volatility will barely trigger entry conditions...
+        # leads to junk entries - would actually still be profitable in current state if no PDT
+        # with PDT, there's no way this will work
+        # continue testing with far more stringent watchlist...
 
 
 def monitor_trade(setup):
