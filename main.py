@@ -70,6 +70,21 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
         # continue testing with far more stringent watchlist...
 
 
+# entry/exit problem:
+    # some entries (and now exits) are triggered without conditions being met...
+    # have tested the websocket/price stream, which doesn't seem to be the problem
+    # also doesn't seem to be a problem with bot logic
+# potential causes troubleshooting:
+    # 1. use asyncio event to wait for first trade event before conditions are assessed
+    # 2. add systemd cleanup (ExecStopPost)
+    # 3. json load issues?
+    # i don't think it has to do with entry/exit parameter misload or overwriting... leave for now
+
+# will change price stream to log each tick and manually cross-reference with entries...
+    # e.g. catch ghost/malformed trades - if this is the case, possible solution is waiting for n ticks above threshold 
+    # e.g. momentary <1s spikes/drops that do not show via candlesticks (shouldn't there be a wick anyways...?) - if so... smoothing threshold??
+    
+
 def monitor_trade(setup):
     symbol = setup["symbol"]
     in_position = False
