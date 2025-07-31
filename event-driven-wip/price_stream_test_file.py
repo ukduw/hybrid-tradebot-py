@@ -6,9 +6,14 @@ from alpaca.trading.client import TradingClient
 
 import asyncio
 import time
+import datetime
+import pytz
 
 from dotenv import load_dotenv
 import os
+
+eastern = pytz.timezone("US/Eastern")
+now = datetime.datetime.now(eastern)
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
@@ -21,6 +26,8 @@ stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=Data
 
 async def handle_trade(trade: Trade):
     print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
+    with open("trade-log/trade_log.txt", "a") as file:
+        file.write(f"{now},{trade.symbol},{trade.price}" + "\n")
 
 def start_price_stream(symbols):
     for symbol in symbols:
