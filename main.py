@@ -1,6 +1,5 @@
 import threading
 import json
-import math
 import time
 import datetime
 import pytz
@@ -84,7 +83,7 @@ def monitor_trade(setup):
         entry = updated_setup["entry_price"]
         stop = updated_setup["stop_loss"]
         trailing_stop = updated_setup["trailing_stop_percentage"]
-        qty = math.ceil(updated_setup["dollar_value"] / updated_setup["entry_price"])
+        qty = round(updated_setup["dollar_value"] / updated_setup["entry_price"])
         # day_high = entry
 
         price = get_current_price(symbol)
