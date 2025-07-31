@@ -51,6 +51,7 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
     # elif +15% from entry(?), swing low exit
         # any need for partial take-profit...?
 # combination logic: momentum AND swing low for all, regardless of time?
+# re-entry logic?
 
 # ...pandas?
 # more testing/time in market to determine best profit-taking parameters...
@@ -121,13 +122,13 @@ def monitor_trade(setup):
                             day_high = price
                             day_trade_counter += 1
                             with open("trade-log/trade_log.txt", "a") as file:
-                                file.write(f"{now},{symbol},Entry,{qty},{price}" + "\n")
+                                file.write(f"{now},{symbol},ENTRY,{qty},{price}" + "\n")
                             pb.push_note("Hybrid bot", f"{qty} [{symbol}] BUY @ {price}")
                 elif not day_trade_counter < 1 and price > entry:
                     print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
                     stop_price_stream(symbol)
                     with open("trade-log/trade_log.txt", "a") as file:
-                        file.write(f"{now},{symbol},SKIP,{qty},{price}" + "\n")
+                        file.write(f"{now},{symbol},skip,{qty},{price}" + "\n")
                     return
 
             if in_position:
@@ -135,7 +136,7 @@ def monitor_trade(setup):
                     close_position(symbol, qty)
                     print(f"[{symbol}] stop-loss hit. Exiting.")
                     with open("trade-log/trade_log.txt", "a") as file:
-                        file.write(f"{now},{symbol},Exit,{qty},{price}" + "\n")
+                        file.write(f"{now},{symbol},EXIT,{qty},{price}" + "\n")
                     pb.push_note("Hybrid bot", f"[{symbol}] stop-loss hit. Exiting.")
                     return
                 else:
