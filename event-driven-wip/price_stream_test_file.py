@@ -29,9 +29,8 @@ async def handle_trade(trade: Trade):
     with open("trade-log/trade_log.txt", "a") as file:
         file.write(f"{now},{trade.symbol},{trade.price}" + "\n")
 
-def start_price_stream(symbols):
-    for symbol in symbols:
-        stock_stream.subscribe_trades(handle_trade, symbol)
+def start_price_stream(symbol):
+    stock_stream.subscribe_trades(handle_trade, symbol)
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
