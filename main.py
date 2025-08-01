@@ -51,20 +51,9 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 
 shutdown_event = threading.Event()
 
-# profit-taking logic
-    # if before x time (e.g. 6AM, US/Eastern (EDT)), momentum logic
-    # elif +15% from entry(?), swing low exit
-        # any need for partial take-profit...?
-# combination logic: momentum AND swing low for all, regardless of time?
-# re-entry logic?
 
-# ...pandas?
-# more testing/time in market to determine best profit-taking parameters...
-# write event-driven version in meantime...
-
-
-# testing notes:
-    # 1. more complex profit-taking NEEDED - even BIG wins entered at perfect time are not captured with current method; early volatility reaches take-profit condition far too soon...
+# testing notes (PROFIT-TAKING & PDT PROBLEMS):
+    # 1. MORE COMPLEX PROFIT-TAKING NEEDED - even BIG wins entered at perfect time are not captured with current method; early volatility reaches take-profit condition far too soon...
         # forget 1hr timeout method... use 5min or 10min candles for swing low instead?
         # is the 15% condition still needed?
         # maybe early (time-based) momentum take-profit? in addition to swing low after x time
@@ -73,24 +62,29 @@ shutdown_event = threading.Event()
         # leads to junk entries - would actually still be profitable in current state if no PDT
         # with PDT, there's no way this will work
         # continue testing with far more stringent watchlist...
+# more testing/time in market to determine best profit-taking parameters...
+# write event-driven version in meantime...
 
+# entry/exit problem (UPDATE: CAUSE IDENTIFIED):
+    # ghost ticks in raw trade prints vs aggregated/charted data
+        # most charting eliminates:
+            # 1. odd-lot trades (<100 shares)
+            # 2. out-of-band trades (delayed, corrected, invalid... trades)
+            # 3. off-exchange trades (dark pool, test prints, tape corrections...)
+            # 4. "conditioned" trades (auction prints, opening/closing cross, vwap-only trades...)
+        # MOST DO NOT CHART PREMARKET CANDLES UNLESS SUFFICIENT VOLUME
+        # LOW-VOLUME TICKS TRIGGER CONDITION(S) FOR ENTRY
+    # potential fixes:
+        # 1. filter trades by volume or conditions (need to test for available conditions)
+            # print trade.size, trade.conditions...
+            # run tick logs, size/condition prints & bot - use actual cases to determine conditions
+        # 2. time-weighted/confirmation logic
+            # e.g. n ticks in a row meet condition OR ticks above threshold for > 2s
 
-# entry/exit problem:
-    # some entries (and now exits) are triggered without conditions being met...
-    # have tested the websocket/price stream, which doesn't seem to be the problem
-    # also doesn't seem to be a problem with bot logic
-# potential causes troubleshooting:
-    # 1. use asyncio event to wait for first trade event before conditions are assessed
-    # 2. add systemd cleanup (ExecStopPost)
-    # 3. json load issues?
-    # i don't think it has to do with entry/exit parameter misload or overwriting... leave for now
-
-# will change price stream to log each tick and manually cross-reference with entries...
-    # e.g. catch ghost/malformed trades - if this is the case, possible solution is waiting for n ticks above threshold 
-    # e.g. momentary <1s spikes/drops that do not show via candlesticks (shouldn't there be a wick anyways...?) - if so... smoothing threshold??
 
 # unrelated TODO: re-connect logic in case of network failure
     # saved traceback for later...
+# FIX CLEANUP - forgot i was using threads rather than asyncio
 
 
 def monitor_trade(setup):
