@@ -40,7 +40,7 @@ async def handle_trade(trade: Trade):
 
     now = datetime.datetime.now(eastern)
     with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-        file.write(f"{now},{trade.symbol},{trade.price}" + "\n")
+        file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
 def start_price_stream(symbols):
     for symbol in symbols:
