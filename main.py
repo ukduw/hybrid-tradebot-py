@@ -88,7 +88,6 @@ shutdown_event = threading.Event()
 
 # PRIORITY ORDER:
     # 1. LOG THE 1) TICK DATA, 2) TRADE.SIZE, TRADE.CONDITIONS, 3) BOT ENTRIES/EXITS
-        # TODO: write size/conditions to log in utils
         # TODO: use results to determine conditions ticks must pass to be able to trigger entry/exit
         # TODO: write solution(s) above (lines 77-82)
     # 2. WRITE MORE COMPLEX 5/10MIN BAR PROFIT-TAKING LOGIC
