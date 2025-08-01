@@ -81,10 +81,24 @@ shutdown_event = threading.Event()
         # 2. time-weighted/confirmation logic
             # e.g. n ticks in a row meet condition OR ticks above threshold for > 2s
 
-
 # unrelated TODO: re-connect logic in case of network failure
     # saved traceback for later...
 
+
+
+# PRIORITY ORDER:
+    # 1. LOG THE 1) TICK DATA, 2) TRADE.SIZE, TRADE.CONDITIONS, 3) BOT ENTRIES/EXITS
+        # TODO: write size/conditions to log in utils
+        # TODO: use results to determine conditions ticks must pass to be able to trigger entry/exit
+        # TODO: write solution(s) above (lines 77-82)
+    # 2. WRITE MORE COMPLEX 5/10MIN BAR PROFIT-TAKING LOGIC
+        # momentum + swing-low
+        # re-entry logic?
+# ((don't forget to use progressively more stringent watchlists due to PDT...))
+    # 3. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
+        # don't forget the traceback saved in a txt...
+    # 4. WRITE EVENT-DRIVEN VERSION
+        # current version sufficient; low priority
 
 
 def monitor_trade(setup):
