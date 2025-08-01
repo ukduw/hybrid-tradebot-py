@@ -89,8 +89,10 @@ shutdown_event = threading.Event()
     # 1. LOG THE 1) TICK DATA, 2) TRADE.SIZE, TRADE.CONDITIONS, 3) BOT ENTRIES/EXITS
         # TODO: use results to determine conditions ticks must pass to be able to trigger entry/exit
         # TODO: write solution(s) above (lines 77-82)
-    # 2. WRITE MORE COMPLEX 5/10MIN BAR PROFIT-TAKING LOGIC
-        # momentum + swing-low
+    # 2. WRITE MORE COMPLEX 5,10,15MIN BAR PROFIT-TAKING LOGIC
+        # momentum (loss of volume, rsi, macd...? may need 15+%) + swing-low (bars, higher lows)
+        # volatility-adjusted trailing stop (e.g. average true range...)
+        # ...timeout?
         # re-entry logic?
 # ((don't forget to use progressively more stringent watchlists due to PDT...))
     # 3. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
