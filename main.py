@@ -183,9 +183,16 @@ def handle_shutdown(signum, frame):
     shutdown_event.set()
 
     try:
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(stock_stream.unsubscribe_all())
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+        for symbol in symbols:
+            loop.run_until_complete(stop_price_stream(symbol))
         loop.run_until_complete(stock_stream.stop_ws())
+        
     except Exception as e:
         print(f"[Shutdown] Error during cleanup: {e}")
     finally:
