@@ -76,7 +76,6 @@ shutdown_event = threading.Event()
         # LOW-VOLUME TICKS TRIGGER CONDITION(S) FOR ENTRY
     # potential fixes:
         # 1. filter trades by volume or conditions (need to test for available conditions)
-            # print trade.size, trade.conditions...
             # run tick logs, size/condition prints & bot - use actual cases to determine conditions
         # 2. time-weighted/confirmation logic
             # e.g. n ticks in a row meet condition OR ticks above threshold for > 2s
@@ -98,6 +97,7 @@ shutdown_event = threading.Event()
         # don't forget the traceback saved in a txt...
     # 4. WRITE EVENT-DRIVEN VERSION
         # current version sufficient; low priority
+
 
 
 def monitor_trade(setup):
