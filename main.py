@@ -84,7 +84,7 @@ shutdown_event = threading.Event()
 
 # unrelated TODO: re-connect logic in case of network failure
     # saved traceback for later...
-# FIX CLEANUP - forgot i was using threads rather than asyncio
+
 
 
 def monitor_trade(setup):
@@ -192,7 +192,7 @@ def handle_shutdown(signum, frame):
         for symbol in symbols:
             loop.run_until_complete(stop_price_stream(symbol))
         loop.run_until_complete(stock_stream.stop_ws())
-        
+
     except Exception as e:
         print(f"[Shutdown] Error during cleanup: {e}")
     finally:
