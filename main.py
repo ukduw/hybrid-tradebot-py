@@ -52,19 +52,6 @@ threading.Thread(target=start_price_stream, args=(symbols,), daemon=True).start(
 shutdown_event = threading.Event()
 
 
-# testing notes (PROFIT-TAKING & PDT PROBLEMS):
-    # 1. MORE COMPLEX PROFIT-TAKING NEEDED - even BIG wins entered at perfect time are not captured with current method; early volatility reaches take-profit condition far too soon...
-        # forget 1hr timeout method... use 5min or 10min candles for swing low instead?
-        # is the 15% condition still needed?
-        # maybe early (time-based) momentum take-profit? in addition to swing low after x time
-        # re-entry logic?
-    # 2. a lot of very-early premarket volatility will barely trigger entry conditions...
-        # leads to junk entries - would actually still be profitable in current state if no PDT
-        # with PDT, there's no way this will work
-        # continue testing with far more stringent watchlist...
-# more testing/time in market to determine best profit-taking parameters...
-# write event-driven version in meantime...
-
 # entry/exit problem (UPDATE: CAUSE IDENTIFIED):
     # ghost ticks in raw trade prints vs aggregated/charted data
         # most charting eliminates:
@@ -79,6 +66,30 @@ shutdown_event = threading.Event()
             # run tick logs, size/condition prints & bot - use actual cases to determine conditions
         # 2. time-weighted/confirmation logic
             # e.g. n ticks in a row meet condition OR ticks above threshold for > 2s
+
+# PROFIT-TAKING & PDT PROBLEMS:
+    # 1. MORE COMPLEX PROFIT-TAKING NEEDED - even BIG wins entered at perfect time are not captured with current method; early volatility reaches take-profit condition far too soon...
+        # forget 1hr timeout method... use 15min or 30min candles for swing low/combination logic instead?
+            # are 30min candles needed...? 15min seems fine even for longer trades
+            # ideal: 30min to 2hr, average 1hr...
+            # but <30min plays will be missed without momentum logic...
+        # maybe early (time-based?) momentum take-profit? in addition to swing low after x time(?)
+            # this is NEEDED - a swing low requires AT LEAST 3, 4 bars (at least 45-60min)
+                # wait... if exit logic uses tick data, then it'd be minimum 2 bars?
+                # even so, for short-term spikes, the second bar would already be too late... and keep in mind decision making would occur during the 3rd bar
+        # while number of bars < 4, use momentum take-profit on the way UP?
+        # if bars >= 4, use swing low?
+            # start storing bar counter after entry?
+            # in that case, i think i need to keep the if >=15% condition
+            # e.g. entry triggered, but continues to fluctuate in range ABOVE stop-loss
+            # this could trigger swing low "profit-take" before anything even happens; 15% confirms it's a runner
+        # swing low self-explanatory
+        # momentum/volatility options: RSI, MACD, ATR, Bollinger...
+    # 2. a lot of very-early premarket volatility will barely trigger entry conditions...
+        # leads to junk entries - would actually still be profitable in current state if no PDT
+        # with PDT, there's no way this will work
+        # continue testing with far more stringent watchlist...
+# more testing/time in market to determine best profit-taking parameters...
 
 # unrelated TODO: re-connect logic in case of network failure
     # saved traceback for later...
