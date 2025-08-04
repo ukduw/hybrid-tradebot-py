@@ -37,8 +37,11 @@ def main():
         trade = prompt_configs()
         configs.append(trade)
         cont = input("Add another trade? (y/n): ").strip().lower()
-        if cont != "y":
+        if cont == "n":
             break
+        if cont != "y":
+            print(f"'{cont}' is not a valid input. Re-enter (y/n)")
+
 
     with open(CONFIG_FILE, "w") as file:
         json.dump(configs, file, indent=2)
