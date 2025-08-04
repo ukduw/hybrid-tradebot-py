@@ -4,7 +4,6 @@ import time
 import datetime
 import pytz
 import traceback
-import asyncio
 import signal
 import sys
 
