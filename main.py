@@ -117,6 +117,14 @@ shutdown_event = threading.Event()
         # current version sufficient; low priority
 
 
+# note: after some research, the 'I' character in trade metadata (trade.conditions) means ODD LOT TRADE (<100 shares volume)
+    # depending on the stock, the proportion of trades with 'I' code can be very different...
+    # may not be the best solution - maybe in handler/utils, keep dictionary + boolean to determine if, if multiple ticks are above/below condition, trade-able...
+# i think there's another problem...
+# some price streams appear to time out/fail silently if there isn't enough activity(?)
+# PRIORITY: write basic handler improvements for ghost ticks + price stream reconnect logic
+    # then can finally move on to profit-taking logic (momentum + swing low, partial profits + re-entry logic)...
+
 
 def monitor_trade(setup):
     symbol = setup["symbol"]
