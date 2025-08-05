@@ -113,6 +113,7 @@ shutdown_event = threading.Event()
 # ((don't forget to use progressively more stringent watchlists due to PDT...))
     # 3. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
         # don't forget the traceback saved in a txt...
+        # not just for websocket - write reconnect logic for price streams + logs so they don't fail silently
     # 4. WRITE EVENT-DRIVEN VERSION
         # current version sufficient; low priority
 
@@ -120,9 +121,9 @@ shutdown_event = threading.Event()
 # note: after some research, the 'I' character in trade metadata (trade.conditions) means ODD LOT TRADE (<100 shares volume)
     # depending on the stock, the proportion of trades with 'I' code can be very different...
     # may not be the best solution - maybe in handler/utils, keep dictionary + boolean to determine if, if multiple ticks are above/below condition, trade-able...
-# i think there's another problem...
-# some price streams appear to time out/fail silently if there isn't enough activity(?)
-# PRIORITY: write basic handler improvements for ghost ticks + price stream reconnect logic
+    # just found an exhaust of "ghost ticks" that have high volume AND multi-tick... so neither solution would work
+# update: i misunderstood - i don't think price streams are silently failing, but there also isn't reconnect logic so i'll add that to the end of the TODO list
+# PRIORITY: write basic handler improvements for ghost ticks
     # then can finally move on to profit-taking logic (momentum + swing low, partial profits + re-entry logic)...
 
 
