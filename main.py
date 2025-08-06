@@ -108,7 +108,7 @@ shutdown_event = threading.Event()
             # every long spike has to safely fail the short spike conditions
             # yet the short spike conditions have to be sensitive enough to take profit without waiting too long...
             # maybe volume based??? this would require a lot of testing...
-        # DOES need re-entry logic
+        # DOES need re-entry logic (wait, PDT...)
         # and probably partial take-profits on the way up...
 # ((don't forget to use progressively more stringent watchlists due to PDT...))
     # 3. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
@@ -118,11 +118,12 @@ shutdown_event = threading.Event()
         # current version sufficient; low priority
 
 
-# note: after some research, the 'I' character in trade metadata (trade.conditions) means ODD LOT TRADE (<100 shares volume)
+# note: 'I' character in trade metadata (trade.conditions) = ODD LOT TRADE (<100 shares volume)
     # depending on the stock, the proportion of trades with 'I' code can be very different...
     # may not be the best solution - maybe in handler/utils, keep dictionary + boolean to determine if, if multiple ticks are above/below condition, trade-able...
     # just found examples of "ghost ticks" that have high volume AND multi-tick... so neither solution would work
 # update: i misunderstood - i don't think price streams are silently failing, but there also isn't reconnect logic so i'll add that to the end of the TODO list
+
 # PRIORITY: write basic handler improvements for ghost ticks
     # then can finally move on to profit-taking logic (momentum + swing low, partial profits + re-entry logic)...
 
