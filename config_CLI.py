@@ -56,6 +56,7 @@ def main():
     print("New configs saved to configs.json: ")
     for c in configs:
         print(f" - {c['symbol']}: Entry {c['entry_price']}, Stop {c['stop_loss']}, Trail {c['trailing_stop_percentage']}%, Qty ${c['dollar_value']}")
+    print(f"Total symbols saved: {len(configs)}")
 
 if __name__ == "__main__":
     main()
