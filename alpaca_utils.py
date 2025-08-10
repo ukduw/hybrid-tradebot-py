@@ -33,7 +33,7 @@ stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=Data
 
 async def handle_trade(trade: Trade):
     symbol = trade.symbol
-    price = trade.price
+    price = trade.price if trade.size > 100 else price
     latest_prices[symbol] = price
     day_high[symbol] = price if symbol not in day_high or price > day_high[symbol] else day_high[symbol]
     # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
