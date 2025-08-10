@@ -97,9 +97,8 @@ shutdown_event = threading.Event()
 
 
 # PRIORITY ORDER:
-    # 1. LOG THE 1) TICK DATA, 2) TRADE.SIZE, TRADE.CONDITIONS, 3) BOT ENTRIES/EXITS
-        # TODO: use results to determine conditions ticks must pass to be able to trigger entry/exit
-        # TODO: write solution(s) above (lines 77-82)
+    # 1. FILTER OUT GHOST TICKS...
+        # 
     # 2. WRITE MORE COMPLEX 15/30MIN BAR PROFIT-TAKING LOGIC
         # 15% condition needed, 15min bars, per thread bar counter after entry
         # below x bars (short spike), momentum take-profit (how can this not trigger prematurely if it's a longer-term play...?)
@@ -108,8 +107,8 @@ shutdown_event = threading.Event()
             # every long spike has to safely fail the short spike conditions
             # yet the short spike conditions have to be sensitive enough to take profit without waiting too long...
             # maybe volume based??? this would require a lot of testing...
-        # DOES need re-entry logic (wait, PDT...)
-        # and probably partial take-profits on the way up...
+        # re-entry logic can wait till after PDT...
+        # (momentum + swing low, partial profits + re-entry logic... 15%, 15/30min...)
 # ((don't forget to use progressively more stringent watchlists due to PDT...))
     # 3. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
         # don't forget the traceback saved in a txt...
@@ -118,14 +117,16 @@ shutdown_event = threading.Event()
         # current version sufficient; low priority
 
 
-# note: 'I' character in trade metadata (trade.conditions) = ODD LOT TRADE (<100 shares volume)
-    # depending on the stock, the proportion of trades with 'I' code can be very different...
-    # may not be the best solution - maybe in handler/utils, keep dictionary + boolean to determine if, if multiple ticks are above/below condition, trade-able...
-    # just found examples of "ghost ticks" that have high volume AND multi-tick... so neither solution would work
-# update: i misunderstood - i don't think price streams are silently failing, but there also isn't reconnect logic so i'll add that to the end of the TODO list
-
-# PRIORITY: write basic handler improvements for ghost ticks
-    # then can finally move on to profit-taking logic (momentum + swing low, partial profits + re-entry logic)...
+# GHOST TICKS
+# 1. price-based filtering
+    # if price changes by unusual amount, but there is no subsequent confirmation from bid/ask
+# 2. volume-based
+    # could it be as simple as, if >= 1.00, vol > 100; if between 1.00 and 0.10, vol > 1000; if <0.10, vol > 10000?
+    # otherwise, dynamic volume threshold per symbol - via average volume over x minutes (wouldn't work for very early minutes...)
+    # exclude ticks with less than some % of stock's 60d average volume? would need yf
+# 3. statistical/outlier detection...?
+    # would prefer not to... z-score, std dev, rolling average, MACD smoothing...
+# don't think backtesting necessary; could log and visualize data and check against charts?
 
 
 def monitor_trade(setup):
