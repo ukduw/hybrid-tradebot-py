@@ -22,12 +22,12 @@ with open("configs.json", "r") as f:
 symbols = [setup["symbol"] for setup in configs_json]
 
 
-def main():
+async def main():
     try:
         print("Running cleanup...")
         for symbol in symbols:
             stop_price_stream(symbol)
-        stock_stream.stop_ws()
+        await stock_stream.stop_ws()
 
     except Exception as e:
         print(f"Cleanup error: {e}")
