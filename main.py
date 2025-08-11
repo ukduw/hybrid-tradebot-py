@@ -224,14 +224,14 @@ def monitor_trade(setup):
     
 
 # systemctl stop / ctrl+c cleanup
-def handle_shutdown(signum, frame):
+async def handle_shutdown(signum, frame):
     print("Shutting down...")
     shutdown_event.set()
 
     try:
         for symbol in symbols:
             stop_price_stream(symbol)
-        stock_stream.stop_ws()
+        await stock_stream.stop_ws()
 
     except Exception as e:
         print(f"[Shutdown] Error during cleanup: {e}")
