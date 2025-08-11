@@ -34,7 +34,8 @@ stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=Data
 async def handle_trade(trade: Trade):
     symbol = trade.symbol
 
-    price = trade.price if trade.size > 100 else None
+    if trade.size > 100:
+        price = trade.price
     #if trade.price >= 10:
     #    price = trade.price if trade.size > 10 else price
     #if 9.99 >= trade.price >= 1.00:
