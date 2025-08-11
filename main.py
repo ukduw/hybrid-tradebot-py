@@ -100,13 +100,7 @@ shutdown_event = threading.Event()
     # 1. FILTER OUT GHOST TICKS...
         # 
     # 2. WRITE MORE COMPLEX 15/30MIN BAR PROFIT-TAKING LOGIC
-        # 15% condition needed, 15min bars, per thread bar counter after entry
-        # below x bars (short spike), momentum take-profit (how can this not trigger prematurely if it's a longer-term play...?)
-            # need to research/test RSI, MACD, ATR, Bollinger more before decision...
-        # above x bars (longer-term spiking/trend), swing low take-profit
-            # every long spike has to safely fail the short spike conditions
-            # yet the short spike conditions have to be sensitive enough to take profit without waiting too long...
-            # maybe volume based??? this would require a lot of testing...
+        # 15% condition needed, 15min bars
         # re-entry logic can wait till after PDT...
         # (momentum + swing low, partial profits + re-entry logic... 15%, 15/30min...)
 # ((don't forget to use progressively more stringent watchlists due to PDT...))
@@ -127,6 +121,15 @@ shutdown_event = threading.Event()
 # 3. statistical/outlier detection...?
     # would prefer not to... z-score, std dev, rolling average, MACD smoothing...
 # don't think backtesting necessary; could log and visualize data and check against charts?
+
+# PROFIT TAKING
+# combine multiple strategies, taking partial profit on spikes, and using swing low as a fallback
+    # problem is with short spikes - take profit needs to be 100% before certain time
+    # after certain time, partial profit on spike
+# 15% condition, 15/30min bars
+# options for momentum profit-take: vwap + xSTDEV, vol > 2x avg?, rsi > 75?, long upper wick (5min) indicating exhaustion, rsi bearish divergence...
+    # if >=2 conditions true, take partial profit
+# if 15min candle sets lower low, exit all remaining position
 
 
 def monitor_trade(setup):
