@@ -49,9 +49,9 @@ async def handle_trade(trade: Trade):
     day_high[symbol] = price if symbol not in day_high or price > day_high[symbol] else day_high[symbol]
     # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
-    # now = datetime.datetime.now(eastern)
-    # with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-    #    file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+    now = datetime.datetime.now(eastern)
+    with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+        file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
 def start_price_stream(symbols):
     for symbol in symbols:
