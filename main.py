@@ -86,6 +86,10 @@ shutdown_event = threading.Event()
     # could it be as simple as, if >= 1.00, vol > 100; if between 1.00 and 0.10, vol > 1000; if <0.10, vol > 10000?
 # don't think backtesting with historical necessary; could log and visualize data and check against charts?
 # would prefer 1; removed other solutions...
+# update: seems a lot more complicated than i thought it'd be
+    # requires quotes via websocket, they're asynchronous
+    # needs sliding quote window to look back at quote history, comparing tick to recent quotes
+# can use tick and quote timestamps
 
 # PROFIT TAKING
 # options for momentum profit-take: vwap + xSTDEV, vol > 2x avg?, rsi > 75?, long upper wick (5min) indicating exhaustion, rsi bearish divergence...
@@ -100,6 +104,12 @@ shutdown_event = threading.Event()
         # often takes profit during normal consolidation before another move
     # no longer any need for 15% condition or 15/30min bars, or time-based?
 # pandas-ta?
+    # fetch recent bars on startup to seed calc (50-100 1min bars)
+    # calculate indicators (RSI(14), MACD(12,26,9)) with pandas-ta
+    # as new 1min bars come in:
+        # append data window
+        # recalculate the indicators
+        # rewrite main to make take-profit decisions based on these indicators
 
 
 def monitor_trade(setup):
