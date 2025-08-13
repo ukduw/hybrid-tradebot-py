@@ -58,6 +58,7 @@ class DataHandler:
     async def handle_trade(self, trade: Trade):
         symbol = trade.symbol
         trade_time = trade.timestamp
+        trade_price = trade.price
 
         quotes = self.quote_window.get(symbol, [])
         if not quotes:
@@ -65,21 +66,25 @@ class DataHandler:
         
         closest_quote = min(quotes, key=lambda q: abs((q.timestamp - trade_time).total_seconds()))
         if abs((closest_quote.timestamp - trade_time).total_seconds()) > 1:
-            return # PLACEHOLDER - NEEDS bid*tolerance% <= trade.price <= ask*tolerance%   
+            return  
         
-        # INTEGRATE THIS IN CASE OF CONDITIONS PASSING
-        if trade.size > 100:
-            price = trade.price
-            latest_prices[symbol] = price
-            if symbol not in day_high or price > day_high[symbol]:
-                day_high[symbol] = price
+        tolerance = 0.01 # 1%
+        if not (closest_quote.bid * (1 - tolerance) <= trade_price <= closest_quote.ask * (1 - tolerance)):
+            return
+
+        if trade.size < 100:
+            return
+        
+        # if all conditions pass:
+        latest_prices[symbol] = trade_price
+        if symbol not in day_high or trade_price > day_high[symbol]:
+            day_high[symbol] = trade_price
 
         # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
         now = datetime.datetime.now(eastern)
         with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
             file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
-
 
     
 handler = DataHandler()
