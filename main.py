@@ -220,5 +220,5 @@ if __name__ == "__main__":
         while not shutdown_event.is_set():
             shutdown_event.wait(1)
     except KeyboardInterrupt:
-        handle_shutdown(None, None)
+        handle_shutdown(None, None) # needs to be awaited??
 
