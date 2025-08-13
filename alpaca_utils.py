@@ -31,6 +31,7 @@ latest_prices = {}
 day_high = {}
 
 eastern = pytz.timezone("US/Eastern")
+now = datetime.datetime.now(eastern)
 
 historical_client = StockHistoricalDataClient(api_key=API_KEY, secret_key=SECRET_KEY)
 trading_client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=USE_PAPER_TRADING)
@@ -62,17 +63,25 @@ class DataHandler:
 
         quotes = self.quote_window.get(symbol, [])
         if not quotes:
+            with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
             return
         
         closest_quote = min(quotes, key=lambda q: abs((q.timestamp - trade_time).total_seconds()))
         if abs((closest_quote.timestamp - trade_time).total_seconds()) > 1:
+            with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
             return  
         
-        tolerance = 0.01 # 1%
+        tolerance = 0.015 # 1.5%
         if not (closest_quote.bid * (1 - tolerance) <= trade_price <= closest_quote.ask * (1 - tolerance)):
+            with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
             return
 
         if trade.size < 100:
+            with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
             return
         
         # if all conditions pass:
@@ -82,7 +91,6 @@ class DataHandler:
 
         # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
-        now = datetime.datetime.now(eastern)
         with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
             file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
