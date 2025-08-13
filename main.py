@@ -66,7 +66,7 @@ shutdown_event = threading.Event()
 
 # PRIORITY ORDER:
     # 1. FILTER OUT GHOST TICKS...
-        # 
+        # testing and tweaking...
     # 2. WRITE MORE COMPLEX PROFIT-TAKING LOGIC
         # re-entry logic can wait till after PDT...
         # how to deal with junk entries during PDT...?
@@ -78,18 +78,6 @@ shutdown_event = threading.Event()
     # 4. WRITE EVENT-DRIVEN VERSION
         # current version sufficient; low priority
 
-
-# GHOST TICKS
-# 1. price-based filtering
-    # if price changes by unusual amount, but there is no subsequent confirmation from bid/ask
-# 2. volume-based
-    # could it be as simple as, if >= 1.00, vol > 100; if between 1.00 and 0.10, vol > 1000; if <0.10, vol > 10000?
-# don't think backtesting with historical necessary; could log and visualize data and check against charts?
-# would prefer 1; removed other solutions...
-# update: seems a lot more complicated than i thought it'd be
-    # requires quotes via websocket, they're asynchronous
-    # needs sliding quote window to look back at quote history, comparing tick to recent quotes
-# can use tick and quote timestamps
 
 # PROFIT TAKING
 # options for momentum profit-take: vwap + xSTDEV, vol > 2x avg?, rsi > 75?, long upper wick (5min) indicating exhaustion, rsi bearish divergence...
