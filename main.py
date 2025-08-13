@@ -51,19 +51,6 @@ threading.Thread(target=start_price_quote_stream, args=(symbols,), daemon=True).
 shutdown_event = threading.Event()
 
 
-# PDT PROBLEMS:
-    # a lot of very-early premarket volatility will barely trigger entry conditions...
-        # leads to junk entries - would actually still be profitable in current state if no PDT
-        # with PDT, there's no way this will work
-        # continue testing with far more stringent watchlist...
-# more testing/time in market to determine best profit-taking parameters...
-# for now, implement basic version and incrementally refine it based on time in market
-
-# unrelated TODO: re-connect logic in case of network failure
-    # saved traceback for later...
-
-
-
 # PRIORITY ORDER:
     # 1. FILTER OUT GHOST TICKS...
         # testing and tweaking...
@@ -98,6 +85,18 @@ shutdown_event = threading.Event()
         # append data window
         # recalculate the indicators
         # rewrite main to make take-profit decisions based on these indicators
+
+# PDT PROBLEMS:
+    # a lot of very-early premarket volatility will barely trigger entry conditions...
+        # leads to junk entries - would actually still be profitable in current state if no PDT
+        # with PDT, there's no way this will work
+        # continue testing with far more stringent watchlist...
+# more testing/time in market to determine best profit-taking parameters...
+# for now, implement basic version and incrementally refine it based on time in market
+
+
+# unrelated TODO: re-connect logic in case of network failure
+    # saved traceback for later...
 
 
 def monitor_trade(setup):
