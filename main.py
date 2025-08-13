@@ -156,10 +156,10 @@ def monitor_trade(setup):
                 elif not day_trade_counter < 1 and price > entry:
                     print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
                     stop_price_quote_stream(symbol)
-                    #with open("trade-log/trade_log.txt", "a") as file:
-                    #    file.write(f"{now},{symbol},skip,{qty},{price}" + "\n")
-                    return
-                    #time.sleep(7200)
+                    with open("trade-log/trade_log.txt", "a") as file:
+                        file.write(f"{now},{symbol},skip,{qty},{price}" + "\n")
+                    # return
+                    time.sleep(18000)
 
             if in_position:
                 if price < stop: 
