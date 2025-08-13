@@ -126,7 +126,23 @@ def get_day_high(symbol):
 
 
 # ===== BAR DATA REQUESTS, INDICATOR GENERATION ===== #
+def fetch_seed_bars(symbol):
+    lookback_minutes = 100
+    start_time = now - datetime.timedelta(minutes=lookback_minutes + 10)
 
+    request_params = StockBarsRequest(
+        symbol=symbol,
+        start=start_time,
+        end=now,
+        timeframe=TimeFrame.Minute
+    )
+
+    bars = historical_client.get_stock_bars(request_params=request_params).df
+    df = bars[bars.index.get_level_values(0) == symbol].copy()
+    df.reset_index(inplace=True)
+    df.rename(columns={"timestamp": "datetime"}, inplace=True)
+    df.set_index("datetime", inplace=True)
+    return df
 
 
 # ===== TRADING CLIENT UTILS ===== #
