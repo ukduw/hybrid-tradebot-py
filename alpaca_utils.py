@@ -14,7 +14,7 @@ from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.requests import LimitOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
 
-import datetime, pytz
+import datetime, time, pytz
 from decimal import Decimal, ROUND_UP, ROUND_DOWN
 from collections import defaultdict, deque
 from dataclasses import dataclass
@@ -37,6 +37,8 @@ historical_client = StockHistoricalDataClient(api_key=API_KEY, secret_key=SECRET
 trading_client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=USE_PAPER_TRADING)
 stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=DataFeed.SIP)
 
+
+# ===== WEBSOCKETS, DATA STREAM UTILS ===== #
 @dataclass
 class QuoteEntry:
     bid: float
@@ -123,6 +125,11 @@ def get_day_high(symbol):
     return day_high.get(symbol)
 
 
+# ===== BAR DATA REQUESTS, INDICATOR GENERATION ===== #
+
+
+
+# ===== TRADING CLIENT UTILS ===== #
 def is_premarket():
     eastern = pytz.timezone("US/Eastern")
     now = datetime.datetime.now(eastern).time()
