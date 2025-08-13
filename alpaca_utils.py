@@ -36,6 +36,12 @@ async def handle_trade(trade: Trade):
 
     if trade.size > 100:
         price = trade.price
+
+        latest_prices[symbol] = price
+
+        if symbol not in day_high or price > day_high[symbol]:
+            day_high[symbol] = price
+
     #if trade.price >= 10:
     #    price = trade.price if trade.size > 10 else price
     #if 9.99 >= trade.price >= 1.00:
@@ -45,8 +51,6 @@ async def handle_trade(trade: Trade):
     #if trade.price <= 0.0999:
     #    price = trade.price if trade.size > 10000 else price
 
-    latest_prices[symbol] = price
-    day_high[symbol] = price if symbol not in day_high or price > day_high[symbol] else day_high[symbol]
     # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
     now = datetime.datetime.now(eastern)
