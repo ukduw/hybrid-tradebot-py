@@ -16,6 +16,7 @@ from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
 
 import datetime, pytz
 from decimal import Decimal, ROUND_UP, ROUND_DOWN
+from collections import deque
 
 from dotenv import load_dotenv
 import os
@@ -27,6 +28,7 @@ USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 
 latest_prices = {}
 day_high = {}
+quote_window = deque(maxlen=500)
 
 eastern = pytz.timezone("US/Eastern")
 
@@ -59,7 +61,11 @@ async def handle_trade(trade: Trade):
         file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
 async def handle_quote(quote):
-    print("PLACEHOLDER")
+    bid = quote.bid_price
+    ask = quote.ask_price
+    time = quote.timestamp
+
+    
 
 
 async def start_price_quote_stream(symbols):
