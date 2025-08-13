@@ -23,6 +23,8 @@ Run config CLI (to input trade parameters):
 Run hybrid bot:   
 `python3 main.py`
 
+## PLACEHOLDER - REWRITE README
+
 ## Hybrid Trading Bot
 This project is made for traders with some experience and established strategies, as well as for new traders to use with paper trading to learn and experiment with new strategies. 
 
