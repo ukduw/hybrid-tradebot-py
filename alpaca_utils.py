@@ -9,8 +9,6 @@ from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.requests import LimitOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
 
-import asyncio
-
 import datetime, pytz
 from decimal import Decimal, ROUND_UP, ROUND_DOWN
 
