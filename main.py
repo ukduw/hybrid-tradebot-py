@@ -97,6 +97,7 @@ shutdown_event = threading.Event()
 
 # unrelated TODO: re-connect logic in case of network failure
     # saved traceback for later...
+# unrelated TODO: prevent opening new positions within x time of close
 
 
 def monitor_trade(setup):
