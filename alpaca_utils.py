@@ -2,7 +2,12 @@ from alpaca.data.live import StockDataStream
 from alpaca.data.models import Trade
 from alpaca.data.enums import DataFeed
 
+from alpaca.data.historical.stock import StockHistoricalDataClient
+from alpaca.data.requests import StockBarsRequest
+from alpaca.data.timeframe import TimeFrame
 
+import pandas as pd
+import pandas_ta as ta
 
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest
@@ -25,6 +30,7 @@ day_high = {}
 
 eastern = pytz.timezone("US/Eastern")
 
+historical_client = StockHistoricalDataClient(api_key=API_KEY, secret_key=SECRET_KEY)
 trading_client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=USE_PAPER_TRADING)
 stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=DataFeed.SIP)
 
