@@ -16,7 +16,8 @@ from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
 
 import datetime, pytz
 from decimal import Decimal, ROUND_UP, ROUND_DOWN
-from collections import deque
+from collections import defaultdict, deque
+from dataclasses import dataclass
 
 from dotenv import load_dotenv
 import os
@@ -28,7 +29,6 @@ USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 
 latest_prices = {}
 day_high = {}
-quote_window = deque(maxlen=500)
 
 eastern = pytz.timezone("US/Eastern")
 
@@ -36,42 +36,58 @@ historical_client = StockHistoricalDataClient(api_key=API_KEY, secret_key=SECRET
 trading_client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=USE_PAPER_TRADING)
 stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=DataFeed.SIP)
 
-async def handle_trade(trade: Trade):
-    symbol = trade.symbol
+@dataclass
+class QuoteEntry:
+    bid: float
+    ask: float
+    timestamp: datetime.datetime
 
-    if trade.size > 100:
-        price = trade.price
-        latest_prices[symbol] = price
-        if symbol not in day_high or price > day_high[symbol]:
-            day_high[symbol] = price
+class DataHandler:
+    def __init__(self, window_size=500):
+        self.quote_window = defaultdict(lambda: deque(maxlen=window_size))
 
-    #if trade.price >= 10:
-    #    price = trade.price if trade.size > 10 else price
-    #if 9.99 >= trade.price >= 1.00:
-    #    price = trade.price if trade.size > 100 else price
-    #if 0.9999 >= trade.price >= 0.1000:
-    #    price = trade.price if trade.size > 1000 else price
-    #if trade.price <= 0.0999:
-    #    price = trade.price if trade.size > 10000 else price
+    async def handle_quote(self, quote):
+        self.quote_window[quote.symbol].append(
+            QuoteEntry(
+                bid=quote.bid_price,
+                ask=quote.ask_price,
+                timestamp=quote.timestamp
+            )
+        )
 
-    # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
+    async def handle_trade(self, trade: Trade):
+        symbol = trade.symbol
+        trade_time = trade.timestamp
 
-    now = datetime.datetime.now(eastern)
-    with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-        file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+        quotes = self.quote_window.get(symbol, [])
+        if not quotes:
+            return
+        
+        closest_quote = min(quotes, key=lambda q: abs((q.timestamp - trade_time).total_seconds()))
+        if abs((closest_quote.timestamp - trade_time).total_seconds()) > 1:
+            return # PLACEHOLDER - NEEDS bid*tolerance% <= trade.price <= ask*tolerance%   
+        
+        # INTEGRATE THIS IN CASE OF CONDITIONS PASSING
+        if trade.size > 100:
+            price = trade.price
+            latest_prices[symbol] = price
+            if symbol not in day_high or price > day_high[symbol]:
+                day_high[symbol] = price
 
-async def handle_quote(quote):
-    bid = quote.bid_price
-    ask = quote.ask_price
-    time = quote.timestamp
+        # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
+
+        now = datetime.datetime.now(eastern)
+        with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+            file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+
 
     
-
+handler = DataHandler()
 
 async def start_price_quote_stream(symbols):
     for symbol in symbols:
-        await stock_stream.subscribe_trades(handle_trade, symbol)
-        await stock_stream.subscribe_quotes(handle_quote, symbol)
+        await stock_stream.subscribe_trades(handler.handle_trade, symbol)
+        await stock_stream.subscribe_quotes(handler.handle_quote, symbol)
 
     try:
         await stock_stream.run()
