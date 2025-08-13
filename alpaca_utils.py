@@ -2,8 +2,7 @@ from alpaca.data.live import StockDataStream
 from alpaca.data.models import Trade
 from alpaca.data.enums import DataFeed
 
-from alpaca.data.models import Bar
-from alpaca.data.timeframe import TimeFrame
+
 
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest
@@ -36,9 +35,7 @@ async def handle_trade(trade: Trade):
 
     if trade.size > 100:
         price = trade.price
-
         latest_prices[symbol] = price
-
         if symbol not in day_high or price > day_high[symbol]:
             day_high[symbol] = price
 
@@ -57,22 +54,27 @@ async def handle_trade(trade: Trade):
     with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
         file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
-def start_price_stream(symbols):
-    for symbol in symbols:
-        stock_stream.subscribe_trades(handle_trade, symbol)
+async def handle_quote(quote):
+    print("PLACEHOLDER")
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+
+async def start_price_quote_stream(symbols):
+    for symbol in symbols:
+        await stock_stream.subscribe_trades(handle_trade, symbol)
+        await stock_stream.subscribe_quotes(handle_quote, symbol)
+
     try:
-        loop.run_until_complete(stock_stream.run())
+        await stock_stream.run()
     except Exception as e:
         print(f"[WebSocket] Unexpected error: {e}")
 
-
-def stop_price_stream(symbol):
-    if symbol in stock_stream._handlers.get("trades", {}):
-        stock_stream.unsubscribe_trades(symbol)
-        print(f"[{symbol}] price stream unsubscribed")
+async def stop_price_quote_stream(symbol):
+    try:
+        await stock_stream.unsubscribe_trades(symbol)
+        await stock_stream.unsubscribe_quotes(symbol)
+        print(f"[{symbol}] price/quote stream unsubscribed")
+    except Exception as e:
+        print (f"[WebSocket] Error unsubscribing from {symbol}: {e}")
 
 
 def get_current_price(symbol):
