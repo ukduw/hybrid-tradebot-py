@@ -104,6 +104,7 @@ class DataHandler:
     # function to retrieve values into main
 
     # MACD first; RSI may not be necessary
+    # signal may also be unnecessary
 
 class BarIndicatorHandler:
     def __init__(self):
@@ -132,10 +133,22 @@ class BarIndicatorHandler:
         df.set_index("datetime", inplace=True)
         return df
 
-    def placeholder(ph):
+    def update_bar(self, bar):
         # PLACEHOLDER
         # PLACEHOLDER
         return
+    
+    def compute_macd(self, df):
+        if "close" not in df.columns:
+            return
+        macd = ta.macd(df['close'], fast=12, slow=26, signal=9)
+
+        if not macd.empty:
+            self.macd_history[self.symbol].append({
+                'macd': macd['MACD_12_26_9'].iloc[-1],
+                'signal': macd['MACDs_12_26_9'].iloc[-1],
+                'hist': macd['MACDh_12_26_9'].iloc[-1]
+            })
 
 
 # ===== OPEN/CLOSE STREAM, HANDLER CALL UTILS ===== #
@@ -166,6 +179,8 @@ def get_current_price(symbol):
 
 def get_day_high(symbol):
     return day_high.get(symbol)
+
+# def get_latest_macd(symbol)
 
 
 # ===== TRADING CLIENT UTILS ===== #
