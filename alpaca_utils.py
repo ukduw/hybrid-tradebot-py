@@ -38,7 +38,7 @@ trading_client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=USE
 stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=DataFeed.SIP)
 
 
-# ===== WEBSOCKETS, DATA STREAM UTILS ===== #
+# ===== WEBSOCKETS, DATA STREAM HANDLERS ===== #
 @dataclass
 class QuoteEntry:
     bid: float
@@ -96,34 +96,6 @@ class DataHandler:
         with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
             file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
-    
-handler = DataHandler()
-
-async def start_price_quote_stream(symbols):
-    for symbol in symbols:
-        await stock_stream.subscribe_trades(handler.handle_trade, symbol)
-        await stock_stream.subscribe_quotes(handler.handle_quote, symbol)
-
-    try:
-        await stock_stream.run()
-    except Exception as e:
-        print(f"[WebSocket] Unexpected error: {e}")
-
-async def stop_price_quote_stream(symbol):
-    try:
-        await stock_stream.unsubscribe_trades(symbol)
-        await stock_stream.unsubscribe_quotes(symbol)
-        print(f"[{symbol}] price/quote stream unsubscribed")
-    except Exception as e:
-        print (f"[WebSocket] Error unsubscribing from {symbol}: {e}")
-
-
-def get_current_price(symbol):
-    return latest_prices.get(symbol)
-
-def get_day_high(symbol):
-    return day_high.get(symbol)
-
 
 # ===== BAR DATA REQUESTS, INDICATOR GENERATION ===== #
     # keep indicator states per symbol
@@ -161,6 +133,36 @@ class BarIndicatorHandler:
         # PLACEHOLDER
         # PLACEHOLDER
         return
+
+
+# ===== OPEN/CLOSE STREAM, HANDLER CALL UTILS ===== #
+handler = DataHandler()
+
+async def start_price_quote_stream(symbols):
+    for symbol in symbols:
+        await stock_stream.subscribe_trades(handler.handle_trade, symbol)
+        await stock_stream.subscribe_quotes(handler.handle_quote, symbol)
+
+    try:
+        await stock_stream.run()
+    except Exception as e:
+        print(f"[WebSocket] Unexpected error: {e}")
+
+async def stop_price_quote_stream(symbol):
+    try:
+        await stock_stream.unsubscribe_trades(symbol)
+        await stock_stream.unsubscribe_quotes(symbol)
+        print(f"[{symbol}] price/quote stream unsubscribed")
+    except Exception as e:
+        print (f"[WebSocket] Error unsubscribing from {symbol}: {e}")
+
+
+# ===== VALUE RETRIEVAL UTILS (to main) ===== #
+def get_current_price(symbol):
+    return latest_prices.get(symbol)
+
+def get_day_high(symbol):
+    return day_high.get(symbol)
 
 
 # ===== TRADING CLIENT UTILS ===== #
