@@ -75,7 +75,7 @@ class DataHandler:
                 file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
             return  
         
-        tolerance = 0.015 # 1.5%
+        tolerance = 0.02 # 2.0%
         if not (closest_quote.bid * (1 - tolerance) <= trade_price <= closest_quote.ask * (1 - tolerance)):
             with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
                 file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
