@@ -82,6 +82,7 @@ shutdown_event = threading.Event()
         # continue testing with far more stringent watchlist...
 # more testing/time in market to determine best profit-taking parameters...
 # for now, implement basic version and incrementally refine it based on time in market
+# maybe need logic to skip very early premarket gap ups if subsequent tick(s) are downward
 
 
 # unrelated TODO: re-connect logic in case of network failure
