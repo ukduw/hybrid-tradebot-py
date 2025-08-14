@@ -55,11 +55,14 @@ shutdown_event = threading.Event()
     # 1. FILTER OUT GHOST TICKS...
     # 2. WRITE MORE COMPLEX PROFIT-TAKING LOGIC
         # re-entry logic can wait till after PDT...
+    # 3. PDT PROBLEMS
+        # currently averaging 15-20 tick watchlists - try to reduce to <10-15
+        # logic to skip very early premarket gap ups if subsequent tick(s) are down
 
-    # 3. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
+    # 4. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
         # don't forget the traceback saved in a txt...
         # not just for websocket - write reconnect logic for price streams + logs so they don't fail silently
-    # 4. WRITE EVENT-DRIVEN VERSION
+    # 5. WRITE EVENT-DRIVEN VERSION
         # current version sufficient; low priority
 
 
@@ -75,14 +78,14 @@ shutdown_event = threading.Event()
         # append data window
         # recalculate the indicators
         # rewrite main to make take-profit decisions based on these indicators
-
-# PDT PROBLEMS:
-    # a lot of very-early premarket volatility will barely trigger entry conditions...
-        # leads to junk entries - would actually still be profitable in current state if no PDT
-        # with PDT, there's no way this will work
-        # continue testing with far more stringent watchlist...
 # more testing/time in market to determine best profit-taking parameters...
 # for now, implement basic version and incrementally refine it based on time in market
+
+# PDT PROBLEMS:
+# a lot of very-early premarket volatility will barely trigger entry conditions...
+    # leads to junk entries - would actually still be profitable in current state if no PDT
+    # with PDT, there's no way this will work
+    # continue testing with far more stringent watchlist...
 # maybe need logic to skip very early premarket gap ups if subsequent tick(s) are downward
 
 
