@@ -111,6 +111,9 @@ class BarIndicatorHandler:
         self.bar_window = defaultdict(lambda: deque(maxlen=window_size))
         self.macd_history = defaultdict(list)
 
+    # THIS ONLY NEEDS TO HAPPEN ONCE... MAYBE THIS SHOULD BE CALLED PER SYMBOL, ABOVE STOCK_STREAM STATEMENTS (in start_price_quote_stream)
+    # RE-CALCULATE MACD PER NEW BAR SHOULD BE THE CALLBACK FUNCTION
+    # wait, this isn't websocket related... bar data is api-called...
     def fetch_seed_bars(symbol):
         lookback_minutes = 100
         start_time = now - datetime.timedelta(minutes=lookback_minutes + 10)
