@@ -134,7 +134,10 @@ def get_day_high(symbol):
     # MACD first; RSI may not be necessary
 
 class BarIndicatorHandler:
-    # PLACEHOLDER
+    def __init__(self):
+        window_size = 100
+        self.bar_window = defaultdict(lambda: deque(maxlen=window_size))
+        self.macd_history = defaultdict(list)
 
     def placeholder(ph):
         # PLACEHOLDER
