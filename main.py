@@ -53,11 +53,8 @@ shutdown_event = threading.Event()
 
 # PRIORITY ORDER:
     # 1. FILTER OUT GHOST TICKS...
-        # testing and tweaking...
     # 2. WRITE MORE COMPLEX PROFIT-TAKING LOGIC
         # re-entry logic can wait till after PDT...
-        # how to deal with junk entries during PDT...?
-# ((don't forget to use progressively more stringent watchlists due to PDT...))
 
     # 3. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
         # don't forget the traceback saved in a txt...
@@ -65,6 +62,10 @@ shutdown_event = threading.Event()
     # 4. WRITE EVENT-DRIVEN VERSION
         # current version sufficient; low priority
 
+
+# GHOST TICKS
+# implemented tick filter based on quotes
+# need to test and tweak to prevent filtering valid ticks
 
 # PROFIT TAKING
 # pandas-ta
