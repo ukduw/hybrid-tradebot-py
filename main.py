@@ -67,20 +67,9 @@ shutdown_event = threading.Event()
 
 
 # PROFIT TAKING
-# options for momentum profit-take: vwap + xSTDEV, vol > 2x avg?, rsi > 75?, long upper wick (5min) indicating exhaustion, rsi bearish divergence...
-    # if >=2 conditions true, take partial profit
-# NOTE: MACD, RSI seem most straightforward + applicable
-    # can combine signals to determine whether 50% or 100% take-profit
-    # if macd goes above x%, then pulls back y%, indicates peak - take profit
-    # if RSI < 75, take 50% - if RSI > 75, take 100%
-    
-    # vwap, even with 2x stdev take profit far too soon, and 2x vol not applicable... maybe can use exhaustion wicks
-    # i don't think swing low is applicable anymore - doesn't even work on 30min candles; don't want to go as far as 1hr...
-        # often takes profit during normal consolidation before another move
-    # no longer any need for 15% condition or 15/30min bars, or time-based?
-# pandas-ta?
+# pandas-ta
     # fetch recent bars on startup to seed calc (50-100 1min bars)
-    # calculate indicators (RSI(14), MACD(12,26,9)) with pandas-ta
+    # calculate indicators (RSI(14)?, MACD(12,26,9)) with pandas-ta
     # as new 1min bars come in:
         # append data window
         # recalculate the indicators
