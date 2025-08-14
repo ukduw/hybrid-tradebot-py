@@ -126,6 +126,22 @@ def get_day_high(symbol):
 
 
 # ===== BAR DATA REQUESTS, INDICATOR GENERATION ===== #
+    # keep indicator states per symbol
+    # store indicator values over time, not just latest
+    # update indicators as data from new bars is retrieved
+    # function to retrieve values into main
+
+    # MACD first; RSI may not be necessary
+
+class BarIndicatorHandler:
+    # PLACEHOLDER
+
+    def placeholder(ph):
+        # PLACEHOLDER
+        # PLACEHOLDER
+        return
+
+
 def fetch_seed_bars(symbol):
     lookback_minutes = 100
     start_time = now - datetime.timedelta(minutes=lookback_minutes + 10)
