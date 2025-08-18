@@ -72,13 +72,9 @@ shutdown_event = threading.Event()
 
 # PROFIT TAKING
 # pandas-ta
-    # fetch recent bars on startup to seed calc (50-100 1min bars)
-    # calculate indicators (RSI(14)?, MACD(12,26,9)) with pandas-ta
-    # as new 1min bars come in:
-        # append data window
-        # recalculate the indicators
-        # rewrite main to make take-profit decisions based on these indicators
-# more testing/time in market to determine best profit-taking parameters...
+# implemented bars/macd calc...
+# rewrite main to make take-profit decisions based on indicator
+    # more testing/time in market to determine best profit-taking parameters...
 # for now, implement basic version and incrementally refine it based on time in market
 
 # PDT PROBLEMS:
