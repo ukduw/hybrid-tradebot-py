@@ -154,7 +154,7 @@ class BarIndicatorHandler:
 # ===== OPEN/CLOSE STREAM, HANDLER CALL UTILS ===== #
 handler = DataHandler()
 
-async def start_price_quote_stream(symbols):
+async def start_price_quote_bar_stream(symbols):
     for symbol in symbols:
         await stock_stream.subscribe_trades(handler.handle_trade, symbol)
         await stock_stream.subscribe_quotes(handler.handle_quote, symbol)
@@ -164,7 +164,7 @@ async def start_price_quote_stream(symbols):
     except Exception as e:
         print(f"[WebSocket] Unexpected error: {e}")
 
-async def stop_price_quote_stream(symbol):
+async def stop_price_quote_bar_stream(symbol):
     try:
         await stock_stream.unsubscribe_trades(symbol)
         await stock_stream.unsubscribe_quotes(symbol)
