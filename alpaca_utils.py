@@ -111,18 +111,17 @@ class DataHandler:
     async def handle_bar(self, bar):
         self.bar_window[bar.symbol].append(
             BarEntry(
-                pd.DataFrame(
-                    open=bar.open,
-                    high=bar.high,
-                    low=bar.low,
-                    close=bar.close,
-                    volume=bar.volume,
-                    vwap=getattr(bar, "vwap", None),
-                    trade_count=getattr(bar, "trade_count", None)
-                )
+                open=bar.open,
+                high=bar.high,
+                low=bar.low,
+                close=bar.close,
+                volume=bar.volume,
+                vwap=getattr(bar, "vwap", None),
+                trade_count=getattr(bar, "trade_count", None)
             )
         )
-        latest_macd[bar.symbol] = self.compute_macd(self.bar_window)
+        bars = list(self.bar_window[bar.symbol])
+        latest_macd[bar.symbol] = self.compute_macd(pd.DataFrame([b.__dict__ for b in bars]))
     
     async def seed_history(self, symbol):
         lookback_minutes = 100
