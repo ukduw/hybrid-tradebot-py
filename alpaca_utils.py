@@ -29,6 +29,7 @@ USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 
 latest_prices = {}
 day_high = {}
+latest_macd = {}
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -46,8 +47,9 @@ class QuoteEntry:
     timestamp: datetime.datetime
 
 class DataHandler:
-    def __init__(self, window_size=500):
-        self.quote_window = defaultdict(lambda: deque(maxlen=window_size))
+    def __init__(self):
+        self.quote_window = defaultdict(lambda: deque(maxlen=500))
+        self.bar_window = defaultdict(lambda: deque(maxlen=200))
 
     async def handle_quote(self, quote):
         self.quote_window[quote.symbol].append(
@@ -96,6 +98,11 @@ class DataHandler:
         with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
             file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
+    async def handle_bar(self, bar):
+        self.bar_window[bar.symbol].append(
+
+        )
+
 
 # ===== BAR DATA REQUESTS, INDICATOR GENERATION ===== #
     # keep indicator states per symbol
@@ -112,9 +119,6 @@ class BarIndicatorHandler:
         self.bar_window = defaultdict(lambda: deque(maxlen=window_size))
         self.macd_history = defaultdict(list)
 
-    # THIS ONLY NEEDS TO HAPPEN ONCE... MAYBE THIS SHOULD BE CALLED PER SYMBOL, ABOVE STOCK_STREAM STATEMENTS (in start_price_quote_stream)
-    # RE-CALCULATE MACD PER NEW BAR SHOULD BE THE CALLBACK FUNCTION
-    # wait, this isn't websocket related... bar data is api-called...
     def fetch_seed_bars(symbol):
         lookback_minutes = 100
         start_time = now - datetime.timedelta(minutes=lookback_minutes + 10)
@@ -158,6 +162,7 @@ async def start_price_quote_bar_stream(symbols):
     for symbol in symbols:
         await stock_stream.subscribe_trades(handler.handle_trade, symbol)
         await stock_stream.subscribe_quotes(handler.handle_quote, symbol)
+        await stock_stream.subscribe_bars(handler.handle_bar, symbol)
 
     try:
         await stock_stream.run()
@@ -168,6 +173,7 @@ async def stop_price_quote_bar_stream(symbol):
     try:
         await stock_stream.unsubscribe_trades(symbol)
         await stock_stream.unsubscribe_quotes(symbol)
+        await stock_stream.unsubscribe_bars(symbol)
         print(f"[{symbol}] price/quote stream unsubscribed")
     except Exception as e:
         print (f"[WebSocket] Error unsubscribing from {symbol}: {e}")
