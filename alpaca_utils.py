@@ -134,10 +134,9 @@ class DataHandler:
             timeframe=TimeFrame.Minute
         )
 
-        bars = historical_client.get_stock_bars(request_params=request_params).df
+        bars = historical_client.get_stock_bars(request_params).df
         sdf = bars.xs(symbol, level=0).sort_index()
-        sdf = self.compute_macd(sdf)
-        latest_macd[symbol] = sdf
+        latest_macd[symbol] = self.compute_macd(sdf)
 
     async def compute_macd(self, df: pd.DataFrame) -> pd.DataFrame:
         if df.empty:
