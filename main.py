@@ -166,12 +166,12 @@ def monitor_trade(setup):
                     pb.push_note("Hybrid bot", f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
                     return
                 elif day_high >= entry * 1.15 and price <= day_high * (100 - trailing_stop)/100:
-                        close_position(symbol, qty)
-                        print(f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
-                        with open("trade-log/trade_log.txt", "a") as file:
-                            file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
-                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
-                        return
+                    close_position(symbol, qty)
+                    print(f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
+                    with open("trade-log/trade_log.txt", "a") as file:
+                        file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
+                    pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
+                    return
 
             time.sleep(1)
 
