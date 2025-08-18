@@ -14,7 +14,7 @@ from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.requests import LimitOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
 
-import datetime, time, pytz
+import datetime, pytz
 from decimal import Decimal, ROUND_UP, ROUND_DOWN
 from collections import defaultdict, deque
 from dataclasses import dataclass
