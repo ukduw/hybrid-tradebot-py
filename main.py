@@ -96,6 +96,8 @@ shutdown_event = threading.Event()
 def monitor_trade(setup):
     symbol = setup["symbol"]
     in_position = False
+    take_100 = False
+    take_50 = False
 
     print(f"[{symbol}] Monitoring... {setup["entry_price"]}, {setup["stop_loss"]}")
 
