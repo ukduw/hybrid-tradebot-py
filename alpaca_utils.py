@@ -39,12 +39,22 @@ trading_client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=USE
 stock_stream = StockDataStream(api_key=API_KEY, secret_key=SECRET_KEY, feed=DataFeed.SIP)
 
 
-# ===== WEBSOCKETS, DATA STREAM HANDLERS ===== #
+# ===== WEBSOCKETS, DATA STREAM HANDLERS + MACD CALC ===== #
 @dataclass
 class QuoteEntry:
     bid: float
     ask: float
     timestamp: datetime.datetime
+
+@dataclass
+class BarEntry:
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: int
+    vwap: float
+    trade_count: int
 
 class DataHandler:
     def __init__(self):
@@ -100,8 +110,44 @@ class DataHandler:
 
     async def handle_bar(self, bar):
         self.bar_window[bar.symbol].append(
-
+            BarEntry(
+                pd.DataFrame(
+                    open=bar.open,
+                    high=bar.high,
+                    low=bar.low,
+                    close=bar.close,
+                    volume=bar.volume,
+                    vwap=getattr(bar, "vwap", None),
+                    trade_count=getattr(bar, "trade_count", None)
+                )
+            )
         )
+        latest_macd[bar.symbol] = self.compute_macd(self.bar_window)
+    
+    async def seed_history(self, symbol):
+        lookback_minutes = 100
+        start_time = now - datetime.timedelta(minutes=lookback_minutes + 10)
+
+        request_params = StockBarsRequest(
+            symbol=symbol,
+            start=start_time,
+            end=now,
+            timeframe=TimeFrame.Minute
+        )
+
+        bars = historical_client.get_stock_bars(request_params=request_params).df
+        sdf = bars.xs(symbol, level=0).sort_index()
+        sdf = self.compute_macd(sdf)
+        latest_macd[symbol] = sdf
+
+    async def compute_macd(self, df: pd.DataFrame) -> pd.DataFrame:
+        if df.empty:
+            return df
+        df = df.copy()
+        df.ta.macd(close="close", fast=12, slow=26, signal=9, append=True)
+        return df
+
+        
 
 
 # ===== BAR DATA REQUESTS, INDICATOR GENERATION ===== #
@@ -120,22 +166,7 @@ class BarIndicatorHandler:
         self.macd_history = defaultdict(list)
 
     def fetch_seed_bars(symbol):
-        lookback_minutes = 100
-        start_time = now - datetime.timedelta(minutes=lookback_minutes + 10)
-
-        request_params = StockBarsRequest(
-            symbol=symbol,
-            start=start_time,
-            end=now,
-            timeframe=TimeFrame.Minute
-        )
-
-        bars = historical_client.get_stock_bars(request_params=request_params).df
-        df = bars[bars.index.get_level_values(0) == symbol].copy()
-        df.reset_index(inplace=True)
-        df.rename(columns={"timestamp": "datetime"}, inplace=True)
-        df.set_index("datetime", inplace=True)
-        return df
+        return
 
     def update_bar(self, bar):
         # PLACEHOLDER
@@ -160,6 +191,8 @@ handler = DataHandler()
 
 async def start_price_quote_bar_stream(symbols):
     for symbol in symbols:
+        await handler.seed_history(symbol)
+
         await stock_stream.subscribe_trades(handler.handle_trade, symbol)
         await stock_stream.subscribe_quotes(handler.handle_quote, symbol)
         await stock_stream.subscribe_bars(handler.handle_bar, symbol)
