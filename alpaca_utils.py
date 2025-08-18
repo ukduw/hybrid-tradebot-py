@@ -59,7 +59,9 @@ class BarEntry:
 class DataHandler:
     def __init__(self):
         self.quote_window = defaultdict(lambda: deque(maxlen=500))
-        self.bar_window = defaultdict(lambda: deque(maxlen=200))
+        self.bar_window = defaultdict(lambda: deque(maxlen=100))
+            # consider getting rid of deque altogether...
+            # and computing EMAs incrementally, manually... (without pandas-ta)
 
     async def handle_quote(self, quote):
         self.quote_window[quote.symbol].append(
