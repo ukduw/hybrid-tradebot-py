@@ -15,7 +15,7 @@ load_dotenv()
 PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
 pb = Pushbullet(PB_API_KEY)
 
-from alpaca_utils import start_price_quote_bar_stream, get_current_price, get_day_high, stop_price_quote_bar_stream, place_order, close_position, close_all_positions, stock_stream
+from alpaca_utils import start_price_quote_bar_stream, get_current_price, get_day_high, get_latest_macd, stop_price_quote_bar_stream, place_order, close_position, close_all_positions, stock_stream
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
