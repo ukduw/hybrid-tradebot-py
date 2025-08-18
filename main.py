@@ -71,10 +71,13 @@ shutdown_event = threading.Event()
 # need to test and tweak to prevent filtering valid ticks
 
 # PROFIT TAKING
-# pandas-ta
 # implemented bars/macd calc...
 # rewrite main to make take-profit decisions based on indicator
-    # more testing/time in market to determine best profit-taking parameters...
+    # e.g. variable(s) to store boolean
+    # get_latest_macd returns dataframe; extract data, calc ratio, etc...
+    # variable(s) switch to True if ratio >45%, then loops, monitoring fall back below threshold - SELL
+    # different conditions determine which variable switches to True - determines 50% or 100% take profit
+# more testing/time in market to determine best profit-taking parameters...
 # for now, implement basic version and incrementally refine it based on time in market
 
 # PDT PROBLEMS:
