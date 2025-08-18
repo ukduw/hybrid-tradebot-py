@@ -186,7 +186,8 @@ def get_current_price(symbol):
 def get_day_high(symbol):
     return day_high.get(symbol)
 
-# def get_latest_macd(symbol)
+def get_latest_macd(symbol):
+    return latest_macd.get(symbol)
 
 
 # ===== TRADING CLIENT UTILS ===== #
