@@ -172,6 +172,15 @@ def monitor_trade(setup):
                         file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
                     pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
                     return
+                
+                # macd = get_latest_macd()
+                    # use to calculate ratio, use line, etc...
+                # if 0.50 > macd_ratio > 0.40:
+                    # take_50 = True
+                # if macd_ratio > 0.50:
+                    # take_50 = False
+                    # take_100 = True
+                # need variables to track whether ratio has fallen below again?
 
             time.sleep(1)
 
