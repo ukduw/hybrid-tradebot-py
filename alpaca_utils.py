@@ -142,46 +142,8 @@ class DataHandler:
         if df.empty:
             return df
         df = df.copy()
-        df.ta.macd(close="close", fast=12, slow=26, signal=9, append=True)
-        return df
-
-        
-
-
-# ===== BAR DATA REQUESTS, INDICATOR GENERATION ===== #
-    # keep indicator states per symbol
-    # store indicator values over time, not just latest
-    # update indicators as data from new bars is retrieved
-    # function to retrieve values into main
-
-    # MACD first; RSI may not be necessary
-    # signal may also be unnecessary
-
-class BarIndicatorHandler:
-    def __init__(self):
-        window_size = 100
-        self.bar_window = defaultdict(lambda: deque(maxlen=window_size))
-        self.macd_history = defaultdict(list)
-
-    def fetch_seed_bars(symbol):
-        return
-
-    def update_bar(self, bar):
-        # PLACEHOLDER
-        # PLACEHOLDER
-        return
-    
-    def compute_macd(self, df):
-        if "close" not in df.columns:
-            return
-        macd = ta.macd(df['close'], fast=12, slow=26, signal=9)
-
-        if not macd.empty:
-            self.macd_history[self.symbol].append({
-                'macd': macd['MACD_12_26_9'].iloc[-1],
-                'signal': macd['MACDs_12_26_9'].iloc[-1],
-                'hist': macd['MACDh_12_26_9'].iloc[-1]
-            })
+        macd = ta.macd(df['close'], fast=12, slow=26, signal=9, append=True)
+        return macd
 
 
 # ===== OPEN/CLOSE STREAM, HANDLER CALL UTILS ===== #
