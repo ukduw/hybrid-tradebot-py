@@ -133,7 +133,9 @@ class DataHandler:
             symbol=symbol,
             start=start_time,
             end=now,
-            timeframe=TimeFrame.Minute
+            timeframe=TimeFrame(15, TimeFrame.Minute),
+            adjustment="raw",
+            feed="sip"
         )
 
         bars = historical_client.get_stock_bars(request_params).df
