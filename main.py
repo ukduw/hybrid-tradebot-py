@@ -193,6 +193,9 @@ def monitor_trade(setup):
                     # normalized by price - would probably require a lot of testing...
                     # right now, leaning towards 2nd solution
 
+                # could track max percent_diff above threshold
+                # take profit based off trailing stop, i.e. x% below max
+
             time.sleep(1)
 
         except Exception as e:
