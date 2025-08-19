@@ -77,7 +77,7 @@ class DataHandler:
         trade_time = trade.timestamp
         trade_price = trade.price
 
-        quotes = self.quote_window.get(symbol, [])
+        quotes: deque[QuoteEntry] = self.quote_window[symbol]
         if not quotes:
             with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
                 file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
