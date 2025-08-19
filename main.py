@@ -177,7 +177,7 @@ def monitor_trade(setup):
                     # note: macd line = 26 - 12 EMA, signal line = 9-period EMA of the macd line, histogram = difference between the 2
                     # could just use histogram...
                     # but would that be relative to each stock? if so, calc ratio between the two rather than difference?
-                    # after looking at 1min macd, consider refactoring to 5min?
+                    # after looking at 1min macd, consider refactoring to 5-15min?
                         # keep in mind that decisions will only be made AFTER complete candles come in...
                 # if 0.50 > macd_ratio > 0.40:
                     # take_50 = True
@@ -185,6 +185,13 @@ def monitor_trade(setup):
                     # take_50 = False
                     # take_100 = True
                 # need variables to track whether ratio has fallen below again?
+
+                # macd_line / signal_line... ratio - fine, but need to account for sign and division by 0, and becomes unstable near 0
+                # (macd_line - signal_line) / signal_line) * 100... if signal_line != 0
+                    # percentage difference - more straightforward
+                # (macd_line - signal_line) / price
+                    # normalized by price - would probably require a lot of testing...
+                    # right now, leaning towards 2nd solution
 
             time.sleep(1)
 
