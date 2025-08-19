@@ -174,7 +174,9 @@ def monitor_trade(setup):
                     return
                 
                 # macd = get_latest_macd()
-                    # use to calculate ratio, use line, etc...
+                    # note: macd line = 26 - 12 EMA, signal line = 9-period EMA of the macd line, histogram = difference between the 2
+                    # could just use histogram...
+                    # but would that be relative to each stock? if so, calc ratio between the two rather than difference?
                 # if 0.50 > macd_ratio > 0.40:
                     # take_50 = True
                 # if macd_ratio > 0.50:
