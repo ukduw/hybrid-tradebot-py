@@ -1,5 +1,5 @@
 from alpaca.data.live import StockDataStream
-from alpaca.data.models import Trade
+from alpaca.data.models import Trade, Quote, Bar
 from alpaca.data.enums import DataFeed
 
 from alpaca.data.historical.stock import StockHistoricalDataClient
@@ -63,7 +63,7 @@ class DataHandler:
             # consider getting rid of deque altogether...
             # and computing EMAs incrementally, manually... (without pandas-ta)
 
-    async def handle_quote(self, quote):
+    async def handle_quote(self, quote: Quote):
         self.quote_window[quote.symbol].append(
             QuoteEntry(
                 bid=quote.bid_price,
@@ -110,7 +110,7 @@ class DataHandler:
         with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
             file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
-    async def handle_bar(self, bar):
+    async def handle_bar(self, bar: Bar):
         self.bar_window[bar.symbol].append(
             BarEntry(
                 open=bar.open,
