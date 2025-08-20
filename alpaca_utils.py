@@ -184,7 +184,8 @@ def get_day_high(symbol):
     return day_high.get(symbol)
 
 def get_latest_macd(symbol):
-    return latest_macd.get(symbol)
+    df = latest_macd.get(symbol)
+    return df.iloc[-1]
 
 
 # ===== TRADING CLIENT UTILS ===== #
