@@ -159,7 +159,7 @@ def monitor_trade(setup):
             if in_position:
                 macd = get_latest_macd(symbol)
                 percent_diff = ( macd['MACDh_12_26_9'] / macd['MACDs_12_26_9'] ) * 100
-                macd_high = None
+                macd_perc_high = None
 
                 half_position = round(qty / 2)
 
@@ -172,14 +172,14 @@ def monitor_trade(setup):
                     return
                 
                 if 35 < percent_diff < 45: # TWEAK VALUES
-                    macd_high = macd
+                    macd_perc_high = percent_diff
                     while not percent_diff > 44:
                         macd = get_latest_macd(symbol)
                         percent_diff = ( macd['MACDh_12_26_9'] / macd['MACDs_12_26_9'] ) * 100
                         
-                        if macd > macd_high:
-                            macd_high = macd
-                        if macd <= macd_high * 0.875: # TWEAK TRAIL
+                        if percent_diff > macd_perc_high:
+                            macd_perc_high = percent_diff
+                        if percent_diff <= macd_perc_high * 0.875: # TWEAK TRAIL
                             if not take_50:
                                 take_50 = True
                                 qty = qty - half_position
@@ -198,14 +198,14 @@ def monitor_trade(setup):
                                 return
 
                 if percent_diff > 44:
-                    macd_high = macd
+                    macd_perc_high = percent_diff
                     while True:
                         macd = get_latest_macd(symbol)
                         percent_diff = ( macd['MACDh_12_26_9'] / macd['MACDs_12_26_9'] ) * 100
 
-                        if macd > macd_high:
-                            macd_high = macd
-                        if macd <= macd_high * 0.875: # TWEAK TRAIL
+                        if percent_diff > macd_perc_high:
+                            macd_perc_high = percent_diff
+                        if percent_diff <= macd_perc_high * 0.875: # TWEAK TRAIL
                             close_position(symbol, qty)
                             print(f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
                             with open("trade-log/trade_log.txt", "a") as file:
