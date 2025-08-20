@@ -71,6 +71,11 @@ shutdown_event = threading.Event()
     # with PDT, there's no way this will work
     # continue testing with far more stringent watchlist...
 # maybe need logic to skip very early premarket gap ups if subsequent tick(s) are downward
+    # if first tick > previous close (utils needed...)
+    # if x ticks above first tick, another util returns True
+    # if util returns true, can enter position
+        # other solutions include % above open, red x-min candle (may result in very late entries...)
+        # price below vwap, break premarket high... (not preferable)
 
 
 # unrelated TODO: re-connect logic in case of network failure
