@@ -104,7 +104,6 @@ def monitor_trade(setup):
 
         entry = updated_setup["entry_price"]
         stop = updated_setup["stop_loss"]
-        trailing_stop = updated_setup["trailing_stop_percentage"]
         qty = round(updated_setup["dollar_value"] / updated_setup["entry_price"])
 
         price = get_current_price(symbol)
