@@ -214,17 +214,6 @@ def monitor_trade(setup):
                             return
 
 
-                
-                # possible cases:
-                    # 1. low diff, 1st time (50%)
-                    # 2. high diff, 1st time (TRIGGERS LOW DIFF CONDITION ON THE WAY UP) (100%)
-                    # 3. low diff, 2nd time (2nd 50%, return)
-                    # 4. low diff-high diff (2nd if high diff, but 50% qty already taken)
-                        # remember to -= the qty variable with half_position
-
-                # could track max percent_diff above threshold
-                # take profit based off trailing stop, i.e. x% below max
-
             time.sleep(1)
 
         except Exception as e:
