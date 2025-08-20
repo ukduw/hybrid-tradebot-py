@@ -158,7 +158,7 @@ def monitor_trade(setup):
 
             if in_position:
                 macd = get_latest_macd(symbol)
-                percent_diff = ( macd['MACDh_12_26_9'] / macd['MACDs_12_26_9'] ) * 100
+                percent_diff = ( macd['MACDh_12_26_9'] / macd['MACDs_12_26_9'] ) * 100 if macd['MACDs_12_26_9'] != 0 else 0
                 macd_perc_high = None
 
                 half_position = round(qty / 2)
