@@ -98,7 +98,6 @@ def monitor_trade(setup):
     in_position = False
     take_100 = False
     take_50 = False
-    take_50_2nd = False
 
     print(f"[{symbol}] Monitoring... {setup["entry_price"]}, {setup["stop_loss"]}")
 
@@ -185,13 +184,6 @@ def monitor_trade(setup):
                     with open("trade-log/trade_log.txt", "a") as file:
                         file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
                     pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
-                if take_50_2nd:
-                    close_position(symbol, qty)
-                    print(f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
-                    with open("trade-log/trade_log.txt", "a") as file:
-                        file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
-                    pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
-                    return
                 if take_100:
                     close_position(symbol, qty)
                     print(f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
@@ -200,12 +192,12 @@ def monitor_trade(setup):
                     pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
                     return
                 
-                # if 0.50 > macd_ratio > 0.40:
-                    # take_50 = True
-                # if macd_ratio > 0.50:
-                    # take_50 = False
-                    # take_100 = True
-                # need variables to track whether ratio has fallen below again?
+                # possible cases:
+                    # 1. low diff, 1st time (50%)
+                    # 2. high diff, 1st time (TRIGGERS LOW DIFF CONDITION ON THE WAY UP) (100%)
+                    # 3. low diff, 2nd time (2nd 50%, return)
+                    # 4. low diff-high diff (2nd if high diff, but 50% qty already taken)
+                        # remember to -= the qty variable with half_position
 
                 # could track max percent_diff above threshold
                 # take profit based off trailing stop, i.e. x% below max
