@@ -197,7 +197,7 @@ def monitor_trade(setup):
                                 pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
                                 return
 
-                if percent_diff > 44:
+                if percent_diff > 44: # TWEAK VALUE
                     macd_perc_high = percent_diff
                     while True:
                         macd = get_latest_macd(symbol)
