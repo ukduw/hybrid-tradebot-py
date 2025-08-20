@@ -72,10 +72,10 @@ shutdown_event = threading.Event()
     # continue testing with far more stringent watchlist...
 # maybe need logic to skip very early premarket gap ups if subsequent tick(s) are downward
     # if first tick > previous close (utils needed...)
-    # if x ticks above first tick, another util returns True
+    # if x ticks above first tick/x% above open, another util returns True
     # if util returns true, can enter position
-        # other solutions include % above open, red x-min candle (may result in very late entries...)
-        # price below vwap, break premarket high... (not preferable)
+        # util: first tick, if above prev close (by x%?)...
+        # then how are normal entries be treated...? maybe util should return True in all other cases?
 
 
 # unrelated TODO: re-connect logic in case of network failure
