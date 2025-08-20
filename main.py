@@ -96,7 +96,6 @@ shutdown_event = threading.Event()
 def monitor_trade(setup):
     symbol = setup["symbol"]
     in_position = False
-    take_100 = False
     take_50 = False
 
     print(f"[{symbol}] Monitoring... {setup["entry_price"]}, {setup["stop_loss"]}")
@@ -160,6 +159,8 @@ def monitor_trade(setup):
             if in_position:
                 macd = get_latest_macd(symbol)
                 percent_diff = ( macd['MACDh_12_26_9'] / macd['MACDs_12_26_9'] ) * 100
+                macd_high = None
+
                 half_position = round(qty / 2)
 
                 if price < stop: 
@@ -170,27 +171,49 @@ def monitor_trade(setup):
                     pb.push_note("Hybrid bot", f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
                     return
                 
-                if 35 < percent_diff < 45 and not take_50:
-                    take_50 = True
-                elif percent_diff < 35 and take_50:
-                    take_50_2nd = True
+                if 35 < percent_diff < 45: # TWEAK VALUES
+                    macd_high = macd
+                    while not percent_diff > 44:
+                        macd = get_latest_macd(symbol)
+                        percent_diff = ( macd['MACDh_12_26_9'] / macd['MACDs_12_26_9'] ) * 100
+                        
+                        if macd > macd_high:
+                            macd_high = macd
+                        if macd <= macd_high * 0.875: # TWEAK TRAIL
+                            if not take_50:
+                                take_50 = True
+                                qty = qty - half_position
+                                close_position(symbol, half_position)
+                                print(f"[{symbol}] TAKE-PROFT hit. Exiting 50% position @ {price}")
+                                with open("trade-log/trade_log.txt", "a") as file:
+                                    file.write(f"{now}, {symbol}, 50% Exit, {half_position}, {price}" + "\n")
+                                pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting 50% position @ {price}")
+                                break
+                            else:
+                                close_position(symbol, qty)
+                                print(f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
+                                with open("trade-log/trade_log.txt", "a") as file:
+                                    file.write(f"{now}, {symbol}, 2nd 50% Exit, {qty}, {price}" + "\n")
+                                pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
+                                return
 
                 if percent_diff > 44:
-                    take_100 = True
+                    macd_high = macd
+                    while True:
+                        macd = get_latest_macd(symbol)
+                        percent_diff = ( macd['MACDh_12_26_9'] / macd['MACDs_12_26_9'] ) * 100
 
-                if take_50:
-                    close_position(symbol, qty)
-                    print(f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
-                    with open("trade-log/trade_log.txt", "a") as file:
-                        file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
-                    pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
-                if take_100:
-                    close_position(symbol, qty)
-                    print(f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
-                    with open("trade-log/trade_log.txt", "a") as file:
-                        file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
-                    pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
-                    return
+                        if macd > macd_high:
+                            macd_high = macd
+                        if macd <= macd_high * 0.875: # TWEAK TRAIL
+                            close_position(symbol, qty)
+                            print(f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
+                            with open("trade-log/trade_log.txt", "a") as file:
+                                file.write(f"{now}, {symbol}, 100% Exit, {half_position}, {price}" + "\n")
+                            pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
+                            return
+
+
                 
                 # possible cases:
                     # 1. low diff, 1st time (50%)
