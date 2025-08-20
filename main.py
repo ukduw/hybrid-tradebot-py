@@ -98,6 +98,7 @@ def monitor_trade(setup):
     in_position = False
     take_100 = False
     take_50 = False
+    take_50_2nd = False
 
     print(f"[{symbol}] Monitoring... {setup["entry_price"]}, {setup["stop_loss"]}")
 
@@ -158,6 +159,10 @@ def monitor_trade(setup):
                     time.sleep(18000)
 
             if in_position:
+                macd = get_latest_macd(symbol)
+                percent_diff = ( macd['MACDh_12_26_9'] / macd['MACDs_12_26_9'] ) * 100
+                half_position = round(qty / 2)
+
                 if price < stop: 
                     close_position(symbol, qty)
                     print(f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
@@ -165,7 +170,29 @@ def monitor_trade(setup):
                         file.write(f"{now},{symbol},EXIT,{qty},{price}" + "\n")
                     pb.push_note("Hybrid bot", f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
                     return
-                elif day_high >= entry * 1.15 and price <= day_high * (100 - trailing_stop)/100:
+                
+                if 35 < percent_diff < 45 and not take_50:
+                    take_50 = True
+                elif percent_diff < 35 and take_50:
+                    take_50_2nd = True
+
+                if percent_diff > 44:
+                    take_100 = True
+
+                if take_50:
+                    close_position(symbol, qty)
+                    print(f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
+                    with open("trade-log/trade_log.txt", "a") as file:
+                        file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
+                    pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
+                if take_50_2nd:
+                    close_position(symbol, qty)
+                    print(f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
+                    with open("trade-log/trade_log.txt", "a") as file:
+                        file.write(f"{now}, {symbol}, Exit, {qty}, {price}" + "\n")
+                    pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
+                    return
+                if take_100:
                     close_position(symbol, qty)
                     print(f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
                     with open("trade-log/trade_log.txt", "a") as file:
@@ -173,25 +200,12 @@ def monitor_trade(setup):
                     pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting @ {price}")
                     return
                 
-                # macd = get_latest_macd()
-                    # note: macd line = 26 - 12 EMA, signal line = 9-period EMA of the macd line, histogram = difference between the 2
-                    # could just use histogram...
-                    # but would that be relative to each stock? if so, calc ratio between the two rather than difference?
-                    # after looking at 1min macd, consider refactoring to 5-15min?
-                        # keep in mind that decisions will only be made AFTER complete candles come in...
                 # if 0.50 > macd_ratio > 0.40:
                     # take_50 = True
                 # if macd_ratio > 0.50:
                     # take_50 = False
                     # take_100 = True
                 # need variables to track whether ratio has fallen below again?
-
-                # macd_line / signal_line... ratio - fine, but need to account for sign and division by 0, and becomes unstable near 0
-                # (macd_line - signal_line) / signal_line) * 100... if signal_line != 0
-                    # percentage difference - more straightforward
-                # (macd_line - signal_line) / price
-                    # normalized by price - would probably require a lot of testing...
-                    # right now, leaning towards 2nd solution
 
                 # could track max percent_diff above threshold
                 # take profit based off trailing stop, i.e. x% below max
