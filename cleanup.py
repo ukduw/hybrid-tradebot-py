@@ -6,7 +6,7 @@ import os
 import json
 import sys
 
-from alpaca_utils import stop_price_stream
+from alpaca_utils import stop_price_quote_bar_stream
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
@@ -26,7 +26,7 @@ async def main():
     try:
         print("Running cleanup...")
         for symbol in symbols:
-            stop_price_stream(symbol)
+            stop_price_quote_bar_stream(symbol)
         await stock_stream.stop_ws()
 
     except Exception as e:
