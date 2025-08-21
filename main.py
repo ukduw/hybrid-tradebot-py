@@ -159,15 +159,15 @@ def monitor_trade(setup):
                     pb.push_note("Hybrid bot", f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
                     return
                 
-                if 35 < percent_diff < 45: # TWEAK VALUES
+                if 150 < percent_diff < 200: # TWEAK VALUES
                     macd_perc_high = percent_diff
-                    while not percent_diff > 44:
+                    while not percent_diff > 199:
                         macd = get_latest_macd(symbol)
                         percent_diff = ( macd['MACDh_12_26_9'] / macd['MACDs_12_26_9'] ) * 100
                         
                         if percent_diff > macd_perc_high:
                             macd_perc_high = percent_diff
-                        if percent_diff <= macd_perc_high * 0.875: # TWEAK TRAIL
+                        if percent_diff <= macd_perc_high * 0.8: # TWEAK TRAIL
                             if not take_50:
                                 take_50 = True
                                 qty = qty - half_position
@@ -185,7 +185,7 @@ def monitor_trade(setup):
                                 pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
                                 return
 
-                if percent_diff > 44: # TWEAK VALUE
+                if percent_diff > 199: # TWEAK VALUE
                     macd_perc_high = percent_diff
                     while True:
                         macd = get_latest_macd(symbol)
@@ -193,7 +193,7 @@ def monitor_trade(setup):
 
                         if percent_diff > macd_perc_high:
                             macd_perc_high = percent_diff
-                        if percent_diff <= macd_perc_high * 0.875: # TWEAK TRAIL
+                        if percent_diff <= macd_perc_high * 0.8: # TWEAK TRAIL
                             close_position(symbol, qty)
                             print(f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
                             with open("trade-log/trade_log.txt", "a") as file:
