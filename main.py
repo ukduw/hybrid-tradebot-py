@@ -48,8 +48,6 @@ def load_configs_on_modification():
 
 symbols = [setup["symbol"] for setup in cached_configs]
 
-shutdown_event = threading.Event()
-
 
 # PRIORITY ORDER:
     # CONVERT FROM THREADING TO ASYNCIO...
@@ -199,38 +197,45 @@ async def monitor_trade(setup):
 
 
 async def main():
-    data_stream_task = asyncio.create_task(start_price_quote_bar_stream(symbols))
-    monitor_tasks = [asyncio.create_task(monitor_trade(setup)) for setup in cached_configs]
-    
-    await asyncio.gather(data_stream_task, *monitor_tasks)
+    try:
+        data_stream_task = asyncio.create_task(start_price_quote_bar_stream(symbols))
+        monitor_tasks = [asyncio.create_task(monitor_trade(setup)) for setup in cached_configs]
+        await asyncio.gather(data_stream_task, *monitor_tasks)
+    except asyncio.CancelledError:
+        print("Error, tasks cancelled")
+    finally:
+        await handle_shutdown()
 
 # systemctl stop / ctrl+c cleanup
-async def handle_shutdown(signum, frame):
+async def handle_shutdown():
     print("Shutting down...")
-    shutdown_event.set()
+
+    for symbol in symbols:
+        await stop_price_quote_bar_stream(symbol)
+    await stock_stream.stop_ws()
+
+    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+    for t in tasks:
+        t.cancel()
+    await asyncio.gather(*tasks, return_exceptions=True)
+
+    print("Cleanup complete. Exiting...")
+
+
+def main_start():
+    loop = asyncio.get_event_loop()
+    asyncio.set_event_loop(loop)
+
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        loop.add_signal_handler(sig, lambda: asyncio.create_task(handle_shutdown()))
 
     try:
-        for symbol in symbols:
-            stop_price_quote_bar_stream(symbol)
-        await stock_stream.stop_ws()
-
-    except Exception as e:
-        print(f"[Shutdown] Error during cleanup: {e}")
+        loop.run_until_complete(main())
     finally:
-        print("Cleanup complete. Exiting...")
-        sys.exit(0)
-
-signal.signal(signal.SIGTERM, handle_shutdown)
-signal.signal(signal.SIGINT, handle_shutdown)
-
+        loop.close()
+        print("Event loop closed")
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
-
-    try:
-        while not shutdown_event.is_set():
-            shutdown_event.wait(1)
-    except KeyboardInterrupt:
-        handle_shutdown(None, None) # needs to be awaited??
+    main_start()
 
