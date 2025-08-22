@@ -6,6 +6,8 @@ import os
 import json
 import sys
 
+import asyncio
+
 from alpaca_utils import stop_price_quote_bar_stream
 
 load_dotenv()
@@ -23,21 +25,21 @@ symbols = [setup["symbol"] for setup in configs_json]
 
 
 async def main():
-    try:
-        print("Running cleanup...")
-        for symbol in symbols:
-            stop_price_quote_bar_stream(symbol)
-        await stock_stream.stop_ws()
+    print("Running systemd cleanup...")
 
-    except Exception as e:
-        print(f"Cleanup error: {e}")
-    finally:
-        print("Cleanup complete. Exiting...")
-        sys.exit(0)
+    for symbol in symbols:
+        await stop_price_quote_bar_stream(symbol)
+    await stock_stream.stop_ws()
+
+    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+    for t in tasks:
+        t.cancel()
+    await asyncio.gather(*tasks, return_exceptions=True)
+
+    print("Cleanup complete. Exiting...")
     
 
 if __name__ == "__main__":
-    import asyncio
     asyncio.run(main())
 
 
