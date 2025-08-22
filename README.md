@@ -39,7 +39,7 @@ Profit-taking is executed by the bot according to MACD and trailing stop strateg
 First, the data is seeded at premarket open by fetching the last 100 15min candlestick closes. Then, the MACD is re-computed per symbol as new bar data comes in via the websocket/data stream. If the percentage difference between the MACD and Signal line is high enough, the highest percentage difference is tracked and profit is taken via trailing stop, which is triggered when the current percentage difference is lower than the high by 20% or more. Partial or full profit is taken depending on how high the percentage difference is. Percentage difference:
 - ( MACD Histogram / Signal line ) * 100
 
-NOTE: The specific profit-taking parameters are in lines 148 - 188 of main.py and can be tweaked or reversed depending on strategy. The current parameters are suited for maximizing profit-taking during strength and locking in partial profits during runs for long strategies. 
+NOTE: The specific profit-taking parameters are in lines 148 - 188 of main.py and can be tweaked or reversed depending on the user's strategy. The current parameters are suited for maximizing profit-taking during strength and locking in partial profits during runs for long strategies. 
 
 The trailing stop allows winning plays to run and protects profits against downturns, while using MACD maximizes profit-taking during spikes only, avoiding early profit-taking.
 
