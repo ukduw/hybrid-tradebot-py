@@ -24,7 +24,7 @@ Run hybrid bot:
 `python3 main.py`
 
 ## PLACEHOLDER - REWRITE README
-bottom section..., ghost tick, gap up protection, 
+ghost tick, gap up protection, 
 
 ## Hybrid Trading Bot
 This project is made for traders with some experience and established strategies, as well as for new traders to use with paper trading to learn and experiment with new strategies. 
@@ -56,10 +56,5 @@ Push notifications are sent to the user's phone on entry/exit so the user can mo
 &nbsp;
 ---
 Currently uses CLI for user config inputs.   
-UPDATE: the configs json can now be updated while the script is running, allowing trade parameters to be changed according to how each setup unfolds. The bot checks the last modification time of the json and re-reads it when the time changes, reassigning the trade parameters in real time.
 
-Ideally, this bot would have a GUI with real time candlestick charting, where users could simply click the chart to set entry and exit targets per stock.
-
-I initially thought integrating Alpaca executions/data with TradingView alerts (sends webhook) via a Python web server (middleware) would add the above functionality, but this method does not allow extended market trading and TradingView's free alerts are limited to 2(!)... 
-
-Instead, I implemented utils/logic to allow the configs json to be changed in real time, so trade parameters can be changed/removed as each setup develops.
+The configs json to be changed in real time, so trade parameters can be changed/removed as each setup develops.
