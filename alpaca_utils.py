@@ -21,12 +21,18 @@ from dataclasses import dataclass
 
 from dotenv import load_dotenv
 import os
+import json
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
 USE_PAPER_TRADING = os.getenv("USE_PAPER_TRADING")
 
+CONFIG_PATH = "configs.json"
+with open("configs.json", "r") as f:
+    configs = json.load(f)
+
+gap_up_first_tick = {}
 latest_prices = {}
 day_high = {}
 latest_macd = {}
@@ -76,6 +82,9 @@ class DataHandler:
         symbol = trade.symbol
         trade_time = trade.timestamp
         trade_price = trade.price
+        setup = next((s for s in configs if s["symbol"] == symbol), None)
+        entry = setup["entry_price"]
+        exit = setup["stop_loss"]
 
         quotes: deque[QuoteEntry] = self.quote_window[symbol]
         if not quotes:
@@ -101,9 +110,18 @@ class DataHandler:
             return
         
         # if all conditions pass:
-        latest_prices[symbol] = trade_price
-        if symbol not in day_high or trade_price > day_high[symbol]:
-            day_high[symbol] = trade_price
+        if symbol not in gap_up_first_tick:
+            gap_up_first_tick[symbol] = trade_price
+
+        if gap_up_first_tick[symbol] > entry:
+            if trade_price > gap_up_first_tick[symbol] * 1.015 or trade_price <= exit: # 1.5%, TWEAK
+                latest_prices[symbol] = trade_price
+                if symbol not in day_high or trade_price > day_high[symbol]:
+                    day_high[symbol] = trade_price
+        else:
+            latest_prices[symbol] = trade_price
+            if symbol not in day_high or trade_price > day_high[symbol]:
+                day_high[symbol] = trade_price
 
         # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
