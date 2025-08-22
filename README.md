@@ -24,6 +24,7 @@ Run hybrid bot:
 `python3 main.py`
 
 ## PLACEHOLDER - REWRITE README
+intro, profit-taking (macd, trail - note where these can be tweaked), bottom section..., ghost tick, gap up protection, 
 
 ## Hybrid Trading Bot
 This project is made for traders with some experience and established strategies, as well as for new traders to use with paper trading to learn and experiment with new strategies. 
