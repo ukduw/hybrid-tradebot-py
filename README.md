@@ -47,6 +47,9 @@ Position size management is simplified. The user can input a different dollar am
 If a stock gaps up above the user's entry condition, it must continue uptrending 1.5% above its open before any tick data is passed to the bot's logic. This prevents false signals/entries in the case of gap-up-sell-off price action, and means that the bot only acts on confirmed signals. Many gap ups result in sell-offs or consolidation below their market open. In these cases, the entry may be significantly above the user's inputted entry condition, resulting in a higher risk level and % loss than intended when it is stopped out.
 
 ## Websocket Tick Data Filter
+There is a filter on the tick data that comes through the Alpaca websocket. A scrolling window (a deque) of quotes is streamed via the websocket. Each tick is compared with the closest-timestamp quotes and prevented from being passed to the bot's decision-making logic if it is outside of a 2% tolerance. Odd lot trades (<100 volume) are also ignored by the bot. These measures are to prevent "ghost ticks" from triggering entry/exit conditions falsely. These "ghost ticks" that are technically real, but typically filtered out by charting software by various means, making entries/exits triggered by these "ghost ticks" appear completely erroneous.
+
+NOTE: the tolerance % can be adjusted in line 101 of alpaca_utils.py - the 2% tolerance is suited for low priced stocks, where large relative spreads are normal.
 
 ## Trade Log Export and Push Notifications
 Entry and exit data are piped to a text file for easy export. The user can utilize this to generate statistics and optimize their strategies or to experiment with new strategies.
