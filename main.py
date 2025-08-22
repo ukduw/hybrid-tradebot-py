@@ -6,6 +6,7 @@ import pytz
 import traceback
 import signal
 import sys
+import aiofiles
 
 from pushbullet import Pushbullet
 from dotenv import load_dotenv
@@ -119,14 +120,14 @@ async def monitor_trade(setup):
                             in_position = True
                             day_high = price
                             day_trade_counter += 1
-                            with open("trade-log/trade_log.txt", "a") as file:
-                                file.write(f"{now},{symbol},ENTRY,{qty},{price}" + "\n")
+                            async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                                await file.write(f"{now},{symbol},ENTRY,{qty},{price}" + "\n")
                             pb.push_note("Hybrid bot", f"{qty} [{symbol}] BUY @ {price}")
                 elif not day_trade_counter < 1 and price > entry:
                     print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
                     # stop_price_quote_bar_stream(symbol)
-                    with open("trade-log/trade_log.txt", "a") as file:
-                        file.write(f"{now},{symbol},skip,{qty},{price}" + "\n")
+                    async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                        await file.write(f"{now},{symbol},skip,{qty},{price}" + "\n")
                     # return
                     time.sleep(18000)
 
@@ -140,8 +141,8 @@ async def monitor_trade(setup):
                 if price < stop: 
                     close_position(symbol, qty)
                     print(f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
-                    with open("trade-log/trade_log.txt", "a") as file:
-                        file.write(f"{now},{symbol},EXIT,{qty},{price}" + "\n")
+                    async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                        await file.write(f"{now},{symbol},EXIT,{qty},{price}" + "\n")
                     pb.push_note("Hybrid bot", f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
                     return
                 
@@ -159,15 +160,15 @@ async def monitor_trade(setup):
                                 qty = qty - half_position
                                 close_position(symbol, half_position)
                                 print(f"[{symbol}] TAKE-PROFT hit. Exiting 50% position @ {price}")
-                                with open("trade-log/trade_log.txt", "a") as file:
-                                    file.write(f"{now}, {symbol}, 50% Exit, {half_position}, {price}" + "\n")
+                                async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                                    await file.write(f"{now}, {symbol}, 50% Exit, {half_position}, {price}" + "\n")
                                 pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting 50% position @ {price}")
                                 break
                             else:
                                 close_position(symbol, qty)
                                 print(f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
-                                with open("trade-log/trade_log.txt", "a") as file:
-                                    file.write(f"{now}, {symbol}, 2nd 50% Exit, {qty}, {price}" + "\n")
+                                async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                                    await file.write(f"{now}, {symbol}, 2nd 50% Exit, {qty}, {price}" + "\n")
                                 pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
                                 return
 
@@ -182,8 +183,8 @@ async def monitor_trade(setup):
                         if percent_diff <= macd_perc_high * 0.8: # TWEAK TRAIL
                             close_position(symbol, qty)
                             print(f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
-                            with open("trade-log/trade_log.txt", "a") as file:
-                                file.write(f"{now}, {symbol}, 100% Exit, {half_position}, {price}" + "\n")
+                            async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                                await file.write(f"{now}, {symbol}, 100% Exit, {half_position}, {price}" + "\n")
                             pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
                             return
 
@@ -200,7 +201,7 @@ async def monitor_trade(setup):
 async def main():
     data_stream_task = asyncio.create_task(start_price_quote_bar_stream(symbols))
     monitor_tasks = [asyncio.create_task(monitor_trade(setup)) for setup in cached_configs]
-
+    
     await asyncio.gather(data_stream_task, *monitor_tasks)
 
 # systemctl stop / ctrl+c cleanup
