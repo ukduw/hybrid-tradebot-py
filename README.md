@@ -23,9 +23,6 @@ Run config CLI (to input trade parameters):
 Run hybrid bot:   
 `python3 main.py`
 
-## PLACEHOLDER - REWRITE README
-ghost tick, gap up protection, 
-
 ## Hybrid Trading Bot
 This project is made for traders with some experience and established strategies, as well as for new traders to use with paper trading to learn and experiment with new strategies. 
 
@@ -45,6 +42,10 @@ The trailing stop allows winning plays to run and protects profits against downt
 
 Position size management is simplified. The user can input a different dollar amount per ticker. The program then determines each position size automatically: 
 - Rounded Up(Dollar Value / Entry Price) = Quantity
+
+## Gap Up Protection
+
+## Websocket Tick Data Filter
 
 ## Trade Log Export and Push Notifications
 Entry and exit data are piped to a text file for easy export. The user can utilize this to generate statistics and optimize their strategies or to experiment with new strategies.
