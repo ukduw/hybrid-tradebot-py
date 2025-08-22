@@ -1,4 +1,4 @@
-import threading
+import asyncio
 import json
 import time
 import datetime
@@ -23,7 +23,7 @@ exit_open_positions_at = now.replace(hour=15, minute=55, second=0, microsecond=0
 
 
 day_trade_counter = 0
-day_trade_lock = threading.Lock()
+day_trade_lock = asyncio.Lock()
 
 
 CONFIG_PATH = "configs.json"
@@ -46,12 +46,12 @@ def load_configs_on_modification():
 
 
 symbols = [setup["symbol"] for setup in cached_configs]
-threading.Thread(target=start_price_quote_bar_stream, args=(symbols,), daemon=True).start()
 
 shutdown_event = threading.Event()
 
 
 # PRIORITY ORDER:
+    # CONVERT FROM THREADING TO ASYNCIO...
     # 1. TWEAK GHOST TICK + PROFIT TAKING PARAMETERS
         # re-entry logic can wait till after PDT...
     # 2. PDT - GAP UP PARAMETERS
@@ -69,7 +69,7 @@ shutdown_event = threading.Event()
 # unrelated TODO: prevent opening new positions within x time of close
 
 
-def monitor_trade(setup):
+async def monitor_trade(setup):
     symbol = setup["symbol"]
     in_position = False
     take_50 = False
@@ -112,7 +112,7 @@ def monitor_trade(setup):
             if not in_position:
                 global day_trade_counter
                 if day_trade_counter < 1 and price > entry:
-                    with day_trade_lock:
+                    async with day_trade_lock:
                         if day_trade_counter < 1:
                             place_order(symbol, qty)
                             print(f"{qty} [{symbol}] BUY @ {price}")
@@ -196,7 +196,12 @@ def monitor_trade(setup):
             traceback.print_exc()
             stop_price_quote_bar_stream(symbol)
 
-    
+
+async def main():
+    data_stream_task = asyncio.create_task(start_price_quote_bar_stream(symbols))
+    monitor_tasks = [asyncio.create_task(monitor_trade(setup)) for setup in cached_configs]
+
+    await asyncio.gather(data_stream_task, *monitor_tasks)
 
 # systemctl stop / ctrl+c cleanup
 async def handle_shutdown(signum, frame):
@@ -220,9 +225,7 @@ signal.signal(signal.SIGINT, handle_shutdown)
 
 
 if __name__ == "__main__":
-    for setup in cached_configs:
-        t = threading.Thread(target=monitor_trade, args=(setup,))
-        t.start()
+    asyncio.run(main())
 
     try:
         while not shutdown_event.is_set():
