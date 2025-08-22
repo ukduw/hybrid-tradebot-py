@@ -24,7 +24,7 @@ Run hybrid bot:
 `python3 main.py`
 
 ## PLACEHOLDER - REWRITE README
-profit-taking (macd, trail - note where these can be tweaked), bottom section..., ghost tick, gap up protection, 
+bottom section..., ghost tick, gap up protection, 
 
 ## Hybrid Trading Bot
 This project is made for traders with some experience and established strategies, as well as for new traders to use with paper trading to learn and experiment with new strategies. 
@@ -34,7 +34,14 @@ The Hybrid Trading Bot is a semi-automated bot which, rather than scanning a vas
 A trader cannot make 10 plays simultaneously or constantly be "on the ball" from 04:00 - 20:00 market time, but the bot can. **The user could work a full time job with a normal sleep schedule while the bot executes their strategies autonomously, literally from dawn till dusk.** The user would simply have to run a screener and set new conditions for the bot once a day after work. Emotional trading is also eliminated, ensuring that all trades are made strictly according to the user's strategies.
 
 ## Profit-Taking and Risk Management
-Trailing stop-loss logic allows winning plays to run, protecting profits against downturns. The default setting is for the trailing stop to only activate when the %Change is 15% over the entry. This is to allow for fluctuations around the entry price, where the only price action that should result in an exit is the stop-loss being hit. The trailing stop-loss is a profit-taking measure that should only activate if the ticker is a confirmed winner. These settings can be changed/removed to suit different strategies.
+Profit-taking is executed by the bot according to MACD and trailing stop strategies. 
+
+First, the data is seeded at premarket open by fetching the last 100 15min candlestick closes. Then, the MACD is re-computed per symbol as new bar data comes in via the websocket/data stream. If the percentage difference between the MACD and Signal line is high enough, the highest percentage difference is tracked and profit is taken via trailing stop, which is triggered when the current percentage difference is lower than the high by 20% or more. Partial or full profit is taken depending on how high the percentage difference is. Percentage difference:
+- ( MACD Histogram / Signal line ) * 100
+
+NOTE: The specific profit-taking parameters are in lines 148 - 188 of main.py and can be tweaked or reversed depending on strategy. The current parameters are suited for maximizing profit-taking during strength and locking in partial profits during runs for long strategies. 
+
+The trailing stop allows winning plays to run and protects profits against downturns, while using MACD maximizes profit-taking during spikes only, avoiding early profit-taking.
 
 Position size management is simplified. The user can input a different dollar amount per ticker. The program then determines each position size automatically: 
 - Rounded Up(Dollar Value / Entry Price) = Quantity
