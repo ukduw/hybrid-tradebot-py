@@ -44,6 +44,7 @@ Position size management is simplified. The user can input a different dollar am
 - Rounded Up(Dollar Value / Entry Price) = Quantity
 
 ## Gap Up Protection
+If a stock gaps up above the user's entry condition, it must continue uptrending 1.5% above its open before any tick data is passed to the bot's logic. This prevents false signals/entries in the case of gap-up-sell-off price action, and means that the bot only acts on confirmed signals. Many gap ups result in sell-offs or consolidation below their market open. In these cases, the entry may be significantly above the user's inputted entry condition, resulting in a higher risk level and % loss than intended when it is stopped out.
 
 ## Websocket Tick Data Filter
 
