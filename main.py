@@ -71,15 +71,15 @@ shutdown_event = threading.Event()
     # with PDT, there's no way this will work
     # continue testing with far more stringent watchlist...
 # maybe need logic to skip very early premarket gap ups if subsequent tick(s) are downward
-    # if first tick > previous close (utils needed...)
-    # if x ticks above first tick/x% above open, another util returns True
-    # if util returns true, can enter position
-        # util: first tick, if above prev close (by x%?)...
-        # then how are normal entries be treated...? maybe util should return True in all other cases?
+    # pseudo:
+    # if 1st tick > entry condition
+        # return tick if > 1st tick * 1.02(placeholder)
+    # else return ticks as usual
 
 
 # unrelated TODO: re-connect logic in case of network failure
     # saved traceback for later...
+        # need retry wrapper for alpaca websocket + pb's api
 # unrelated TODO: prevent opening new positions within x time of close
 
 
