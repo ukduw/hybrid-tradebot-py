@@ -5,7 +5,6 @@ import datetime
 import pytz
 import traceback
 import signal
-import sys
 import aiofiles
 import requests
 
