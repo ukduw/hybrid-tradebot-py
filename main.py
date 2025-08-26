@@ -18,7 +18,7 @@ PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
 
 class DummyPB:
     def push_note(self, title, body):
-        print(f"(PB Failed) Notification: {title}, {body}")
+        print(f"(PB Failed) Unsent notification: {title}, {body}")
 
 pb = DummyPB()
 
@@ -81,7 +81,8 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 # unrelated TODO: re-connect logic in case of network failure
     # saved traceback for later...
-        # need retry wrapper for alpaca websocket + pb's api
+        # need retry wrapper for alpaca websocket
+        # done: pb connection-related crash
 # unrelated TODO: prevent opening new positions within x time of close
 
 
