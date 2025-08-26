@@ -7,14 +7,32 @@ import traceback
 import signal
 import sys
 import aiofiles
+import requests
 
 from pushbullet import Pushbullet
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
+
 PB_API_KEY = os.getenv("PUSHBULLET_API_KEY")
-pb = Pushbullet(PB_API_KEY)
+
+class DummyPB:
+    def push_note(self, title, body):
+        print(f"(PB Failed) Notification: {title}, {body}")
+
+pb = DummyPB()
+
+pb_reconnect_tries = 0
+while pb_reconnect_tries <= 5: # low due to risk of getting stuck in loop past premarket open...
+    try:
+        pb = Pushbullet(PB_API_KEY)
+        break
+    except requests.exceptions.ConnectionError as e:
+        pb_reconnect_tries += 1
+        print(f"PB connection failed({pb_reconnect_tries}/5), retrying in 10s...", e)
+        time.sleep(10)
+
 
 from alpaca_utils import start_price_quote_bar_stream, get_current_price, get_day_high, get_latest_macd, stop_price_quote_bar_stream, place_order, close_position, close_all_positions, stock_stream
 
