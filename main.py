@@ -75,14 +75,10 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
     # 3. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
         # don't forget the traceback saved in a txt...
-        # not just for websocket - write reconnect logic for price streams + logs so they don't fail silently
+        # write reconnect logic for price streams + logs so they don't fail silently
     # 4. WRITE EVENT-DRIVEN VERSION
         # current version sufficient; low priority
 
-# unrelated TODO: re-connect logic in case of network failure
-    # saved traceback for later...
-        # need retry wrapper for alpaca websocket
-        # done: pb connection-related crash
 # unrelated TODO: prevent opening new positions within x time of close
 
 
