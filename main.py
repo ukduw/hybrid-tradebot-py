@@ -80,6 +80,7 @@ symbols = [setup["symbol"] for setup in cached_configs]
         # write reconnect logic for price streams + logs so they don't fail silently
     # 4. WRITE EVENT-DRIVEN VERSION
         # current version sufficient; low priority
+        # event = asyncio.Event(), then price stream handler calls event.set() when data arrives...
 
 # unrelated TODO: prevent opening new positions within x time of close
 
@@ -145,7 +146,7 @@ async def monitor_trade(setup):
                     # return
                     await asyncio.sleep(18000)
 
-                await asyncio.sleep(0)
+                await asyncio.sleep(1)
 
             if in_position:
                 macd = get_latest_macd(symbol)
@@ -188,7 +189,7 @@ async def monitor_trade(setup):
                                 pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
                                 return
                             
-                        await asyncio.sleep(0)
+                        await asyncio.sleep(1)
 
                 if percent_diff > 199: # TWEAK VALUE
                     macd_perc_high = percent_diff
@@ -206,9 +207,9 @@ async def monitor_trade(setup):
                             pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
                             return
                         
-                        await asyncio.sleep(0)
+                        await asyncio.sleep(1)
                 
-                await asyncio.sleep(0)
+                await asyncio.sleep(1)
 
 
         except Exception as e:
@@ -218,7 +219,7 @@ async def monitor_trade(setup):
             stop_price_quote_bar_stream(symbol)
         
 
-        await asyncio.sleep(0)
+        await asyncio.sleep(1)
 
 
 async def main():
