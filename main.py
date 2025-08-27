@@ -68,6 +68,8 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 # PRIORITY ORDER:
     # CONVERT FROM THREADING TO ASYNCIO...
+        # no current event loop when loop variable defined...
+        # only one thread seems to run
     # 1. TWEAK GHOST TICK + PROFIT TAKING PARAMETERS
         # re-entry logic can wait till after PDT...
     # 2. PDT - GAP UP PARAMETERS
@@ -107,11 +109,11 @@ async def monitor_trade(setup):
 
         price = get_current_price(symbol)
         if price is None:
-            time.sleep(2)
+            await asyncio.sleep(2)
             continue
         day_high = get_day_high(symbol)
         if day_high is None:
-            time.sleep(2)
+            await asyncio.sleep(2)
             continue
 
         try:
@@ -141,7 +143,9 @@ async def monitor_trade(setup):
                     async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
                         await file.write(f"{now},{symbol},skip,{qty},{price}" + "\n")
                     # return
-                    time.sleep(18000)
+                    await asyncio.sleep(18000)
+
+                await asyncio.sleep(0)
 
             if in_position:
                 macd = get_latest_macd(symbol)
@@ -183,6 +187,8 @@ async def monitor_trade(setup):
                                     await file.write(f"{now}, {symbol}, 2nd 50% Exit, {qty}, {price}" + "\n")
                                 pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
                                 return
+                            
+                        await asyncio.sleep(0)
 
                 if percent_diff > 199: # TWEAK VALUE
                     macd_perc_high = percent_diff
@@ -199,15 +205,20 @@ async def monitor_trade(setup):
                                 await file.write(f"{now}, {symbol}, 100% Exit, {half_position}, {price}" + "\n")
                             pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
                             return
+                        
+                        await asyncio.sleep(0)
+                
+                await asyncio.sleep(0)
 
-
-            time.sleep(1)
 
         except Exception as e:
             print(f"[{symbol}] Error: {e}", flush=True)
             # check systemd logs for traceback...
             traceback.print_exc()
             stop_price_quote_bar_stream(symbol)
+        
+
+        await asyncio.sleep(0)
 
 
 async def main():
@@ -237,7 +248,7 @@ async def handle_shutdown():
 
 
 def main_start():
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
     for sig in (signal.SIGINT, signal.SIGTERM):
