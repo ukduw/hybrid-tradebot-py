@@ -148,10 +148,10 @@ class DataHandler:
         start_time = now - datetime.timedelta(minutes=lookback_minutes + 10)
 
         request_params = StockBarsRequest(
-            symbol=symbol,
+            symbol_or_symbols=symbol,
+            timeframe=TimeFrame(15, TimeFrame.Minute),
             start=start_time,
             end=now,
-            timeframe=TimeFrame(15, TimeFrame.Minute),
             adjustment="raw",
             feed="sip"
         )
