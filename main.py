@@ -222,10 +222,18 @@ async def monitor_trade(setup):
         await asyncio.sleep(1)
 
 
+async def supervisor(coro_func, *args, name="task"):
+    # while True: # looping to restart after 5s risks getting stuck in an enter, fail, enter, fail... loop - needs global variables
+        try:
+            await coro_func(*args)
+        except Exception as e:
+            print(f"{name} crashed: {e}")
+            # await asyncio.sleep(5)
+
 async def main():
     try:
-        data_stream_task = asyncio.create_task(start_price_quote_bar_stream(symbols))
-        monitor_tasks = [asyncio.create_task(monitor_trade(setup)) for setup in cached_configs]
+        data_stream_task = asyncio.create_task(supervisor(start_price_quote_bar_stream(symbols), "data_stream"))
+        monitor_tasks = [asyncio.create_task(supervisor(monitor_trade(setup), f"monitor_trade-{setup['symbol']}") for setup in cached_configs)]
         await asyncio.gather(data_stream_task, *monitor_tasks)
     except asyncio.CancelledError:
         print("Error, tasks cancelled")
