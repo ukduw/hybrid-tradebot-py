@@ -84,6 +84,15 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 # unrelated TODO: prevent opening new positions within x time of close
 
+# needs 15% condition back
+# additional macd conditions depending on time elapsed since entry? or intraday volume?
+    # macd % diff can decrease over the course of longer runs (as opposed to shorter-term spikes)
+
+# current profit taking strategy more suited for medium-term spikes, doesn't capture:
+    # 1) very short-term (can't think of a solution for this one...)
+    # 2) aftermarket-to-premarket spikes
+    # 3) longer-term, slower runs
+        # (if time-based macd conditions are used, 2 and 3 are conflicting...)
 
 async def monitor_trade(setup):
     symbol = setup["symbol"]
@@ -232,8 +241,13 @@ async def supervisor(coro_func, *args, name="task"):
 
 async def main():
     try:
-        data_stream_task = asyncio.create_task(supervisor(start_price_quote_bar_stream(symbols), "data_stream"))
-        monitor_tasks = [asyncio.create_task(supervisor(monitor_trade(setup), f"monitor_trade-{setup['symbol']}") for setup in cached_configs)]
+        data_stream_task = asyncio.create_task(supervisor(start_price_quote_bar_stream, symbols, name="data_stream"))
+        monitor_tasks = [
+            asyncio.create_task(
+                supervisor(monitor_trade, setup, name=f"monitor_trade-{setup['symbol']}")
+            ) 
+            for setup in cached_configs
+        ]
         await asyncio.gather(data_stream_task, *monitor_tasks)
     except asyncio.CancelledError:
         print("Error, tasks cancelled")
