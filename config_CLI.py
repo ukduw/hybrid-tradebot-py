@@ -1,11 +1,6 @@
-import datetime, pytz, json
+import json
 
 CONFIG_FILE = "configs.json"
-
-eastern = pytz.timezone("US/Eastern")
-with_time = datetime.datetime.now(eastern)
-split = str(with_time).split(" ")
-now = split[0]
 
 
 def prompt_configs(defaults=None):
