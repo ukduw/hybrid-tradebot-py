@@ -160,7 +160,8 @@ class DataHandler:
 
         bars = historical_client.get_stock_bars(request_params).df
         sdf = bars.xs(symbol, level=0).sort_index()
-        latest_macd[symbol] = self.compute_macd(sdf)
+        # latest_macd[symbol] = self.compute_macd(sdf)
+        latest_rsi[symbol] = self.compute_rsi(sdf)
 
     async def compute_macd(self, df: pd.DataFrame) -> pd.DataFrame:
         if df.empty:
