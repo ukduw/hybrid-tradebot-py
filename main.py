@@ -67,31 +67,22 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 
 # PRIORITY ORDER:
-    # CONVERT FROM THREADING TO ASYNCIO...
+    # ASYNC PROBLEMS?
+    # 1. TWEAK 1) GHOST TICK, 2) PROFIT TAKING, 3) GAP-UP-FAKEOUT PROTECTION PARAMETERS
         # run and test...
-    # REWRITE FOR RSI OVER MACD
-    # 1. TWEAK GHOST TICK + PROFIT TAKING PARAMETERS
-        # run and test...
-        # re-entry logic can wait till after PDT...
-    # 2. PDT - GAP UP PARAMETERS
-        # currently averaging 15-20 tick watchlists - try to reduce to <10-15
+        # re-entry logic can wait till after PDT... (is it needed at all?)
+        # try to reduce 15-20 ticker watchlist to <10-15 
 
-    # 3. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
+    # 2. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
         # don't forget the traceback saved in a txt...
         # write reconnect logic for price streams + logs so they don't fail silently
-    # 4. WRITE EVENT-DRIVEN VERSION
+    # 3. WRITE EVENT-DRIVEN VERSION
         # current version sufficient; low priority
         # event = asyncio.Event(), then price stream handler calls event.set() when data arrives...
 
 # unrelated TODO: prevent opening new positions within x time of close
+# actually, consider pushing end time back a few hours, into the aftermarket...
 
-# needs 15% condition back (still needed with rsi...?)
-# TODO: try using RSI instead
-    # already normalized, less lag, etc.
-    # write util to calculate rsi, re-write take-profit logic, test...
-# very good for short-term (maybe change to 10min candles to improve it?)
-# also not as good for longer runs - don't know how to account for these without making it worse at taking profit on short-term plays...
-    # maybe partial take-profit below certain threshold?
 
 
 async def monitor_trade(setup):
