@@ -36,6 +36,7 @@ gap_up_first_tick = {}
 latest_prices = {}
 day_high = {}
 latest_macd = {}
+latest_rsi = {}
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -141,7 +142,8 @@ class DataHandler:
             )
         )
         bars = list(self.bar_window[bar.symbol])
-        latest_macd[bar.symbol] = self.compute_macd(pd.DataFrame([b.__dict__ for b in bars]))
+        # latest_macd[bar.symbol] = self.compute_macd(pd.DataFrame([b.__dict__ for b in bars]))
+        latest_rsi[bar.symbol] = self.compute_rsi(pd.DataFrame([b.__dict__ for b in bars]))
     
     async def seed_history(self, symbol):
         lookback_minutes = 100
@@ -166,6 +168,13 @@ class DataHandler:
         df = df.copy()
         macd = ta.macd(df['close'], fast=12, slow=26, signal=9, append=True)
         return macd
+    
+    async def compute_rsi(self, df: pd.DataFrame) -> pd.DataFrame:
+        if df.empty:
+            return df
+        df = df.copy()
+        rsi = ta.rsi(df['close'], length=14, append=True)
+        return rsi
 
 
 # ===== OPEN/CLOSE STREAM, HANDLER CALL UTILS ===== #
