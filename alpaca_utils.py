@@ -215,6 +215,10 @@ def get_latest_macd(symbol):
     df = latest_macd.get(symbol)
     return df.iloc[-1]
 
+def get_latest_rsi(symbol):
+    df = latest_rsi.get(symbol)
+    return df.iloc[-1]
+
 
 # ===== TRADING CLIENT UTILS ===== #
 def is_premarket():
