@@ -82,7 +82,7 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 # unrelated TODO: prevent opening new positions within x time of close
 # actually, consider pushing end time back a few hours, into the aftermarket...
-
+    # would also require updating is_premarket() in utils
 
 
 async def monitor_trade(setup):
