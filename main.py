@@ -69,6 +69,7 @@ symbols = [setup["symbol"] for setup in cached_configs]
 # PRIORITY ORDER:
     # CONVERT FROM THREADING TO ASYNCIO...
         # run and test...
+    # REWRITE FOR RSI OVER MACD
     # 1. TWEAK GHOST TICK + PROFIT TAKING PARAMETERS
         # run and test...
         # re-entry logic can wait till after PDT...
@@ -84,15 +85,13 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 # unrelated TODO: prevent opening new positions within x time of close
 
-# needs 15% condition back
-# additional macd conditions depending on time elapsed since entry? or intraday volume?
-    # macd % diff can decrease over the course of longer runs (as opposed to shorter-term spikes)
+# needs 15% condition back (still needed with rsi...?)
+# TODO: try using RSI instead
+    # already normalized, less lag, etc.
+    # write util to calculate rsi, re-write take-profit logic, test...
+# very good for short-term (maybe change to 10min candles to improve it?)
+# also not as good for longer runs - don't know how to account for these without making it worse at taking profit on short-term plays...
 
-# current profit taking strategy more suited for medium-term spikes, doesn't capture:
-    # 1) very short-term (can't think of a solution for this one...)
-    # 2) aftermarket-to-premarket spikes
-    # 3) longer-term, slower runs
-        # (if time-based macd conditions are used, 2 and 3 are conflicting...)
 
 async def monitor_trade(setup):
     symbol = setup["symbol"]
