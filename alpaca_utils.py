@@ -149,6 +149,7 @@ class DataHandler:
     async def seed_history(self, symbol):
         lookback_bars = 30 # 100 for macd, 15 + buffer = 30 for rsi
         lookback_minutes = lookback_bars * 15
+        now = datetime.datetime.now(eastern)
         start_time = now - datetime.timedelta(minutes=lookback_minutes)
 
         request_params = StockBarsRequest(
