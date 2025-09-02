@@ -147,7 +147,7 @@ class DataHandler:
         latest_rsi[bar.symbol] = self.compute_rsi(pd.DataFrame([b.__dict__ for b in bars]))
     
     async def seed_history(self, symbol):
-        lookback_bars = 30 # 100 for macd, 15 + buffer = 30 for rsi
+        lookback_bars = 20 # 100 for macd, 20 for rsi
         lookback_minutes = lookback_bars * 15
         now = datetime.datetime.now(eastern)
         start_time = now - datetime.timedelta(minutes=lookback_minutes)
