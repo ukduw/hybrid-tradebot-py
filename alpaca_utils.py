@@ -14,7 +14,7 @@ from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.requests import LimitOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
 
-import datetime, pytz, asyncio
+import datetime, pytz, asyncio, aiofiles
 from decimal import Decimal, ROUND_UP, ROUND_DOWN
 from collections import defaultdict, deque
 from dataclasses import dataclass
@@ -90,25 +90,25 @@ class DataHandler:
 
         quotes: deque[QuoteEntry] = self.quote_window[symbol]
         if not quotes:
-            with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-                file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+            async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                await file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
             return
         
         closest_quote = min(quotes, key=lambda q: abs((q.timestamp - trade_time).total_seconds()))
         if abs((closest_quote.timestamp - trade_time).total_seconds()) > 1:
-            with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-                file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+            async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                await file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
             return  
         
         tolerance = 0.02 # 2.0%
         if not (closest_quote.bid * (1 - tolerance) <= trade_price <= closest_quote.ask * (1 - tolerance)):
-            with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-                file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+            async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                await file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
             return
 
         if trade.size < 100:
-            with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-                file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+            async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                await file.write(f"[GHOST] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
             return
         
         # if all conditions pass:
@@ -127,8 +127,8 @@ class DataHandler:
 
         # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
-        with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-            file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+        async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+            await file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
     async def handle_bar(self, bar: Bar): # NOT IN USE
             # DATA STREAM CAN ONLY STREAM 1MIN BARS - WOULD NEED AGGREGATOR, CALL compute_rsi() ON 15MIN BAR COMPLETION
