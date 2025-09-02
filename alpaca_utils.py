@@ -155,6 +155,7 @@ class DataHandler:
         lookback_minutes = lookback_bars * 15
         now = datetime.datetime.now(eastern)
         start_time = now - datetime.timedelta(minutes=lookback_minutes)
+        after_first_bar = now.replace(hour=4, minute=14, second=0, microsecond=0)
 
         request_params = StockBarsRequest(
             symbol_or_symbols=symbol,
@@ -175,7 +176,7 @@ class DataHandler:
         while True:
             now = datetime.datetime.now(eastern)
 
-            if now.minute % 15 == 0 and now.second < 2:
+            if now.minute % 15 == 0 and now.second < 2 and now > after_first_bar:
                 latest_bar_request = StockBarsRequest(
                     symbol_or_symbols=symbol,
                     timeframe=TimeFrame(15, TimeFrame.Minute),
