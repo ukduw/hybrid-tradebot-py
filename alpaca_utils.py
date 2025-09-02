@@ -14,7 +14,7 @@ from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.requests import LimitOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
 
-import datetime, pytz
+import datetime, pytz, asyncio
 from decimal import Decimal, ROUND_UP, ROUND_DOWN
 from collections import defaultdict, deque
 from dataclasses import dataclass
@@ -66,7 +66,7 @@ class BarEntry:
 class DataHandler:
     def __init__(self):
         self.quote_window = defaultdict(lambda: deque(maxlen=500))
-        self.bar_window = defaultdict(lambda: deque(maxlen=100))
+        self.bar_window = defaultdict(lambda: deque(maxlen=20))
             # consider getting rid of deque altogether...
             # and computing EMAs incrementally, manually... (without pandas-ta)
 
@@ -130,7 +130,11 @@ class DataHandler:
         with open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
             file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
-    async def handle_bar(self, bar: Bar):
+    async def handle_bar(self, bar: Bar): # NOT IN USE
+            # DATA STREAM CAN ONLY STREAM 1MIN BARS - WOULD NEED AGGREGATOR, CALL compute_rsi() ON 15MIN BAR COMPLETION
+            # alpaca api limit is 200 requests/min; assuming ~20 symbols, 1 request per 15min is well within limit
+            # i don't think i need sub-second responsiveness
+                # if anything, if i get rid of the trail profit-take, this may work in my favor...
         self.bar_window[bar.symbol].append(
             BarEntry(
                 open=bar.open,
@@ -146,7 +150,7 @@ class DataHandler:
         # latest_macd[bar.symbol] = self.compute_macd(pd.DataFrame([b.__dict__ for b in bars]))
         latest_rsi[bar.symbol] = self.compute_rsi(pd.DataFrame([b.__dict__ for b in bars]))
     
-    async def seed_history(self, symbol):
+    async def seed_history_recalc_on_bar(self, symbol):
         lookback_bars = 20 # 100 for macd, 20 for rsi
         lookback_minutes = lookback_bars * 15
         now = datetime.datetime.now(eastern)
@@ -161,10 +165,25 @@ class DataHandler:
             feed="sip"
         )
 
-        bars = historical_client.get_stock_bars(request_params).df
-        sdf = bars.xs(symbol, level=0).sort_index()
+        self.bar_window[symbol].append(historical_client.get_stock_bars(request_params))
+        bar_df = self.bar_window[symbol].df
+        sdf = bar_df.xs(symbol, level=0).sort_index()
         # latest_macd[symbol] = self.compute_macd(sdf)
         latest_rsi[symbol] = self.compute_rsi(sdf)
+
+        while True:
+            now = datetime.datetime.now(eastern)
+            if now.minute % 15 == 0 and now.second < 2:
+                latest_bar_request = StockBarsRequest(
+                    symbol_or_symbols=symbol,
+                    timeframe=TimeFrame(15, TimeFrame.Minute),
+                    limit=1
+                )
+                self.bar_window[symbol].append(historical_client.get_stock_bars(latest_bar_request))
+                bar_df = self.bar_window[symbol].df
+                sdf = bar_df.xs(symbol, level=0).sort_index()
+                latest_rsi[symbol] = self.compute_rsi(sdf)
+            await asyncio.sleep(1)    
 
     async def compute_macd(self, df: pd.DataFrame) -> pd.DataFrame:
         if df.empty:
@@ -186,11 +205,11 @@ handler = DataHandler()
 
 async def start_price_quote_bar_stream(symbols):
     for symbol in symbols:
-        await handler.seed_history(symbol)
+        await handler.seed_history_recalc_on_bar(symbol)
 
         await stock_stream.subscribe_trades(handler.handle_trade, symbol)
         await stock_stream.subscribe_quotes(handler.handle_quote, symbol)
-        await stock_stream.subscribe_bars(handler.handle_bar, symbol)
+        # await stock_stream.subscribe_bars(handler.handle_bar, symbol)
 
     try:
         await stock_stream.run()
