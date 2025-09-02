@@ -165,24 +165,31 @@ class DataHandler:
             feed="sip"
         )
 
-        self.bar_window[symbol].append(historical_client.get_stock_bars(request_params))
-        bar_df = self.bar_window[symbol].df
-        sdf = bar_df.xs(symbol, level=0).sort_index()
+        bars = historical_client.get_stock_bars(request_params).df
+        for _, row in bars.iterrows():
+            self.bar_window[symbol].append(row)
         # latest_macd[symbol] = self.compute_macd(sdf)
-        latest_rsi[symbol] = self.compute_rsi(sdf)
+        latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window[symbol]))
 
+        last_bar_time = None
         while True:
             now = datetime.datetime.now(eastern)
+
             if now.minute % 15 == 0 and now.second < 2:
                 latest_bar_request = StockBarsRequest(
                     symbol_or_symbols=symbol,
                     timeframe=TimeFrame(15, TimeFrame.Minute),
                     limit=1
                 )
-                self.bar_window[symbol].append(historical_client.get_stock_bars(latest_bar_request))
-                bar_df = self.bar_window[symbol].df
-                sdf = bar_df.xs(symbol, level=0).sort_index()
-                latest_rsi[symbol] = self.compute_rsi(sdf)
+
+                bars = historical_client.get_stock_bars(latest_bar_request).df
+                latest_bar_time = bars.index[-1]
+                if latest_bar_time != last_bar_time:
+                    last_bar_time = latest_bar_time
+
+                    for _, row in bars.iterrows():
+                        self.bar_window[symbol].append(row)
+                    latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window[symbol]))
             await asyncio.sleep(1)    
 
     async def compute_macd(self, df: pd.DataFrame) -> pd.DataFrame:
