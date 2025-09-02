@@ -72,6 +72,7 @@ symbols = [setup["symbol"] for setup in cached_configs]
         # run and test...
         # re-entry logic can wait till after PDT... (is it needed at all?)
         # try to reduce 15-20 ticker watchlist to <10-15 
+        # consider taking profit ON high RSI trigger (e.g. >90), rather than after trail (spike already over)
 
     # 2. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
         # don't forget the traceback saved in a txt...
@@ -258,7 +259,7 @@ async def handle_shutdown():
         await stop_price_quote_bar_stream(symbol)
     await stock_stream.stop_ws()
 
-    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task() and not t.done()]
     for t in tasks:
         t.cancel()
     await asyncio.gather(*tasks, return_exceptions=True)
