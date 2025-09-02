@@ -86,6 +86,7 @@ class DataHandler:
         setup = next((s for s in configs if s["symbol"] == symbol), None)
         entry = setup["entry_price"]
         exit = setup["stop_loss"]
+        now = datetime.datetime.now(eastern)
 
         quotes: deque[QuoteEntry] = self.quote_window[symbol]
         if not quotes:
