@@ -66,7 +66,7 @@ class BarEntry:
 class DataHandler:
     def __init__(self):
         self.quote_window = defaultdict(lambda: deque(maxlen=500))
-        self.bar_window = defaultdict(lambda: deque(maxlen=20))
+        self.bar_window_5m = defaultdict(lambda: deque(maxlen=20))
             # consider getting rid of deque altogether...
             # and computing EMAs incrementally, manually... (without pandas-ta)
 
@@ -135,7 +135,7 @@ class DataHandler:
             # alpaca api limit is 200 requests/min; assuming ~20 symbols, 1 request per 15min is well within limit
             # i don't think i need sub-second responsiveness
                 # if anything, if i get rid of the trail profit-take, this may work in my favor...
-        self.bar_window[bar.symbol].append(
+        self.bar_window_5m[bar.symbol].append(
             BarEntry(
                 open=bar.open,
                 high=bar.high,
@@ -146,7 +146,7 @@ class DataHandler:
                 trade_count=getattr(bar, "trade_count", None)
             )
         )
-        bars = list(self.bar_window[bar.symbol])
+        bars = list(self.bar_window_5m[bar.symbol])
         # latest_macd[bar.symbol] = self.compute_macd(pd.DataFrame([b.__dict__ for b in bars]))
         latest_rsi[bar.symbol] = self.compute_rsi(pd.DataFrame([b.__dict__ for b in bars]))
     
@@ -159,7 +159,7 @@ class DataHandler:
 
         request_params = StockBarsRequest(
             symbol_or_symbols=symbol,
-            timeframe=TimeFrame(15, TimeFrame.Minute),
+            timeframe=TimeFrame(5, TimeFrame.Minute),
             start=start_time,
             end=now,
             adjustment="raw",
@@ -167,10 +167,13 @@ class DataHandler:
         )
 
         bars = historical_client.get_stock_bars(request_params).df
-        for _, row in bars.iterrows():
-            self.bar_window[symbol].append(row)
+        sdf = bars.xs(symbol, level=0)
+        sdf = sdf.sort_index()
+        for ts, row in sdf.iterrows():
+            if ts.minute % 15 == 0:
+                self.bar_window_5m[symbol].append(row)
         # latest_macd[symbol] = self.compute_macd(sdf)
-        latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window[symbol]))
+        latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window_5m[symbol]))
 
         last_bar_time = None
         while True:
@@ -179,7 +182,7 @@ class DataHandler:
             if now.minute % 15 == 0 and now.second < 2 and now > after_first_bar:
                 latest_bar_request = StockBarsRequest(
                     symbol_or_symbols=symbol,
-                    timeframe=TimeFrame(15, TimeFrame.Minute),
+                    timeframe=TimeFrame(5, TimeFrame.Minute),
                     limit=1
                 )
 
@@ -189,8 +192,8 @@ class DataHandler:
                     last_bar_time = latest_bar_time
 
                     for _, row in bars.iterrows():
-                        self.bar_window[symbol].append(row)
-                    latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window[symbol]))
+                        self.bar_window_5m[symbol].append(row)
+                    latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window_5m[symbol]))
             await asyncio.sleep(1)    
 
     async def compute_macd(self, df: pd.DataFrame) -> pd.DataFrame:
