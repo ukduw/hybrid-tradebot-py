@@ -191,29 +191,20 @@ async def monitor_trade(setup):
                         await asyncio.sleep(1)
 
                 if rsi >= 85: # TWEAK VALUE
-                    rsi_high = rsi
-                    while True:
-                        rsi = get_latest_rsi(symbol)
-
-                        if rsi > rsi_high:
-                            rsi_high = rsi
-                        if rsi <= rsi_high * 0.85: # TWEAK TRAIL
-                            if not take_50:
-                                close_position(symbol, qty)
-                                print(f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
-                                async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
-                                    await file.write(f"{now}, {symbol}, 100% Exit, {half_position}, {price}" + "\n")
-                                pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
-                                return
-                            else:
-                                close_position(symbol, other_half)
-                                print(f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
-                                async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
-                                    await file.write(f"{now}, {symbol}, 2nd 50% Exit, {half_position}, {price}" + "\n")
-                                pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
-                                return
-                        
-                        await asyncio.sleep(1)
+                    if not take_50:
+                        close_position(symbol, qty)
+                        print(f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
+                        async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                            await file.write(f"{now}, {symbol}, 100% Exit, {half_position}, {price}" + "\n")
+                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
+                        return
+                    else:
+                        close_position(symbol, other_half)
+                        print(f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
+                        async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                            await file.write(f"{now}, {symbol}, 2nd 50% Exit, {half_position}, {price}" + "\n")
+                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
+                        return
                 
                 await asyncio.sleep(1)
 
