@@ -167,9 +167,8 @@ class DataHandler:
         )
 
         bars = historical_client.get_stock_bars(request_params).df
-        sdf = bars.xs(symbol, level=0)
-        sdf = sdf.sort_index()
-        for ts, row in sdf.iterrows():
+        df = bars.sort_index()
+        for ts, row in df.iterrows():
             if ts.minute % 15 == 0:
                 self.bar_window_5m[symbol].append(row)
         # latest_macd[symbol] = self.compute_macd(sdf)
