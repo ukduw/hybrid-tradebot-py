@@ -186,6 +186,10 @@ class DataHandler:
                 )
 
                 bars = historical_client.get_stock_bars(latest_bar_request).df
+                if bars.empty:
+                    await asyncio.sleep(2)
+                    continue
+
                 latest_bar_time = bars.index[-1]
                 if latest_bar_time != last_bar_time:
                     last_bar_time = latest_bar_time
