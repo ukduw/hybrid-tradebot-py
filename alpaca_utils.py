@@ -199,14 +199,14 @@ class DataHandler:
                     latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window_5m[symbol]))
             await asyncio.sleep(1)    
 
-    async def compute_macd(self, df: pd.DataFrame) -> pd.DataFrame:
+    def compute_macd(self, df: pd.DataFrame) -> pd.DataFrame:
         if df.empty:
             return df
         df = df.copy()
         macd = ta.macd(df['close'], fast=12, slow=26, signal=9, append=True)
         return macd
     
-    async def compute_rsi(self, df: pd.DataFrame) -> pd.DataFrame:
+    def compute_rsi(self, df: pd.DataFrame) -> pd.DataFrame:
         if df.empty:
             return df
         df = df.copy()
