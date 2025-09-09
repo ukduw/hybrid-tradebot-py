@@ -219,11 +219,11 @@ handler = DataHandler()
 
 async def start_price_quote_bar_stream(symbols):
     for symbol in symbols:
-        await handler.seed_history_recalc_on_bar(symbol)
+        asyncio.create_task(seed_history_recalc_on_bar(symbol))
 
-        await stock_stream.subscribe_trades(handler.handle_trade, symbol)
-        await stock_stream.subscribe_quotes(handler.handle_quote, symbol)
-        # await stock_stream.subscribe_bars(handler.handle_bar, symbol)
+        stock_stream.subscribe_trades(handler.handle_trade, symbol)
+        stock_stream.subscribe_quotes(handler.handle_quote, symbol)
+        # stock_stream.subscribe_bars(handler.handle_bar, symbol)
 
     try:
         await stock_stream.run()
