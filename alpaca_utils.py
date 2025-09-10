@@ -237,7 +237,7 @@ async def start_price_quote_bar_stream(symbols):
             raise
         except Exception as e:
             retries += 1
-            print(f"[WebSocket] Crash {retries}: e")
+            print(f"[WebSocket] Crash {retries}: {e}")
 
             if retries >= 5:
                 print("[WebSocket] Too many retries, giving up...")
