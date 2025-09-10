@@ -221,17 +221,34 @@ class DataHandler:
 handler = DataHandler()
 
 async def start_price_quote_bar_stream(symbols):
-    for symbol in symbols:
-        asyncio.create_task(handler.seed_history_recalc_on_bar(symbol))
+    retries = 0
+    while True:
+        try:
+            for symbol in symbols:
+                asyncio.create_task(handler.seed_history_recalc_on_bar(symbol))
 
-        stock_stream.subscribe_trades(handler.handle_trade, symbol)
-        stock_stream.subscribe_quotes(handler.handle_quote, symbol)
-        # stock_stream.subscribe_bars(handler.handle_bar, symbol)
+                stock_stream.subscribe_trades(handler.handle_trade, symbol)
+                stock_stream.subscribe_quotes(handler.handle_quote, symbol)
+                # stock_stream.subscribe_bars(handler.handle_bar, symbol)
+            
+            await stock_stream.run()
+        except asyncio.CancelledError:
+            print("[WebSocket] Cancelled")
+            raise
+        except Exception as e:
+            retries += 1
+            print(f"[WebSocket] Crash {retries}: e")
 
-    try:
-        await stock_stream.run()
-    except Exception as e:
-        print(f"[WebSocket] Unexpected error: {e}")
+            if retries >= 5:
+                print("[WebSocket] Too many retries, giving up...")
+                raise # lets outer supervisor handle shutdown
+            else:
+                print(f"[WebSocket] Stream reconnect attempt in 10 seconds...")
+                await asyncio.sleep(10)
+
+        else: # in case of normal exit
+            print("[WebSocket] Stopped gracefully")
+            break
 
 async def stop_price_quote_bar_stream(symbol):
     try:
