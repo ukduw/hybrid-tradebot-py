@@ -232,9 +232,9 @@ async def start_price_quote_bar_stream(symbols):
 
 async def stop_price_quote_bar_stream(symbol):
     try:
-        await stock_stream.unsubscribe_trades(symbol)
-        await stock_stream.unsubscribe_quotes(symbol)
-        await stock_stream.unsubscribe_bars(symbol)
+        stock_stream.unsubscribe_trades(symbol)
+        stock_stream.unsubscribe_quotes(symbol)
+        stock_stream.unsubscribe_bars(symbol)
         print(f"[{symbol}] price/quote stream unsubscribed")
     except Exception as e:
         print (f"[WebSocket] Error unsubscribing from {symbol}: {e}")
