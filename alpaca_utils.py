@@ -235,7 +235,7 @@ async def start_price_quote_bar_stream(symbols):
                 stock_stream.subscribe_quotes(handler.handle_quote, symbol)
                 # stock_stream.subscribe_bars(handler.handle_bar, symbol)
             
-            await stock_stream.run()
+            await stock_stream._run_forever()
         except asyncio.CancelledError:
             print("[WebSocket] Cancelled")
             raise
