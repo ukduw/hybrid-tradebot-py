@@ -23,6 +23,9 @@ from dotenv import load_dotenv
 import os
 import json
 
+import tracemalloc
+tracemalloc.start()
+
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
