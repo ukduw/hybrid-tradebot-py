@@ -243,12 +243,12 @@ async def start_price_quote_bar_stream(symbols):
             retries += 1
             print(f"[WebSocket] Crash {retries}: {e}")
 
-            if retries >= 12:
+            if retries >= 20:
                 print("[WebSocket] Too many retries, giving up...")
                 raise # lets outer supervisor handle shutdown
             else:
-                print(f"[WebSocket] Stream reconnect attempt in 10 seconds...")
-                await asyncio.sleep(10)
+                print(f"[WebSocket] Stream reconnect attempt in 15 seconds...")
+                await asyncio.sleep(15)
 
         else: # in case of normal exit
             print("[WebSocket] Stopped gracefully")
