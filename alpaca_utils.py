@@ -243,7 +243,7 @@ async def start_price_quote_bar_stream(symbols):
             retries += 1
             print(f"[WebSocket] Crash {retries}: {e}")
 
-            if retries >= 5:
+            if retries >= 12:
                 print("[WebSocket] Too many retries, giving up...")
                 raise # lets outer supervisor handle shutdown
             else:
