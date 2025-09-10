@@ -170,7 +170,11 @@ class DataHandler:
         )
 
         bars = historical_client.get_stock_bars(request_params).df
-        df = bars.sort_index()
+        if isinstance(bars.index, pd.MultiIndex):
+            df = bars.xs(symbol, level=0).sort_index()
+        else:
+            df = bars.sort_index()
+    
         for ts, row in df.iterrows():
             if ts.minute % 15 == 0:
                 self.bar_window_5m[symbol].append(row)
