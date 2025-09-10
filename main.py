@@ -68,15 +68,14 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 # PRIORITY ORDER:
     # ASYNC PROBLEMS?
-    # 1. TWEAK 1) GHOST TICK, 2) PROFIT TAKING, 3) GAP-UP-FAKEOUT PROTECTION PARAMETERS
+    # 1. TWEAK 1) GHOST TICK, 2) PROFIT TAKING**, 3) GAP-UP-FAKEOUT PROTECTION PARAMETERS
         # run and test...
         # re-entry logic can wait till after PDT... (is it needed at all?)
         # try to reduce 15-20 ticker watchlist to <10-15 
         # consider taking profit ON high RSI trigger (e.g. >90), rather than after trail (spike already over)
-
     # 2. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
-        # don't forget the traceback saved in a txt...
-        # write reconnect logic for price streams + logs so they don't fail silently
+        # implemented basic version, 2min
+
     # 3. WRITE EVENT-DRIVEN VERSION
         # current version sufficient; low priority
         # event = asyncio.Event(), then price stream handler calls event.set() when data arrives...
@@ -84,6 +83,18 @@ symbols = [setup["symbol"] for setup in cached_configs]
 # unrelated TODO: prevent opening new positions within x time of close
 # actually, consider pushing end time back a few hours, into the aftermarket...
     # would also require updating is_premarket() in utils
+
+# *
+# ALL ticks are coming in as ghost ticks
+# could be due to quotes being delayed compared to ticks...
+
+# **
+# re-compute RSI per new high?
+    # so profit can be taking during a candle, not only after every 15min close
+    # needs condition, otherwise rsi will constantly be re-computed per symbol, possibly causing premature exits
+# recent huge wins would not be completely captured by current rsi strategy...
+# but changing the strategy too much would miss mid/smaller wins...
+    # needs more complex condition logic
 
 
 async def monitor_trade(setup):
