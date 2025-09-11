@@ -180,6 +180,8 @@ class DataHandler:
                 self.bar_window_5m[symbol].append(row)
         # latest_macd[symbol] = self.compute_macd(sdf)
         latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window_5m[symbol]))
+        print("SEED DATA", self.bar_window_5m[symbol]) # REMOVE LATER
+        print("SEED RSI", latest_rsi[symbol]) # REMOVE LATER
 
         last_bar_time = None
         while True:
@@ -193,6 +195,7 @@ class DataHandler:
                 )
 
                 bars = historical_client.get_stock_bars(latest_bar_request).df
+                print("BARS", bars) # REMOVE LATER
                 if bars.empty:
                     await asyncio.sleep(2)
                     continue
@@ -204,6 +207,7 @@ class DataHandler:
                     for _, row in bars.iterrows():
                         self.bar_window_5m[symbol].append(row)
                     latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window_5m[symbol]))
+                    print("RSI LIST", latest_rsi[symbol]) # REMOVE LATER
             await asyncio.sleep(1)    
 
     def compute_macd(self, df: pd.DataFrame) -> pd.DataFrame:
