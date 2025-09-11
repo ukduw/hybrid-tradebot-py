@@ -132,7 +132,7 @@ async def monitor_trade(setup):
         try:
             now = datetime.datetime.now(eastern)
             if now >= exit_open_positions_at:
-                close_all_positions()
+                close_all_positions() # 1. needs qty, 2. consider iterating if in_position/take_50 -> close_position with appropriate qty
                 print("End of day - all positions closed.")
                 await stop_price_quote_bar_stream(symbol)
                 return
