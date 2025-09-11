@@ -213,12 +213,12 @@ class DataHandler:
         macd = ta.macd(df['close'], fast=12, slow=26, signal=9, append=True)
         return macd
     
-    def compute_rsi(self, df: pd.DataFrame) -> pd.DataFrame:
+    def compute_rsi(self, df: pd.DataFrame) -> float:
         if df.empty:
-            return df
+            return 0
         df = df.copy()
-        rsi = ta.rsi(df['close'], length=14, append=True)
-        return rsi
+        rsi = ta.rsi(df['close'], length=14)
+        return float(rsi.iloc[-1])
 
 
 # ===== OPEN/CLOSE STREAM, HANDLER CALL UTILS ===== #
@@ -276,10 +276,11 @@ def get_latest_macd(symbol):
     return df.iloc[-1]
 
 def get_latest_rsi(symbol):
-    df = latest_rsi.get(symbol)
-    if df is None or df.empty:
+    rsi = latest_rsi.get(symbol)
+    if rsi is None or rsi.empty:
         return 0
-    return df["RSI_14"].iloc[-1]
+    print(symbol, f"RSI: {rsi}") # REMOVE LATER
+    return rsi
 
 
 # ===== TRADING CLIENT UTILS ===== #
