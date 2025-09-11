@@ -134,7 +134,7 @@ async def monitor_trade(setup):
             if now >= exit_open_positions_at:
                 close_all_positions()
                 print("End of day - all positions closed.")
-                stop_price_quote_bar_stream(symbol)
+                await stop_price_quote_bar_stream(symbol)
                 return
 
             if not in_position:
@@ -152,7 +152,7 @@ async def monitor_trade(setup):
                             pb.push_note("Hybrid bot", f"{qty} [{symbol}] BUY @ {price}")
                 elif not day_trade_counter < 1 and price > entry:
                     print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
-                    # stop_price_quote_bar_stream(symbol)
+                    # await stop_price_quote_bar_stream(symbol)
                     async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
                         await file.write(f"{now},{symbol},skip,{qty},{price}" + "\n")
                     # return
@@ -224,7 +224,7 @@ async def monitor_trade(setup):
             print(f"[{symbol}] Error: {e}", flush=True)
             # check systemd logs for traceback...
             traceback.print_exc()
-            stop_price_quote_bar_stream(symbol)
+            await stop_price_quote_bar_stream(symbol)
         
 
         await asyncio.sleep(1)
