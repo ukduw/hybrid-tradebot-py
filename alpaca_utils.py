@@ -277,7 +277,9 @@ def get_latest_macd(symbol):
 
 def get_latest_rsi(symbol):
     df = latest_rsi.get(symbol)
-    return df.iloc[-1]
+    if df is None or df.empty:
+        return 0
+    return df["RSI_14"].iloc[-1]
 
 
 # ===== TRADING CLIENT UTILS ===== #
