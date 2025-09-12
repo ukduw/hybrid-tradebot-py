@@ -34,6 +34,7 @@ while pb_reconnect_tries <= 5: # low due to risk of getting stuck in loop past p
 
 
 from alpaca_utils import start_price_quote_bar_stream, get_current_price, get_day_high, get_latest_macd, get_latest_rsi, stop_price_quote_bar_stream, place_order, close_position, close_all_positions, stock_stream
+    # NOTE: get_latest_macd, close_all_positions - consider removing, deleting utils
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -132,10 +133,23 @@ async def monitor_trade(setup):
         try:
             now = datetime.datetime.now(eastern)
             if now >= exit_open_positions_at:
-                close_all_positions() # 1. needs qty, 2. consider iterating if in_position/take_50 -> close_position with appropriate qty
-                print("End of day - all positions closed.")
+                if in_position:
+                    if take_50:
+                        close_position(symbol, other_half)
+                        print(f"[{symbol}] EOD, 2nd 50% Exit @ {price}")
+                        async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                            await file.write(f"{now}, {symbol}, EOD 2nd 50% Exit, {qty}, {price}" + "\n")
+                        pb.push_note("Hybrid bot", f"[{symbol}] EOD, 2nd Exiting 50% position @ {price}")
+                    else:
+                        close_position(symbol, qty)
+                        print(f"[{symbol}] EOD, 100% Exit @ {price}")
+                        async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                            await file.write(f"{now}, {symbol}, EOD 100% Exit, {qty}, {price}" + "\n")
+                        pb.push_note("Hybrid bot", f"[{symbol}] EOD, Exiting 100% position @ {price}")
+
                 await stop_price_quote_bar_stream(symbol)
                 return
+
 
             if not in_position:
                 global day_trade_counter
