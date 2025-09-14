@@ -195,7 +195,7 @@ class DataHandler:
         while True:
             now = datetime.datetime.now(eastern)
 
-            if now.minute % 15 == 0 and now.second < 2 and now > after_first_bar:
+            if now.minute % 15 == 10 and now.second < 2 and now > after_first_bar:
                 latest_bar_request = StockBarsRequest(
                     symbol_or_symbols=symbol,
                     timeframe=TimeFrame(5, TimeFrame.Minute),
