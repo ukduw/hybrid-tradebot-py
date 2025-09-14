@@ -177,6 +177,7 @@ class DataHandler:
     
         # NOTE: bar timestamps are actually the START of the bar, e.g. 10:00 = 10:00-10:04:59
         print("TIMESTAMPS", df.index[:5]) # REMOVE LATER
+        print("TIMEZONE", df.index.tz) # REMOVE LATER
 
         for ts, row in df.iterrows():
             if ts.minute % 15 == 10:
