@@ -175,6 +175,9 @@ class DataHandler:
         else:
             df = bars.sort_index()
     
+        # NOTE: bar timestamps are actually the START of the bar, e.g. 10:00 = 10:00-10:04:59
+        print("TIMESTAMPS", df.index[:5]) # REMOVE LATER
+
         for ts, row in df.iterrows():
             if ts.minute % 15 == 0:
                 self.bar_window_5m[symbol].append(row)
