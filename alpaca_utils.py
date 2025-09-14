@@ -156,6 +156,8 @@ class DataHandler:
     # NOTE: bar data comes with vwap(?)
         # have observed rsi shortcomings in capturing many different types of wins
         # if vwap +- stdev can be used to take profit, all of the gymnastics below may not be necessary
+    # bar data via websocket would greatly simplify things
+        # only hurdle would be calculating, for example, 5 or 15min vwaps from the price and volume of 1min bars...
     async def seed_history_recalc_on_bar(self, symbol):
         lookback_bars = 20 # 100 for macd, 20 for rsi
         lookback_minutes = lookback_bars * 15
