@@ -69,7 +69,7 @@ class BarEntry:
 class DataHandler:
     def __init__(self):
         self.quote_window = defaultdict(lambda: deque(maxlen=500))
-        self.bar_window_5m = defaultdict(lambda: deque(maxlen=20))
+        self.bar_window = defaultdict(lambda: deque(maxlen=20))
             # consider getting rid of deque altogether...
             # and computing EMAs incrementally, manually... (without pandas-ta)
 
@@ -138,7 +138,7 @@ class DataHandler:
             # alpaca api limit is 200 requests/min; assuming ~20 symbols, 1 request per 15min is well within limit
             # i don't think i need sub-second responsiveness
                 # if anything, if i get rid of the trail profit-take, this may work in my favor...
-        self.bar_window_5m[bar.symbol].append(
+        self.bar_window[bar.symbol].append(
             BarEntry(
                 open=bar.open,
                 high=bar.high,
@@ -149,7 +149,7 @@ class DataHandler:
                 trade_count=getattr(bar, "trade_count", None)
             )
         )
-        bars = list(self.bar_window_5m[bar.symbol])
+        bars = list(self.bar_window[bar.symbol])
         # latest_macd[bar.symbol] = self.compute_macd(pd.DataFrame([b.__dict__ for b in bars]))
         latest_rsi[bar.symbol] = self.compute_rsi(pd.DataFrame([b.__dict__ for b in bars]))
     
@@ -179,16 +179,21 @@ class DataHandler:
         print("TIMESTAMPS", df.index[:5]) # REMOVE LATER
         print("TIMEZONE", df.index.tz) # REMOVE LATER
 
-        # consider aggregating bars so there's no need for timestamp logic...
-        # and a bar cannot be missed
+        df_15m = df.resample("15T").agg({
+            "open": "first",
+            "high": "max",
+            "low": "min",
+            "close": "last",
+            "volume": "sum"
+        })
+        df_15m = df_15m.dropna()
 
-        # below timestamp condition most likely erroneously filters out all bars, so deque stays empty...
-        for ts, row in df.iterrows():
-            if ts.minute % 15 == 10:
-                self.bar_window_5m[symbol].append(row)
+        for _, row in df_15m.iterrows():
+            self.bar_window[symbol].append(row)
+        
         # latest_macd[symbol] = self.compute_macd(sdf)
-        latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window_5m[symbol]))
-        print("SEED DATA", self.bar_window_5m[symbol]) # REMOVE LATER
+        latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window[symbol]))
+        print("SEED DATA", self.bar_window[symbol]) # REMOVE LATER
         print("SEED RSI", latest_rsi[symbol]) # REMOVE LATER
 
         last_bar_time = None
@@ -213,8 +218,8 @@ class DataHandler:
                     last_bar_time = latest_bar_time
 
                     for _, row in bars.iterrows():
-                        self.bar_window_5m[symbol].append(row)
-                    latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window_5m[symbol]))
+                        self.bar_window[symbol].append(row)
+                    latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window[symbol]))
                     print("RSI LIST", latest_rsi[symbol]) # REMOVE LATER
             await asyncio.sleep(1)    
 
