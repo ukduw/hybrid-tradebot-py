@@ -281,7 +281,7 @@ def get_latest_macd(symbol):
 
 def get_latest_rsi(symbol):
     rsi = latest_rsi.get(symbol)
-    if rsi is None or rsi.empty:
+    if rsi is None:
         return 0
     print(symbol, f"RSI: {rsi}") # REMOVE LATER
     return rsi
