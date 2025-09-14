@@ -179,7 +179,7 @@ class DataHandler:
         print("TIMESTAMPS", df.index[:5]) # REMOVE LATER
 
         for ts, row in df.iterrows():
-            if ts.minute % 15 == 0:
+            if ts.minute % 15 == 10:
                 self.bar_window_5m[symbol].append(row)
         # latest_macd[symbol] = self.compute_macd(sdf)
         latest_rsi[symbol] = self.compute_rsi(pd.DataFrame(self.bar_window_5m[symbol]))
