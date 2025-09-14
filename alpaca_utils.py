@@ -195,7 +195,7 @@ class DataHandler:
                 )
 
                 bars = historical_client.get_stock_bars(latest_bar_request).df
-                print("BARS", bars) # REMOVE LATER
+                print("BARS", bars.head()) # REMOVE LATER
                 if bars.empty:
                     await asyncio.sleep(2)
                     continue
