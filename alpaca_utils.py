@@ -179,6 +179,10 @@ class DataHandler:
         print("TIMESTAMPS", df.index[:5]) # REMOVE LATER
         print("TIMEZONE", df.index.tz) # REMOVE LATER
 
+        # consider aggregating bars so there's no need for timestamp logic...
+        # and a bar cannot be missed
+
+        # below timestamp condition most likely erroneously filters out all bars, so deque stays empty...
         for ts, row in df.iterrows():
             if ts.minute % 15 == 10:
                 self.bar_window_5m[symbol].append(row)
