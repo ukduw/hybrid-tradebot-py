@@ -69,7 +69,7 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 # PRIORITY ORDER:
     # ASYNC PROBLEMS?
-    # 1. TWEAK 1) GHOST TICK, 2) PROFIT TAKING**, 3) GAP-UP-FAKEOUT PROTECTION PARAMETERS
+    # 1. TWEAK 1) GHOST TICK, 2) PROFIT TAKING, 3) GAP-UP-FAKEOUT PROTECTION PARAMETERS
         # run and test...
         # re-entry logic can wait till after PDT... (is it needed at all?)
         # try to reduce 15-20 ticker watchlist to <10-15 
@@ -85,17 +85,14 @@ symbols = [setup["symbol"] for setup in cached_configs]
 # actually, consider pushing end time back a few hours, into the aftermarket...
     # would also require updating is_premarket() in utils
 
-# *
-# ALL ticks are coming in as ghost ticks
-# could be due to quotes being delayed compared to ticks...
-
-# **
-# re-compute RSI per new high?
-    # so profit can be taking during a candle, not only after every 15min close
-    # needs condition, otherwise rsi will constantly be re-computed per symbol, possibly causing premature exits
-# recent huge wins would not be completely captured by current rsi strategy...
-# but changing the strategy too much would miss mid/smaller wins...
-    # needs more complex condition logic
+# urgent:
+# 1. refactor bar handler (websocket) for vwap
+    # calculate 2 upper vwap bands (vwap + (multiplier * stdev))
+    # accumulate vwap data in a deque?
+# 2. vwap-based profit taking in main
+# 3. write ghost tick protection along the lines of the gap-up-fakeout protection
+    # i.e., require subsequent ticks to be above the above-entry tick
+    # stop using quote data stream for now; most likely not in sync with tick data
 
 
 async def monitor_trade(setup):
@@ -156,7 +153,7 @@ async def monitor_trade(setup):
                 if day_trade_counter < 1 and price > entry:
                     async with day_trade_lock:
                         if day_trade_counter < 1:
-                            place_order(symbol, qty)
+                            # place_order(symbol, qty)
                             print(f"{qty} [{symbol}] BUY @ {price}")
                             in_position = True
                             day_high = price
