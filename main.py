@@ -33,8 +33,8 @@ while pb_reconnect_tries <= 5: # low due to risk of getting stuck in loop past p
         time.sleep(10)
 
 
-from alpaca_utils import start_price_quote_bar_stream, get_current_price, get_day_high, get_latest_macd, get_latest_rsi, stop_price_quote_bar_stream, place_order, close_position, close_all_positions, stock_stream
-    # NOTE: get_latest_macd, close_all_positions - consider removing, deleting utils
+from alpaca_utils import start_price_quote_bar_stream, get_current_price, get_day_high, get_vwap_stdev_high, stop_price_quote_bar_stream, place_order, close_position, close_all_positions, stock_stream
+    # NOTE: get_latest_macd, get_latest_rsi, close_all_positions - consider removing, deleting utils
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
