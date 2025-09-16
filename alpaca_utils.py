@@ -43,7 +43,7 @@ latest_macd = {}
 latest_rsi = {}
 vwaps = {}
 vwap_stdevs = {}
-latest_highs = {}
+latest_5m_closes = {}
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -73,7 +73,7 @@ class BarEntry:
 class DataHandler:
     def __init__(self):
         self.quote_window = defaultdict(lambda: deque(maxlen=500))
-        self.bar_window = defaultdict(lambda: deque(maxlen=20))
+        self.bar_window = defaultdict(lambda: deque(maxlen=5))
             # consider getting rid of deque altogether...
             # and computing EMAs incrementally, manually... (without pandas-ta)
 
@@ -307,7 +307,7 @@ def get_latest_rsi(symbol):
 def get_vwap_stdev_high(symbol):
     vwap = vwaps.symbol[-1]
     stdev = vwap_stdevs.get(symbol)
-    high = latest_highs.get(symbol)
+    high = latest_5m_closes.get(symbol)
 
     return vwap, stdev, high
 
