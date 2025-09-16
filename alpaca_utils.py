@@ -156,6 +156,7 @@ class DataHandler:
         vwaps.setdefault(bar.symbol, []).append(bar.vwap)
         vwap_stdevs[bar.symbol] = statistics.stdev(vwaps[bar.symbol])
         # NOTE: 1min bars, vwaps...
+        latest_highs[bar.symbol] = bar.high
     
     async def seed_history_recalc_on_bar(self, symbol):
         lookback_bars = 20 # 100 for macd, 20 for rsi
@@ -302,6 +303,13 @@ def get_latest_rsi(symbol):
         return 0
     print(symbol, f"RSI: {rsi}") # REMOVE LATER
     return rsi
+
+def get_vwap_stdev_high(symbol):
+    vwap = vwaps.symbol[-1]
+    stdev = vwap_stdevs.get(symbol)
+    high = latest_highs.get(symbol)
+
+    return vwap, stdev, high
 
 
 # ===== TRADING CLIENT UTILS ===== #
