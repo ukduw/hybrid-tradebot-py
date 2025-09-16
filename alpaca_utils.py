@@ -181,10 +181,10 @@ class DataHandler:
             df = bars.sort_index()
     
         # NOTE: bar timestamps are actually the START of the bar, e.g. 10:00 = 10:00-10:04:59
-        print("TIMESTAMPS", df.index[:5]) # REMOVE LATER
-        print("TIMEZONE", df.index.tz) # REMOVE LATER
+        print("TIMESTAMPS", df.index[:5]) # REMOVE LATER - returns DatetimeIndex list/RangeIndex...
+        print("TIMEZONE", df.index.tz) # REMOVE LATER - UTC confirmed
 
-        df_15m = df.resample("15T").agg({
+        df_15m = df.resample("15min").agg({
             "open": "first",
             "high": "max",
             "low": "min",
@@ -251,11 +251,11 @@ async def start_price_quote_bar_stream(symbols):
     while True:
         try:
             for symbol in symbols:
-                asyncio.create_task(handler.seed_history_recalc_on_bar(symbol))
+                # asyncio.create_task(handler.seed_history_recalc_on_bar(symbol))
 
                 stock_stream.subscribe_trades(handler.handle_trade, symbol)
                 stock_stream.subscribe_quotes(handler.handle_quote, symbol)
-                # stock_stream.subscribe_bars(handler.handle_bar, symbol)
+                stock_stream.subscribe_bars(handler.handle_bar, symbol)
             
             await stock_stream._run_forever()
         except asyncio.CancelledError:
