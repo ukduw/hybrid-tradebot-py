@@ -41,6 +41,9 @@ latest_prices = {}
 day_high = {}
 latest_macd = {}
 latest_rsi = {}
+vwaps = {}
+vwap_stdevs = {}
+latest_highs = {}
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -73,8 +76,6 @@ class DataHandler:
         self.bar_window = defaultdict(lambda: deque(maxlen=20))
             # consider getting rid of deque altogether...
             # and computing EMAs incrementally, manually... (without pandas-ta)
-        self.vwaps = {}
-        self.vwap_stdevs = {}
 
     async def handle_quote(self, quote: Quote):
         self.quote_window[quote.symbol].append(
@@ -152,8 +153,8 @@ class DataHandler:
         # latest_macd[bar.symbol] = self.compute_macd(pd.DataFrame([b.__dict__ for b in bars]))
         # latest_rsi[bar.symbol] = self.compute_rsi(pd.DataFrame([b.__dict__ for b in bars]))
 
-        self.vwaps.setdefault(bar.symbol, []).append(bar.vwap)
-        self.vwap_stdevs[bar.symbol] = statistics.stdev(self.vwaps[bar.symbol])
+        vwaps.setdefault(bar.symbol, []).append(bar.vwap)
+        vwap_stdevs[bar.symbol] = statistics.stdev(vwaps[bar.symbol])
         # NOTE: 1min bars, vwaps...
     
     async def seed_history_recalc_on_bar(self, symbol):
