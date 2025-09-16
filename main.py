@@ -86,11 +86,8 @@ symbols = [setup["symbol"] for setup in cached_configs]
     # would also require updating is_premarket() in utils
 
 # urgent:
-# 2. vwap-based profit taking in main
-    # calculate 2 upper vwap bands (vwap + (multiplier * stdev))
 # 3. write ghost tick protection along the lines of the gap-up-fakeout protection
     # i.e., require subsequent ticks to be above the above-entry tick
-    # stop using quote data stream for now; most likely not in sync with tick data
 
 
 async def monitor_trade(setup):
