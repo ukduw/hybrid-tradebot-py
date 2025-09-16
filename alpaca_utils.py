@@ -310,9 +310,9 @@ def get_latest_rsi(symbol):
 def get_vwap_stdev_high(symbol):
     vwap = vwaps.symbol[-1]
     stdev = vwap_stdevs.get(symbol)
-    high = latest_5m_closes.get(symbol)
+    close_5m = latest_5m_closes.get(symbol)
 
-    return vwap, stdev, high
+    return vwap, stdev, close_5m
 
 
 # ===== TRADING CLIENT UTILS ===== #
