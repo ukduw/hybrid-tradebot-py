@@ -33,7 +33,7 @@ while pb_reconnect_tries <= 5: # low due to risk of getting stuck in loop past p
         time.sleep(10)
 
 
-from alpaca_utils import start_price_quote_bar_stream, get_current_price, get_day_high, get_vwap_stdev_high, stop_price_quote_bar_stream, place_order, close_position, close_all_positions, stock_stream
+from alpaca_utils import start_price_quote_bar_stream, get_current_price, get_day_high, get_bar_data, stop_price_quote_bar_stream, place_order, close_position, close_all_positions, stock_stream
     # NOTE: get_latest_macd, get_latest_rsi, close_all_positions - consider removing, deleting utils
 
 eastern = pytz.timezone("US/Eastern")
@@ -172,7 +172,7 @@ async def monitor_trade(setup):
             if in_position:
                 half_position = round(qty / 2)
                 other_half = qty - half_position
-                vwap, stdev, close_5m, timestamp_5m = get_vwap_stdev_high(symbol)
+                vwap, stdev, close_5m, high_5m, timestamp_5m = get_bar_data(symbol)
 
                 if price < stop: # NEEDS 100 vs 50% LOGIC
                     close_position(symbol, qty)
@@ -184,10 +184,10 @@ async def monitor_trade(setup):
 
                 if close_5m > (vwap + 2*stdev):
                     while True:
-                        vwap2, stdev2, close_5m2, timestamp_5m2 = get_vwap_stdev_high(symbol)
+                        vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2 = get_bar_data(symbol)
 
-                        if timestamp_5m2 != timestamp_5m: # for 2nd condition, consider using high instead...
-                            if close_5m2 > (vwap2 + 2*stdev2):                        
+                        if timestamp_5m2 != timestamp_5m:
+                            if high_5m2 > (vwap2 + 2*stdev2):                        
                                 if not take_50:
                                     take_50 = True
                                     close_position(symbol, half_position)
