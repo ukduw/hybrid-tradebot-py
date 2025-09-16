@@ -95,23 +95,23 @@ class DataHandler:
         exit = setup["stop_loss"]
         now = datetime.datetime.now(eastern)
 
-        quotes: deque[QuoteEntry] = self.quote_window[symbol]
-        if not quotes:
-            async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-                await file.write(f"[GHOST no quotes] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
-            return
+        #quotes: deque[QuoteEntry] = self.quote_window[symbol]
+        #if not quotes:
+        #    async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+        #        await file.write(f"[GHOST no quotes] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+        #    return
         
-        closest_quote = min(quotes, key=lambda q: abs((q.timestamp - trade_time).total_seconds()))
-        if abs((closest_quote.timestamp - trade_time).total_seconds()) > 1:
-            async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-                await file.write(f"[GHOST >1sec gap] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
-            return  
+        #closest_quote = min(quotes, key=lambda q: abs((q.timestamp - trade_time).total_seconds()))
+        #if abs((closest_quote.timestamp - trade_time).total_seconds()) > 1:
+        #    async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+        #        await file.write(f"[GHOST >1sec gap] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+        #    return  
         
-        tolerance = 0.02 # 2.0%
-        if not (closest_quote.bid * (1 - tolerance) <= trade_price <= closest_quote.ask * (1 - tolerance)):
-            async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-                await file.write(f"[GHOST >2% price diff] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
-            return
+        #tolerance = 0.02 # 2.0%
+        #if not (closest_quote.bid * (1 - tolerance) <= trade_price <= closest_quote.ask * (1 - tolerance)):
+        #    async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+        #        await file.write(f"[GHOST >2% price diff] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+        #    return
 
         if trade.size < 100:
             async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
