@@ -44,6 +44,7 @@ latest_rsi = {}
 vwaps = {}
 vwap_stdevs = {}
 latest_5m_closes = {}
+latest_5m_highs = {}
 latest_5m_timestamps = {}
 
 eastern = pytz.timezone("US/Eastern")
@@ -159,6 +160,7 @@ class DataHandler:
         # NOTE: 1min bars, vwaps...
         if len(self.bar_window[bar.symbol]) == 5:
             latest_5m_closes[bar.symbol] = self.bar_window[bar.symbol][-1]['close']
+            latest_5m_highs[bar.symbol] = self.bar_window[bar.symbol][-1]['high']
             latest_5m_timestamps[bar.symbol] = self.bar_window[bar.symbol][-1]['timestamp']
             self.bar_window[bar.symbol].clear()
 
@@ -309,10 +311,11 @@ def get_latest_rsi(symbol):
     print(symbol, f"RSI: {rsi}") # REMOVE LATER
     return rsi
 
-def get_vwap_stdev_high(symbol):
+def get_bar_data(symbol):
     vwap = vwaps.symbol[-1]
     stdev = vwap_stdevs.get(symbol)
     close_5m = latest_5m_closes.get(symbol)
+    high_5m = latest_5m_highs.get(symbol)
     timestamp_5m = latest_5m_timestamps.get(symbol)
 
     return vwap, stdev, close_5m, timestamp_5m
