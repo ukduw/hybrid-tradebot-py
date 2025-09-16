@@ -313,8 +313,9 @@ def get_vwap_stdev_high(symbol):
     vwap = vwaps.symbol[-1]
     stdev = vwap_stdevs.get(symbol)
     close_5m = latest_5m_closes.get(symbol)
+    timestamp_5m = latest_5m_timestamps.get(symbol)
 
-    return vwap, stdev, close_5m
+    return vwap, stdev, close_5m, timestamp_5m
 
 
 # ===== TRADING CLIENT UTILS ===== #
