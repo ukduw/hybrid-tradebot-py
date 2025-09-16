@@ -44,6 +44,7 @@ latest_rsi = {}
 vwaps = {}
 vwap_stdevs = {}
 latest_5m_closes = {}
+latest_5m_timestamps = {}
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -158,6 +159,7 @@ class DataHandler:
         # NOTE: 1min bars, vwaps...
         if len(self.bar_window[bar.symbol]) == 5:
             latest_5m_closes[bar.symbol] = self.bar_window[bar.symbol][-1]['close']
+            latest_5m_timestamps[bar.symbol] = self.bar_window[bar.symbol][-1]['timestamp']
             self.bar_window[bar.symbol].clear()
 
     
