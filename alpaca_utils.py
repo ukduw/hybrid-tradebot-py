@@ -8,6 +8,7 @@ from alpaca.data.timeframe import TimeFrame
 
 import pandas as pd
 import pandas_ta as ta
+import statistics
 
 from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest
@@ -72,6 +73,8 @@ class DataHandler:
         self.bar_window = defaultdict(lambda: deque(maxlen=20))
             # consider getting rid of deque altogether...
             # and computing EMAs incrementally, manually... (without pandas-ta)
+        self.vwaps = {}
+        self.vwap_stdevs = {}
 
     async def handle_quote(self, quote: Quote):
         self.quote_window[quote.symbol].append(
@@ -148,12 +151,11 @@ class DataHandler:
         # bars = list(self.bar_window[bar.symbol])
         # latest_macd[bar.symbol] = self.compute_macd(pd.DataFrame([b.__dict__ for b in bars]))
         # latest_rsi[bar.symbol] = self.compute_rsi(pd.DataFrame([b.__dict__ for b in bars]))
+
+        self.vwaps.setdefault(bar.symbol, []).append(bar.vwap)
+        self.vwap_stdevs[bar.symbol] = statistics.stdev(self.vwaps[bar.symbol])
+        # NOTE: 1min bars, vwaps...
     
-    # NOTE: bar data comes with vwap(?)
-        # have observed rsi shortcomings in capturing many different types of wins
-        # if vwap +- stdev can be used to take profit, all of the gymnastics below may not be necessary
-    # bar data via websocket would greatly simplify things
-        # only hurdle would be calculating, for example, 5 or 15min vwaps from the price and volume of 1min bars...
     async def seed_history_recalc_on_bar(self, symbol):
         lookback_bars = 20 # 100 for macd, 20 for rsi
         lookback_minutes = lookback_bars * 15
