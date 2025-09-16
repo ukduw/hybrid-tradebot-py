@@ -145,8 +145,8 @@ class DataHandler:
                 low=bar.low,
                 close=bar.close,
                 volume=bar.volume,
-                vwap=getattr(bar, "vwap", None),
-                trade_count=getattr(bar, "trade_count", None)
+                vwap=getattr(bar, "vw", None),
+                timestamp=bar.timestamp
             )
         )
         # bars = list(self.bar_window[bar.symbol])
@@ -156,7 +156,10 @@ class DataHandler:
         vwaps.setdefault(bar.symbol, []).append(bar.vwap)
         vwap_stdevs[bar.symbol] = statistics.stdev(vwaps[bar.symbol])
         # NOTE: 1min bars, vwaps...
-        latest_highs[bar.symbol] = bar.high
+        if len(self.bar_window[bar.symbol]) == 5:
+            latest_5m_closes[bar.symbol] = self.bar_window[bar.symbol][-1]['close']
+            self.bar_window[bar.symbol].clear()
+
     
     async def seed_history_recalc_on_bar(self, symbol):
         lookback_bars = 20 # 100 for macd, 20 for rsi
