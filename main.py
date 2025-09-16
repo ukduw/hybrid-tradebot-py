@@ -170,28 +170,25 @@ async def monitor_trade(setup):
                 await asyncio.sleep(1)
 
             if in_position:
-                rsi = get_latest_rsi(symbol)
-                rsi_high = None
-                
                 half_position = round(qty / 2)
                 other_half = qty - half_position
 
-                if price < stop: 
-                    close_position(symbol, qty)
-                    print(f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
-                    async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
-                        await file.write(f"{now},{symbol},EXIT,{qty},{price}" + "\n")
-                    pb.push_note("Hybrid bot", f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
-                    return
-                
-                if 75 <= rsi < 85: # TWEAK VALUES
-                    rsi_high = rsi
-                    while not rsi >= 85:
-                        rsi = get_latest_rsi(symbol)
-                        
-                        if rsi > rsi_high:
-                            rsi_high = rsi
-                        if rsi <= rsi_high * 0.85: # TWEAK TRAIL
+                while True:
+                    vwap, stdev, close_5m = get_vwap_stdev_high(symbol)
+
+                    if price < stop: 
+                        close_position(symbol, qty)
+                        print(f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
+                        async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                            await file.write(f"{now},{symbol},EXIT,{qty},{price}" + "\n")
+                        pb.push_note("Hybrid bot", f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
+                        return
+                    
+                    if close_5m > (vwap + 2*stdev):
+                        await asyncio.sleep(305) # wait >5min for next bar
+                        vwap, stdev, close_5m = get_vwap_stdev_high(symbol) #reassign
+
+                        if close_5m > (vwap + 2*stdev):                            
                             if not take_50:
                                 take_50 = True
                                 close_position(symbol, half_position)
@@ -206,25 +203,7 @@ async def monitor_trade(setup):
                                 async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
                                     await file.write(f"{now}, {symbol}, 2nd 50% Exit, {qty}, {price}" + "\n")
                                 pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
-                                return
-                            
-                        await asyncio.sleep(1)
-
-                if rsi >= 85: # TWEAK VALUE
-                    if not take_50:
-                        close_position(symbol, qty)
-                        print(f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
-                        async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
-                            await file.write(f"{now}, {symbol}, 100% Exit, {half_position}, {price}" + "\n")
-                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
-                        return
-                    else:
-                        close_position(symbol, other_half)
-                        print(f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
-                        async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
-                            await file.write(f"{now}, {symbol}, 2nd 50% Exit, {half_position}, {price}" + "\n")
-                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
-                        return
+                                return     
                 
                 await asyncio.sleep(1)
 
