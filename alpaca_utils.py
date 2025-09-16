@@ -133,11 +133,7 @@ class DataHandler:
         async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
             await file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
-    async def handle_bar(self, bar: Bar): # NOT IN USE
-            # DATA STREAM CAN ONLY STREAM 1MIN BARS - WOULD NEED AGGREGATOR, CALL compute_rsi() ON 15MIN BAR COMPLETION
-            # alpaca api limit is 200 requests/min; assuming ~20 symbols, 1 request per 15min is well within limit
-            # i don't think i need sub-second responsiveness
-                # if anything, if i get rid of the trail profit-take, this may work in my favor...
+    async def handle_bar(self, bar: Bar): 
         self.bar_window[bar.symbol].append(
             BarEntry(
                 open=bar.open,
@@ -149,9 +145,9 @@ class DataHandler:
                 trade_count=getattr(bar, "trade_count", None)
             )
         )
-        bars = list(self.bar_window[bar.symbol])
+        # bars = list(self.bar_window[bar.symbol])
         # latest_macd[bar.symbol] = self.compute_macd(pd.DataFrame([b.__dict__ for b in bars]))
-        latest_rsi[bar.symbol] = self.compute_rsi(pd.DataFrame([b.__dict__ for b in bars]))
+        # latest_rsi[bar.symbol] = self.compute_rsi(pd.DataFrame([b.__dict__ for b in bars]))
     
     # NOTE: bar data comes with vwap(?)
         # have observed rsi shortcomings in capturing many different types of wins
