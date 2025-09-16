@@ -176,7 +176,7 @@ async def monitor_trade(setup):
                 while True:
                     vwap, stdev, close_5m = get_vwap_stdev_high(symbol)
 
-                    if price < stop: 
+                    if price < stop: # NEEDS 100 vs 50% LOGIC
                         close_position(symbol, qty)
                         print(f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
                         async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
