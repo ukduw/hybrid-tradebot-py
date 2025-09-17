@@ -312,13 +312,18 @@ def get_latest_rsi(symbol):
     return rsi
 
 def get_bar_data(symbol):
-    vwap = vwaps.symbol[-1]
+    vwap_list = vwaps.get(symbol)
+    if vwap_list is None:
+        vwap = None
+    else:
+        vwap = vwap_list[-1]
+
     stdev = vwap_stdevs.get(symbol)
     close_5m = latest_5m_closes.get(symbol)
     high_5m = latest_5m_highs.get(symbol)
     timestamp_5m = latest_5m_timestamps.get(symbol)
 
-    return vwap, stdev, close_5m, timestamp_5m
+    return vwap, stdev, close_5m, high_5m, timestamp_5m
 
 
 # ===== TRADING CLIENT UTILS ===== #
