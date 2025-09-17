@@ -37,6 +37,8 @@ with open("configs.json", "r") as f:
     configs = json.load(f)
 
 gap_up_first_tick = {}
+last_tick = {}
+
 latest_prices = {}
 day_high = {}
 
@@ -123,6 +125,15 @@ class DataHandler:
             return
         
         # if all conditions pass:
+        if symbol in last_tick and trade_price > last_tick[symbol] or trade_price <= exit:
+            latest_prices[symbol] = trade_price
+            async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                await file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+
+        if trade_price > entry and symbol not in last_tick:
+            last_tick[symbol] = trade_price
+            return
+
         if symbol not in gap_up_first_tick:
             gap_up_first_tick[symbol] = trade_price
 
