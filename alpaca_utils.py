@@ -39,8 +39,10 @@ with open("configs.json", "r") as f:
 gap_up_first_tick = {}
 latest_prices = {}
 day_high = {}
+
 latest_macd = {}
 latest_rsi = {}
+
 vwaps = {}
 vwap_stdevs = {}
 latest_5m_closes = {}
