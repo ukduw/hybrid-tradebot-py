@@ -34,7 +34,7 @@ while pb_reconnect_tries <= 5: # low due to risk of getting stuck in loop past p
 
 
 from alpaca_utils import start_price_quote_bar_stream, get_current_price, get_day_high, get_bar_data, stop_price_quote_bar_stream, place_order, close_position, close_all_positions, stock_stream
-    # NOTE: get_latest_macd, get_latest_rsi, close_all_positions - consider removing, deleting utils
+    # NOTE: get_day_high, get_latest_macd, get_latest_rsi, close_all_positions - consider removing, deleting utils
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -117,10 +117,10 @@ async def monitor_trade(setup):
         if price is None:
             await asyncio.sleep(2)
             continue
-        day_high = get_day_high(symbol)
-        if day_high is None:
-            await asyncio.sleep(2)
-            continue
+        # day_high = get_day_high(symbol)
+        # if day_high is None:
+        #     await asyncio.sleep(2)
+        #     continue
 
         try:
             now = datetime.datetime.now(eastern)
@@ -151,7 +151,7 @@ async def monitor_trade(setup):
                             # place_order(symbol, qty)
                             print(f"{qty} [{symbol}] BUY @ {price}")
                             in_position = True
-                            day_high = price
+                            # day_high = price
                             day_trade_counter += 1
                             async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
                                 await file.write(f"{now},{symbol},ENTRY,{qty},{price}" + "\n")
