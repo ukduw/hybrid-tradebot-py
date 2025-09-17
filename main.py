@@ -179,6 +179,7 @@ async def monitor_trade(setup):
                     pb.push_note("Hybrid bot", f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
                     return
 
+                await asyncio.sleep(1)
                 if any(bd is None for bd in [vwap, stdev, close_5m, timestamp_5m]):
                     continue
 
@@ -186,6 +187,7 @@ async def monitor_trade(setup):
                     while True:
                         vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2 = get_bar_data(symbol)
                         
+                        await asyncio.sleep(1)
                         if any(bd2 is None for bd2 in [vwap2, stdev2, high_5m2, timestamp_5m2]):
                             continue
 
