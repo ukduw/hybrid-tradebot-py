@@ -38,6 +38,7 @@ with open("configs.json", "r") as f:
 
 gap_up_first_tick = {}
 last_tick = {}
+tick_counter = {}
 
 latest_prices = {}
 day_high = {}
@@ -125,14 +126,24 @@ class DataHandler:
             return
         
         # if all conditions pass:
-        if symbol in last_tick and trade_price > last_tick[symbol] or trade_price <= exit:
-            latest_prices[symbol] = trade_price
-            async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-                await file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+        if symbol in last_tick and last_tick[symbol] is not None:
+            if trade_price > last_tick[symbol] or trade_price <= exit:
+                latest_prices[symbol] = trade_price
+                async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                    await file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+
+        if symbol in tick_counter:
+            if exit < trade_price < last_tick[symbol]:
+                tick_counter[symbol] += 1
+            if tick_counter[symbol] >= 20:
+                tick_counter[symbol] = 0
+                last_tick[symbol] = None
 
         if trade_price > entry and symbol not in last_tick:
             last_tick[symbol] = trade_price
+            tick_counter[symbol] = 0
             return
+
 
         if symbol not in gap_up_first_tick:
             gap_up_first_tick[symbol] = trade_price
