@@ -179,9 +179,15 @@ async def monitor_trade(setup):
                     pb.push_note("Hybrid bot", f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
                     return
 
+                if any(bd is None for bd in [vwap, stdev, close_5m, timestamp_5m]):
+                    continue
+
                 if close_5m > (vwap + 2*stdev):
                     while True:
                         vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2 = get_bar_data(symbol)
+                        
+                        if any(bd2 is None for bd2 in [vwap2, stdev2, high_5m2, timestamp_5m2]):
+                            continue
 
                         if timestamp_5m2 != timestamp_5m:
                             if high_5m2 > (vwap2 + 2*stdev2):                        
