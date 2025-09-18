@@ -75,7 +75,7 @@ class BarEntry:
     close: float
     volume: int
     vwap: float
-    trade_count: int
+    timestamp: datetime.datetime
 
 class DataHandler:
     def __init__(self):
