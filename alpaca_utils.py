@@ -133,8 +133,9 @@ class DataHandler:
                     await file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
         if symbol in tick_counter:
-            if exit < trade_price < last_tick[symbol]:
-                tick_counter[symbol] += 1
+            if last_tick[symbol] is not None:
+                if exit < trade_price < last_tick[symbol]:
+                    tick_counter[symbol] += 1
             if tick_counter[symbol] >= 20:
                 tick_counter[symbol] = 0
                 last_tick[symbol] = None
@@ -172,7 +173,7 @@ class DataHandler:
                 close=bar.close,
                 volume=bar.volume,
                 vwap=getattr(bar, "vw", None),
-                timestamp=bar.timestamp
+                timestamp=bar.getattr(bar, "t", None)
             )
         )
         # bars = list(self.bar_window[bar.symbol])
