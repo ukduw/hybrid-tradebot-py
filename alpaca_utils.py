@@ -172,8 +172,8 @@ class DataHandler:
                 low=bar.low,
                 close=bar.close,
                 volume=bar.volume,
-                vwap=getattr(bar, "vw", None),
-                timestamp=bar.getattr(bar, "t", None)
+                vwap=bar.vwap,
+                timestamp=bar.timestamp
             )
         )
         # bars = list(self.bar_window[bar.symbol])
