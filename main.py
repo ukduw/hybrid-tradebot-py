@@ -85,8 +85,11 @@ symbols = [setup["symbol"] for setup in cached_configs]
     # would also require updating is_premarket() in utils
 
 # urgent:
-# 3. write ghost tick protection along the lines of the gap-up-fakeout protection
+# 1. write ghost tick protection along the lines of the gap-up-fakeout protection
     # i.e., require subsequent ticks to be above the above-entry tick
+# 2. current vwap logic seems insufficient for certain wins... more testing needed (consider using highs for both conditions?)
+    # i.e. shallower (typically intraday) spikes + very short-lived (typically premarket) spikes
+# 3. rewrite README
 
 
 async def monitor_trade(setup):
@@ -170,7 +173,7 @@ async def monitor_trade(setup):
                 other_half = qty - half_position
                 vwap, stdev, close_5m, high_5m, timestamp_5m = get_bar_data(symbol)
 
-                if price < stop: # NEEDS 100 vs 50% LOGIC
+                if price < stop:
                     if take_50:
                         close_position(symbol, other_half)
                         print(f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
