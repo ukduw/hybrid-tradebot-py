@@ -127,45 +127,52 @@ class DataHandler:
             return
         
         # if all conditions pass:
-        if symbol in last_tick and last_tick[symbol] is not None:
-            if trade_price > last_tick[symbol] or trade_price <= exit:
-                latest_prices[symbol] = trade_price
-                async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-                    await file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
-
-        if trade_price > entry and symbol not in last_tick:
-            last_tick[symbol] = trade_price
-            tick_counter[symbol] = 0
-
-        if symbol in tick_counter:
-            if exit < trade_price < last_tick[symbol]:
-                tick_counter[symbol] += 1
-            else:
-                latest_prices[symbol] = trade_price
-                if symbol not in day_high or trade_price > day_high[symbol]:
-                    day_high[symbol] = trade_price
-
-            if tick_counter[symbol] >= 50:
-                tick_counter[symbol] = 0
-                last_tick.pop(symbol)
-
-
-        if symbol not in gap_up_first_tick:
-            gap_up_first_tick[symbol] = trade_price
-            gap_counter[symbol] = 0
-
-        if symbol in gap_up_first_tick and gap_up_first_tick[symbol] > entry:
-            if trade_price > gap_up_first_tick[symbol] * 1.015 or trade_price <= exit: # 1.5%, TWEAK
-                latest_prices[symbol] = trade_price
-                if symbol not in day_high or trade_price > day_high[symbol]:
-                    day_high[symbol] = trade_price
-            else:
-                gap_counter[symbol] += 1
-            if gap_counter[symbol] >= 50:
+        if trade_price > entry:
+            if symbol not in gap_up_first_tick:
+                gap_up_first_tick[symbol] = trade_price
                 gap_counter[symbol] = 0
-                gap_up_first_tick[symbol] = 0 # gap up only needs to be tracked once; now will never trigger > entry condition
-                
+            elif symbol not in last_tick:
+                last_tick[symbol] = trade_price
+                tick_counter[symbol] = 0
 
+            if gap_up_first_tick[symbol] > entry:
+                if trade_price > gap_up_first_tick[symbol] * 1.015 or trade_price <= exit: # 1.5%, TWEAK
+                    latest_prices[symbol] = trade_price
+                    if symbol not in day_high or trade_price > day_high[symbol]:
+                        day_high[symbol] = trade_price
+                    async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                        await file.write(f"[GAP UP] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+                else:
+                    gap_counter[symbol] += 1
+                    async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                        await file.write(f"[GAP UP - {gap_counter[symbol]}/100] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+
+                if gap_counter[symbol] >= 100: # 100 consolidation ticks, TWEAK
+                    gap_up_first_tick[symbol] = 0 # only tracked once, then last_tick tracked instead
+                    async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                        await file.write(f"[GAP UP MONITORING ENDED] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+            else:
+                if exit < trade_price < last_tick[symbol]:
+                    tick_counter[symbol] += 1
+                    async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                        await file.write(f"[>ENTRY - {tick_counter[symbol]}/50] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+                else:
+                    latest_prices[symbol] = trade_price
+                    if symbol not in day_high or trade_price > day_high[symbol]:
+                        day_high[symbol] = trade_price
+                    async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                        await file.write(f"[CONFIRMED TICK] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+
+                if tick_counter[symbol] >= 50:
+                    last_tick.pop(symbol)
+                    async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                        await file.write(f"[>ENTRY MONITORING ENDED] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+        elif trade_price <= exit:
+            latest_prices[symbol] = trade_price
+            async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+                await file.write(f"[AROUND EXIT] {now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+
+        
         #else:
         #    latest_prices[symbol] = trade_price
         #    if symbol not in day_high or trade_price > day_high[symbol]:
@@ -173,8 +180,8 @@ class DataHandler:
 
         # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
-        async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
-            await file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
+        #async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
+        #    await file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
     async def handle_bar(self, bar: Bar): 
         self.bar_window[bar.symbol].append(
