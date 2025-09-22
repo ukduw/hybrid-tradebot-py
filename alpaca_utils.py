@@ -185,9 +185,10 @@ class DataHandler:
             vwap_stdevs[bar.symbol] = statistics.stdev(vwaps[bar.symbol])
         # NOTE: 1min bars, vwaps...
         if len(self.bar_window[bar.symbol]) == 5:
-            latest_5m_closes[bar.symbol] = self.bar_window[bar.symbol][-1]['close']
-            latest_5m_highs[bar.symbol] = self.bar_window[bar.symbol][-1]['high']
-            latest_5m_timestamps[bar.symbol] = self.bar_window[bar.symbol][-1]['timestamp']
+            last_entry = self.bar_window[bar.symbol][-1]
+            latest_5m_closes[bar.symbol] = last_entry.close
+            latest_5m_highs[bar.symbol] = last_entry.high
+            latest_5m_timestamps[bar.symbol] = last_entry.timestamp
             self.bar_window[bar.symbol].clear()
 
     
