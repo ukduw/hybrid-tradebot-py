@@ -85,8 +85,6 @@ symbols = [setup["symbol"] for setup in cached_configs]
     # would also require updating is_premarket() in utils
 
 # urgent:
-# 1. write ghost tick protection along the lines of the gap-up-fakeout protection
-    # i.e., require subsequent ticks to be above the above-entry tick
 # 2. current vwap logic seems insufficient for certain wins... more testing needed (consider using highs for both conditions?)
     # i.e. shallower (typically intraday) spikes + very short-lived (typically premarket) spikes
 # 3. rewrite README
