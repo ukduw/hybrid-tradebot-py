@@ -172,12 +172,20 @@ async def monitor_trade(setup):
                 vwap, stdev, close_5m, high_5m, timestamp_5m = get_bar_data(symbol)
 
                 if price < stop: # NEEDS 100 vs 50% LOGIC
-                    close_position(symbol, qty)
-                    print(f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
-                    async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
-                        await file.write(f"{now},{symbol},EXIT,{qty},{price}" + "\n")
-                    pb.push_note("Hybrid bot", f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
-                    return
+                    if take_50:
+                        close_position(symbol, other_half)
+                        print(f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
+                        async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                            await file.write(f"{now},{symbol},EXIT,{qty},{price}" + "\n")
+                        pb.push_note("Hybrid bot", f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
+                        return
+                    else:
+                        close_position(symbol, qty)
+                        print(f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
+                        async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                            await file.write(f"{now},{symbol},EXIT,{qty},{price}" + "\n")
+                        pb.push_note("Hybrid bot", f"[{symbol}] STOP-LOSS hit. Exiting @ {price}")
+                        return
 
                 await asyncio.sleep(1)
                 if any(bd is None for bd in [vwap, stdev, close_5m, timestamp_5m]):
