@@ -87,6 +87,8 @@ symbols = [setup["symbol"] for setup in cached_configs]
 # urgent:
 # 2. current vwap logic seems insufficient for certain wins... more testing needed (consider using highs for both conditions?)
     # i.e. shallower (typically intraday) spikes + very short-lived (typically premarket) spikes
+    # potential fix: use or statements for different timeframe conditions (1min, 5min, 15min...)
+        # if x timeframes succeed(?), take profit (e.g. only 1, 1 OR 2...)
 # 3. rewrite README
 
 
