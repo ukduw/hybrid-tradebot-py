@@ -23,7 +23,7 @@ class DummyPB:
 pb = DummyPB()
 
 pb_reconnect_tries = 0
-while pb_reconnect_tries <= 5: # low due to risk of getting stuck in loop past premarket open...
+while pb_reconnect_tries < 5: # low due to risk of getting stuck in loop past premarket open...
     try:
         pb = Pushbullet(PB_API_KEY)
         break
@@ -72,8 +72,7 @@ symbols = [setup["symbol"] for setup in cached_configs]
     # 1. TWEAK 1) GHOST TICK, 2) PROFIT TAKING, 3) GAP-UP-FAKEOUT PROTECTION PARAMETERS
         # run and test...
         # re-entry logic can wait till after PDT... (is it needed at all?)
-        # try to reduce 15-20 ticker watchlist to <10-15 
-        # consider taking profit ON high RSI trigger (e.g. >90), rather than after trail (spike already over)
+        # try to reduce 15-20 ticker watchlist to <10-15 (averages 30-40 when market hot...)
     # 2. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
         # implemented basic version, 2min
 
@@ -88,6 +87,7 @@ symbols = [setup["symbol"] for setup in cached_configs]
 # urgent:
 # 3. write ghost tick protection along the lines of the gap-up-fakeout protection
     # i.e., require subsequent ticks to be above the above-entry tick
+# 4. stop loss 50 vs 100%
 
 
 async def monitor_trade(setup):
