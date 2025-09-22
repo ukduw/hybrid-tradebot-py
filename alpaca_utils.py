@@ -181,7 +181,8 @@ class DataHandler:
         # latest_rsi[bar.symbol] = self.compute_rsi(pd.DataFrame([b.__dict__ for b in bars]))
 
         vwaps.setdefault(bar.symbol, []).append(bar.vwap)
-        vwap_stdevs[bar.symbol] = statistics.stdev(vwaps[bar.symbol])
+        if len(vwaps[bar.symbol]) > 1:
+            vwap_stdevs[bar.symbol] = statistics.stdev(vwaps[bar.symbol])
         # NOTE: 1min bars, vwaps...
         if len(self.bar_window[bar.symbol]) == 5:
             latest_5m_closes[bar.symbol] = self.bar_window[bar.symbol][-1]['close']
