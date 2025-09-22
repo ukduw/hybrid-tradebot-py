@@ -153,7 +153,6 @@ async def monitor_trade(setup):
                             # place_order(symbol, qty)
                             print(f"{qty} [{symbol}] BUY @ {price}")
                             in_position = True
-                            # day_high = price
                             day_trade_counter += 1
                             async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
                                 await file.write(f"{now},{symbol},ENTRY,{qty},{price}" + "\n")
