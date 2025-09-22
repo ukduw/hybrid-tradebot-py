@@ -37,6 +37,7 @@ with open("configs.json", "r") as f:
     configs = json.load(f)
 
 gap_up_first_tick = {}
+gap_counter = {}
 last_tick = {}
 tick_counter = {}
 
@@ -132,32 +133,43 @@ class DataHandler:
                 async with aiofiles.open(f"price-stream-logs/price_stream_log_{trade.symbol}.txt", "a") as file:
                     await file.write(f"{now},{trade.symbol},PRICE {trade.price},VOL {trade.size}, COND {trade.conditions}" + "\n")
 
-        if symbol in tick_counter:
-            if last_tick[symbol] is not None:
-                if exit < trade_price < last_tick[symbol]:
-                    tick_counter[symbol] += 1
-            if tick_counter[symbol] >= 20:
-                tick_counter[symbol] = 0
-                last_tick[symbol] = None
-
         if trade_price > entry and symbol not in last_tick:
             last_tick[symbol] = trade_price
             tick_counter[symbol] = 0
-            return
+
+        if symbol in tick_counter:
+            if exit < trade_price < last_tick[symbol]:
+                tick_counter[symbol] += 1
+            else:
+                latest_prices[symbol] = trade_price
+                if symbol not in day_high or trade_price > day_high[symbol]:
+                    day_high[symbol] = trade_price
+
+            if tick_counter[symbol] >= 50:
+                tick_counter[symbol] = 0
+                last_tick.pop(symbol)
 
 
         if symbol not in gap_up_first_tick:
             gap_up_first_tick[symbol] = trade_price
+            gap_counter[symbol] = 0
 
-        if gap_up_first_tick[symbol] > entry:
+        if symbol in gap_up_first_tick and gap_up_first_tick[symbol] > entry:
             if trade_price > gap_up_first_tick[symbol] * 1.015 or trade_price <= exit: # 1.5%, TWEAK
                 latest_prices[symbol] = trade_price
                 if symbol not in day_high or trade_price > day_high[symbol]:
                     day_high[symbol] = trade_price
-        else:
-            latest_prices[symbol] = trade_price
-            if symbol not in day_high or trade_price > day_high[symbol]:
-                day_high[symbol] = trade_price
+            else:
+                gap_counter[symbol] += 1
+            if gap_counter[symbol] >= 50:
+                gap_counter[symbol] = 0
+                gap_up_first_tick[symbol] = 0 # gap up only needs to be tracked once; now will never trigger > entry condition
+                
+
+        #else:
+        #    latest_prices[symbol] = trade_price
+        #    if symbol not in day_high or trade_price > day_high[symbol]:
+        #        day_high[symbol] = trade_price
 
         # print(f"[WebSocket] {trade.symbol} @ {trade.price}") # comment out while not testing
 
