@@ -87,7 +87,6 @@ symbols = [setup["symbol"] for setup in cached_configs]
 # urgent:
 # 3. write ghost tick protection along the lines of the gap-up-fakeout protection
     # i.e., require subsequent ticks to be above the above-entry tick
-# 4. stop loss 50 vs 100%
 
 
 async def monitor_trade(setup):
