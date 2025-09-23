@@ -189,6 +189,8 @@ async def monitor_trade(setup):
                         return
 
                 await asyncio.sleep(1)
+                # test print:
+                print(symbol, ": ", "vwap", vwap, "stdev", stdev, "5m close", close_5m, "timestamp", timestamp_5m)
                 if any(bd is None for bd in [vwap, stdev, close_5m, timestamp_5m]):
                     continue
 
@@ -197,11 +199,13 @@ async def monitor_trade(setup):
                         vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2 = get_bar_data(symbol)
                         
                         await asyncio.sleep(1)
-                        if any(bd2 is None for bd2 in [vwap2, stdev2, high_5m2, timestamp_5m2]):
+                        # test print:
+                        print(symbol, ": ", "vwap2", vwap2, "stdev2", stdev2, "5m close2", close_5m2, "5m high2", high_5m2, "timestamp2", timestamp_5m2)
+                        if any(bd2 is None for bd2 in [vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2]):
                             continue
 
                         if timestamp_5m2 != timestamp_5m:
-                            if high_5m2 > (vwap2 + 2*stdev2):                        
+                            if high_5m2 > (vwap2 + 2*stdev2) and close_5m2 < (vwap2 + 2*stdev2):                        
                                 if not take_50:
                                     take_50 = True
                                     close_position(symbol, half_position)
