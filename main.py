@@ -73,23 +73,21 @@ symbols = [setup["symbol"] for setup in cached_configs]
         # run and test...
         # re-entry logic can wait till after PDT... (is it needed at all?)
         # try to reduce 15-20 ticker watchlist to <10-15 (averages 30-40 when market hot...)
-    # 2. WRITE RE-CONNECT LOGIC IN CASE OF NETWORK FAILURE
-        # implemented basic version, 2min
 
-    # 3. WRITE EVENT-DRIVEN VERSION
+    # WRITE EVENT-DRIVEN VERSION
         # current version sufficient; low priority
         # event = asyncio.Event(), then price stream handler calls event.set() when data arrives...
 
-# unrelated TODO: prevent opening new positions within x time of close
-# actually, consider pushing end time back a few hours, into the aftermarket...
-    # would also require updating is_premarket() in utils
 
 # urgent:
-# 2. current vwap logic seems insufficient for certain wins... more testing needed (consider using highs for both conditions?)
-    # i.e. shallower (typically intraday) spikes + very short-lived (typically premarket) spikes
-    # potential fix: use or statements for different timeframe conditions (1min, 5min, 15min...)
-        # if x timeframes succeed(?), take profit (e.g. only 1, 1 OR 2...)
-# 3. rewrite README
+# monitor price stream/trade logs for ghost ticks/gap up...
+# 1. 5min bar HIGHS are not 5min highs, they're the fifth 1min bar high (just find max of highs in deque)
+# 2. take-profit conditions still insufficient for very slow and very fast spikes
+    # latest changes just aim to make it better at maximizing big wins
+    # consider a sleep timer after position entry; especially useful for premarket entries before vwap/stdev has developed
+# 3. prevent opening of new positions within x time of close
+# 4. push end time back a few hours into aftermarket - needs is_premarket util update
+# 5. rewrite README
 
 
 async def monitor_trade(setup):
