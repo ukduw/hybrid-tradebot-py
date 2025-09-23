@@ -84,7 +84,6 @@ symbols = [setup["symbol"] for setup in cached_configs]
 # 2. take-profit conditions still insufficient for very slow and very fast spikes
     # latest changes just aim to make it better at maximizing big wins
     # consider a sleep timer after position entry; especially useful for premarket entries before vwap/stdev has developed
-# 3. prevent opening of new positions within x time of close
 # 5. rewrite README
 
 
@@ -147,7 +146,7 @@ async def monitor_trade(setup):
                     async with day_trade_lock:
                         if day_trade_counter < 1:
                             now = datetime.datetime.now(eastern)
-                            if now < datetime.time(17,30):
+                            if now < datetime.time(17,30): # ~30min before end, tweak
                                 # place_order(symbol, qty)
                                 print(f"{qty} [{symbol}] BUY @ {price}")
                                 in_position = True
