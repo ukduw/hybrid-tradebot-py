@@ -81,7 +81,6 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 # urgent:
 # monitor price stream/trade logs for ghost ticks/gap up...
-# 1. 5min bar HIGHS are not 5min highs, they're the fifth 1min bar high (just find max of highs in deque)
 # 2. take-profit conditions still insufficient for very slow and very fast spikes
     # latest changes just aim to make it better at maximizing big wins
     # consider a sleep timer after position entry; especially useful for premarket entries before vwap/stdev has developed
