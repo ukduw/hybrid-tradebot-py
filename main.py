@@ -85,7 +85,6 @@ symbols = [setup["symbol"] for setup in cached_configs]
     # latest changes just aim to make it better at maximizing big wins
     # consider a sleep timer after position entry; especially useful for premarket entries before vwap/stdev has developed
 # 3. prevent opening of new positions within x time of close
-# 4. push end time back a few hours into aftermarket - needs is_premarket util update
 # 5. rewrite README
 
 
