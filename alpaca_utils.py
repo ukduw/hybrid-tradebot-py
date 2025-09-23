@@ -206,7 +206,12 @@ class DataHandler:
         if len(self.bar_window[bar.symbol]) == 5:
             last_entry = self.bar_window[bar.symbol][-1]
             latest_5m_closes[bar.symbol] = last_entry.close
-            latest_5m_highs[bar.symbol] = last_entry.high
+
+            bar_highs = []
+            for bar in self.bar_window[bar.symbol]:
+                bar_highs.append(bar.high)
+            latest_5m_highs[bar.symbol] = max(bar_highs)
+
             latest_5m_timestamps[bar.symbol] = last_entry.timestamp
             self.bar_window[bar.symbol].clear()
 
