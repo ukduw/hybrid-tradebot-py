@@ -38,7 +38,7 @@ from alpaca_utils import start_price_quote_bar_stream, get_current_price, get_da
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
-exit_open_positions_at = now.replace(hour=15, minute=55, second=0, microsecond=0)
+exit_open_positions_at = now.replace(hour=17, minute=55, second=0, microsecond=0)
 
 
 day_trade_counter = 0
