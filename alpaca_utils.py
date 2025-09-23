@@ -406,7 +406,6 @@ def place_order(symbol, qty):
             limit_price = float(Decimal(tick * 1.01).quantize(Decimal("0.01"), rounding=ROUND_UP)) if tick >= 1.00 else float(Decimal(tick * 1.01).quantize(Decimal("0.0001"), rounding=ROUND_UP)),
             extended_hours = True
         )
-
     order = trading_client.submit_order(order_data)
     return order
 
