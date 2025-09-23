@@ -146,13 +146,15 @@ async def monitor_trade(setup):
                 if day_trade_counter < 1 and price > entry:
                     async with day_trade_lock:
                         if day_trade_counter < 1:
-                            # place_order(symbol, qty)
-                            print(f"{qty} [{symbol}] BUY @ {price}")
-                            in_position = True
-                            day_trade_counter += 1
-                            async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
-                                await file.write(f"{now},{symbol},ENTRY,{qty},{price}" + "\n")
-                            pb.push_note("Hybrid bot", f"{qty} [{symbol}] BUY @ {price}")
+                            now = datetime.datetime.now(eastern)
+                            if now < datetime.time(17,30):
+                                # place_order(symbol, qty)
+                                print(f"{qty} [{symbol}] BUY @ {price}")
+                                in_position = True
+                                day_trade_counter += 1
+                                async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
+                                    await file.write(f"{now},{symbol},ENTRY,{qty},{price}" + "\n")
+                                pb.push_note("Hybrid bot", f"{qty} [{symbol}] BUY @ {price}")
                 elif not day_trade_counter < 1 and price > entry:
                     print(f"Skipped [{symbol}] @ {price}, PDT limit hit...")
                     # await stop_price_quote_bar_stream(symbol)
