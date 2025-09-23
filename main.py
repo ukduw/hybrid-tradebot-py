@@ -68,8 +68,7 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 
 # PRIORITY ORDER:
-    # ASYNC PROBLEMS?
-    # 1. TWEAK 1) GHOST TICK, 2) PROFIT TAKING, 3) GAP-UP-FAKEOUT PROTECTION PARAMETERS
+    # 1. MONITOR & TWEAK: 1) GHOST TICK, 2) PROFIT TAKING, 3) GAP-UP-FAKEOUT PROTECTION PARAMETERS
         # run and test...
         # re-entry logic can wait till after PDT... (is it needed at all?)
         # try to reduce 15-20 ticker watchlist to <10-15 (averages 30-40 when market hot...)
@@ -80,10 +79,10 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 
 # urgent:
-# monitor price stream/trade logs for ghost ticks/gap up...
 # 2. take-profit conditions still insufficient for very slow and very fast spikes
     # latest changes just aim to make it better at maximizing big wins
     # consider a sleep timer after position entry; especially useful for premarket entries before vwap/stdev has developed
+    # need to determine length first; may cause bot to miss valid spiking in premarket...
 # 5. rewrite README
 
 
