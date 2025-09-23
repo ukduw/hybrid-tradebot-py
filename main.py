@@ -81,6 +81,10 @@ symbols = [setup["symbol"] for setup in cached_configs]
 # urgent:
 # 2. take-profit conditions still insufficient for very slow and very fast spikes
     # latest changes just aim to make it better at maximizing big wins
+        # seems a bit too stringent and only suited for the biggest wins
+            # consider using 2 highs, with a > x% condition?
+            # should the second bar return data from all 5 1min bars, then poll them with an any function to take profit mid 5m bar...?
+            # may maximize wins, but probable this won't solve the problems with more gradual/sudden wins...
     # consider a sleep timer after position entry; especially useful for premarket entries before vwap/stdev has developed
     # need to determine length first; may cause bot to miss valid spiking in premarket...
 # 5. rewrite README
