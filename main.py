@@ -213,14 +213,13 @@ async def monitor_trade(setup):
                     while True:
                         vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2 = get_bar_data(symbol)
                         
-                        await asyncio.sleep(1)
                         if any(bd2 is None for bd2 in [vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2]):
                             continue
 
                         if timestamp_5m2 != timestamp_5m:
                             break
-                        else:
-                            continue
+
+                        await asyncio.sleep(1)
                     
                 await asyncio.sleep(1)
 
