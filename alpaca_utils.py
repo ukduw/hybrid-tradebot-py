@@ -378,13 +378,13 @@ def get_bar_data(symbol):
 
 
 # ===== TRADING CLIENT UTILS ===== #
-def is_intraday():
+def is_not_extended():
     eastern = pytz.timezone("US/Eastern")
     now = datetime.datetime.now(eastern).time()
     return (datetime.time(9,30) <= now < datetime.time(16,0))
 
 def place_order(symbol, qty):
-    intraday = is_intraday()
+    intraday = is_not_extended()
     tick = get_current_price(symbol)
 
     if intraday:
@@ -411,7 +411,7 @@ def place_order(symbol, qty):
 
 
 def close_position(symbol, qty):
-    intraday = is_intraday()
+    intraday = is_not_extended()
     tick = get_current_price(symbol)
 
     if not intraday:
