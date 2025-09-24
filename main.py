@@ -79,14 +79,14 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 
 # urgent:
+# ghost tick and gap up protections seem to work really well; continue monitoring for a while longer...
+    # e.g. successfully stopped 1) different types of entry-trigger-stop-trigger patterns, 2) gap up, sell off, 3) gap up, momentary spike, stop-loss
+    # potential problems: sometimes unintendedly considered gap up (e.g. ticks under entry are all odd lots; first non-odd lot is above entry)
+        # i've also seen odd lots form significant price action, yet an entry isn't triggered until non-odd lot comes through...
+        # remember 1.5% gap up condition can be changed
 # 2. take-profit conditions still insufficient for very slow and very fast spikes
-    # latest changes just aim to make it better at maximizing big wins
-        # seems a bit too stringent and only suited for the biggest wins
-            # consider using 2 highs, with a > x% condition?
-            # should the second bar return data from all 5 1min bars, then poll them with an any function to take profit mid 5m bar...?
-            # may maximize wins, but probable this won't solve the problems with more gradual/sudden wins...
-    # consider a sleep timer after position entry; especially useful for premarket entries before vwap/stdev has developed
-    # need to determine length first; may cause bot to miss valid spiking in premarket...
+    # current vwap strategies seem inadequate to capture wide range of different wins...
+    # re-think, for example, forget stdev bands and use % above vwap?
 # 5. rewrite README
 
 
