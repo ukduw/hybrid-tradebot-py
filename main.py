@@ -218,11 +218,9 @@ async def monitor_trade(setup):
                             continue
 
                         if timestamp_5m2 != timestamp_5m:
-                            continue
-                        else:
                             break
-                    
-                    await asyncio.sleep(1)
+                        else:
+                            continue
                     
                 await asyncio.sleep(1)
 
