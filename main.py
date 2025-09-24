@@ -77,12 +77,13 @@ symbols = [setup["symbol"] for setup in cached_configs]
         # current version sufficient; low priority
         # event = asyncio.Event(), then price stream handler calls event.set() when data arrives...
 
-# urgent:
 # ghost tick and gap up protections seem to work really well; continue monitoring for a while longer...
     # e.g. successfully stopped 1) different types of entry-trigger-stop-trigger patterns, 2) gap up, sell off, 3) gap up, momentary spike, stop-loss
     # potential problems: sometimes unintendedly considered gap up (e.g. ticks under entry are all odd lots; first non-odd lot is above entry)
         # i've also seen odd lots form significant price action, yet an entry isn't triggered until non-odd lot comes through...
         # remember 1.5% gap up condition can be changed
+
+# urgent:
 # 2. take-profit conditions still insufficient for very slow and very fast spikes
     # current vwap strategies seem inadequate to capture wide range of different wins...
     # re-think, for example, forget stdev bands and use % above vwap?
