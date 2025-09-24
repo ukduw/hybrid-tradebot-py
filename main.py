@@ -87,6 +87,7 @@ symbols = [setup["symbol"] for setup in cached_configs]
 # 2. take-profit conditions still insufficient for very slow and very fast spikes
     # current vwap strategies seem inadequate to capture wide range of different wins...
     # re-think, for example, forget stdev bands and use % above vwap?
+        # unsure whether 1m data would lead to more timely exits or early exits... needs testing
 # 5. rewrite README
 
 
