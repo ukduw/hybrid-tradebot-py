@@ -192,6 +192,8 @@ async def monitor_trade(setup):
                 await asyncio.sleep(1)
                 if any(bd is None for bd in [vwap, stdev, close_5m, high_5m, timestamp_5m]):
                     continue
+                # stdev AND close_5m NOT IN USE
+                # also consider refactoring for 1m candle data when updating utils...
 
                 if vwap*1.125 <= high_5m < vwap*1.150: # 12.5 - 15.0%, tweak
                     if not take_50:
