@@ -172,6 +172,7 @@ async def monitor_trade(setup):
                 half_position = round(qty / 2)
                 other_half = qty - half_position
                 vwap, stdev, close_5m, high_5m, timestamp_5m = get_bar_data(symbol)
+                last_timestamp = timestamp_5m
 
                 if price < stop:
                     if take_50:
@@ -193,7 +194,7 @@ async def monitor_trade(setup):
                 if any(bd is None for bd in [vwap, stdev, close_5m, timestamp_5m]):
                     continue
 
-                if close_5m > (vwap + 2*stdev):
+                if close_5m >= vwap*1.125: # 12.5%, tweak
                     while True:
                         vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2 = get_bar_data(symbol)
                         
