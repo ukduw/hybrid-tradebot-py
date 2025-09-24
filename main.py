@@ -190,10 +190,10 @@ async def monitor_trade(setup):
                         return
 
                 await asyncio.sleep(1)
-                if any(bd is None for bd in [vwap, stdev, close_5m, timestamp_5m]):
+                if any(bd is None for bd in [vwap, stdev, close_5m, high_5m, timestamp_5m]):
                     continue
 
-                if vwap*1.125 <= close_5m < vwap*1.150: # 12.5 - 15.0%, tweak
+                if vwap*1.125 <= high_5m < vwap*1.150: # 12.5 - 15.0%, tweak
                     if not take_50:
                         take_50 = True
                         close_position(symbol, half_position)
@@ -209,7 +209,7 @@ async def monitor_trade(setup):
                             await file.write(f"{now}, {symbol}, 2nd 50% Exit, {qty}, {price}" + "\n")
                         pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFIT hit. 2nd Exiting 50% position @ {price}")
                         return
-                if close_5m >= vwap*1.150: # 15.0%, tweak
+                if high_5m >= vwap*1.150: # 15.0%, tweak
                     if not take_50:
                         close_position(symbol, qty) # 100% take profit
                         print(f"[{symbol}] TAKE-PROFIT hit. Exiting 100% position @ {price}")
