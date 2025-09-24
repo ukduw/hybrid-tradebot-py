@@ -148,7 +148,7 @@ async def monitor_trade(setup):
                 if day_trade_counter < 1 and price > entry:
                     async with day_trade_lock:
                         if day_trade_counter < 1:
-                            now = datetime.datetime.now(eastern)
+                            now = datetime.datetime.now(eastern).time()
                             if now < datetime.time(17,30): # ~30min before end, tweak
                                 # place_order(symbol, qty)
                                 print(f"{qty} [{symbol}] BUY @ {price}")
