@@ -197,32 +197,32 @@ async def monitor_trade(setup):
                     if not take_50:
                         take_50 = True
                         close_position(symbol, half_position)
-                        print(f"[{symbol}] TAKE-PROFT hit. Exiting 50% position @ {price}")
+                        print(f"[{symbol}] TAKE-PROFIT hit. Exiting 50% position @ {price}")
                         async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
                             await file.write(f"{now}, {symbol}, 50% Exit, {half_position}, {price}" + "\n")
-                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting 50% position @ {price}")
+                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFIT hit. Exiting 50% position @ {price}")
                         break
                     else:
                         close_position(symbol, other_half)
-                        print(f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
+                        print(f"[{symbol}] TAKE-PROFIT hit. 2nd Exiting 50% position @ {price}")
                         async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
                             await file.write(f"{now}, {symbol}, 2nd 50% Exit, {qty}, {price}" + "\n")
-                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
+                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFIT hit. 2nd Exiting 50% position @ {price}")
                         return
                 if close_5m >= vwap*1.150: # 15.0%, tweak
                     if not take_50:
                         close_position(symbol, qty) # 100% take profit
-                        print(f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
+                        print(f"[{symbol}] TAKE-PROFIT hit. Exiting 100% position @ {price}")
                         async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
                             await file.write(f"{now}, {symbol}, 100% Exit, {half_position}, {price}" + "\n")
-                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
+                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFIT hit. Exiting 100% position @ {price}")
                         return
                     else:
                         close_position(symbol, other_half)
-                        print(f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
+                        print(f"[{symbol}] TAKE-PROFIT hit. 2nd Exiting 50% position @ {price}")
                         async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
                             await file.write(f"{now}, {symbol}, 2nd 50% Exit, {qty}, {price}" + "\n")
-                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
+                        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFIT hit. 2nd Exiting 50% position @ {price}")
                         return
                 else:
                     while True:
