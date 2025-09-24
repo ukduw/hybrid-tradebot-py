@@ -209,7 +209,7 @@ async def monitor_trade(setup):
                             await file.write(f"{now}, {symbol}, 2nd 50% Exit, {qty}, {price}" + "\n")
                         pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFT hit. 2nd Exiting 50% position @ {price}")
                         return
-                if close_5m > vwap*1.150: # 15.0%, tweak
+                if close_5m >= vwap*1.150: # 15.0%, tweak
                     if not take_50:
                         close_position(symbol, qty) # 100% take profit
                         print(f"[{symbol}] TAKE-PROFT hit. Exiting 100% position @ {price}")
