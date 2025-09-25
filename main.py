@@ -201,23 +201,8 @@ async def monitor_trade(setup):
                 # stdev AND close_5m NOT IN USE
                 # also consider refactoring for 1m candle data when updating utils...
 
-                #if vwap*1.125 <= high_5m < vwap*1.150: # 12.5 - 15.0%, tweak
-                #    if not take_50:
-                #        take_50 = True
-                #        close_position(symbol, half_position)
-                #        print(f"[{symbol}] TAKE-PROFIT hit. Exiting 50% position @ {price}")
-                #        async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
-                #            await file.write(f"{now}, {symbol}, 50% Exit, {half_position}, {price}" + "\n")
-                #        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFIT hit. Exiting 50% position @ {price}")
-                #        break
-                #    else:
-                #        close_position(symbol, other_half)
-                #        print(f"[{symbol}] TAKE-PROFIT hit. 2nd Exiting 50% position @ {price}")
-                #        async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
-                #            await file.write(f"{now}, {symbol}, 2nd 50% Exit, {qty}, {price}" + "\n")
-                #        pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFIT hit. 2nd Exiting 50% position @ {price}")
-                #        return
-                if high_5m >= vwap*1.3: # 30.0%, tweak
+                pwap_ratio = (high_5m/entry - 1) / (high_5m/vwap - 1)
+                if pwap_ratio > 1.5:
                     if not take_50:
                         take_50 = True
                         close_position(symbol, half_position)
@@ -225,7 +210,7 @@ async def monitor_trade(setup):
                         async with aiofiles.open("trade-log/trade_log.txt", "a") as file:
                             await file.write(f"{now}, {symbol}, 50% Exit, {half_position}, {price}" + "\n")
                         pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFIT hit. Exiting 50% position @ {price}")
-                        return
+                        continue
                     else:
                         close_position(symbol, other_half)
                         print(f"[{symbol}] TAKE-PROFIT hit. 2nd Exiting 50% position @ {price}")
@@ -233,17 +218,17 @@ async def monitor_trade(setup):
                             await file.write(f"{now}, {symbol}, 2nd 50% Exit, {qty}, {price}" + "\n")
                         pb.push_note("Hybrid bot", f"[{symbol}] TAKE-PROFIT hit. 2nd Exiting 50% position @ {price}")
                         return
-                else:
-                    while True:
-                        vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2 = get_bar_data(symbol)
-                        
-                        if any(bd2 is None for bd2 in [vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2]):
-                            continue
 
-                        if timestamp_5m2 != timestamp_5m:
-                            break
+                while True:
+                    vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2 = get_bar_data(symbol)
+                    
+                    if any(bd2 is None for bd2 in [vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2]):
+                        continue
 
-                        await asyncio.sleep(1)
+                    if timestamp_5m2 != timestamp_5m:
+                        break
+
+                    await asyncio.sleep(1)
                     
                 await asyncio.sleep(1)
 
