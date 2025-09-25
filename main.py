@@ -202,7 +202,7 @@ async def monitor_trade(setup):
                 # also consider refactoring for 1m candle data when updating utils...
 
                 pwap_ratio = (high_5m/entry - 1) / (high_5m/vwap - 1)
-                if pwap_ratio > 1.5:
+                if pwap_ratio > 1.5: # tweak
                     if not take_50:
                         take_50 = True
                         close_position(symbol, half_position)
