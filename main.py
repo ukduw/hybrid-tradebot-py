@@ -173,7 +173,7 @@ async def monitor_trade(setup):
             if in_position:
                 half_position = round(qty / 2)
                 other_half = qty - half_position
-                vwap, stdev, close_5m, high_5m, timestamp_5m = get_bar_data(symbol)
+                vwap, high_1m, timestamp_1m = get_bar_data(symbol)
 
                 if price < stop:
                     if take_50:
@@ -192,12 +192,10 @@ async def monitor_trade(setup):
                         return
 
                 await asyncio.sleep(1)
-                if any(bd is None for bd in [vwap, stdev, close_5m, high_5m, timestamp_5m]):
+                if any(bd is None for bd in [vwap, high_1m, timestamp_1m]):
                     continue
-                # stdev AND close_5m NOT IN USE
-                # also consider refactoring for 1m candle data when updating utils...
 
-                pwap_ratio = (high_5m/entry - 1) / (high_5m/vwap - 1)
+                pwap_ratio = (high_1m/entry - 1) / (high_1m/vwap - 1)
                 if pwap_ratio > 1.5: # tweak
                     if not take_50:
                         take_50 = True
@@ -216,12 +214,12 @@ async def monitor_trade(setup):
                         return
 
                 while True:
-                    vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2 = get_bar_data(symbol)
+                    vwap2, high_1m2, timestamp_1m2 = get_bar_data(symbol)
                     
-                    if any(bd2 is None for bd2 in [vwap2, stdev2, close_5m2, high_5m2, timestamp_5m2]):
+                    if any(bd2 is None for bd2 in [vwap2, high_1m2, timestamp_1m2]):
                         continue
 
-                    if timestamp_5m2 != timestamp_5m:
+                    if timestamp_1m2 != timestamp_1m:
                         break
 
                     await asyncio.sleep(1)
