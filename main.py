@@ -86,11 +86,7 @@ symbols = [setup["symbol"] for setup in cached_configs]
         # remember 1.5% gap up condition can be changed
 
 # urgent:
-# 1. using purely vwap take-profit cannot capture range of wins
-    # try using combination of % gain and % above vwap
-        # e.g. % above entry / % above vwap > 1.5
-        # i don't think it needs logic like if x green bars > some_condition, or if subsequent bar red...
-# 2. update utils
+# # 2. update utils
     # bar handler: 5m -> 1m data
     # data fetching util: only return data used in main
 # 3. update logic in main to remove unused data
