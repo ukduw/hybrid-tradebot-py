@@ -375,12 +375,12 @@ def get_bar_data(symbol):
     else:
         vwap = vwap_list[-1]
 
-    stdev = vwap_stdevs.get(symbol)
-    close_5m = latest_5m_closes.get(symbol)
-    high_5m = latest_5m_highs.get(symbol)
-    timestamp_5m = latest_5m_timestamps.get(symbol)
+    #stdev = vwap_stdevs.get(symbol)
+    #close_5m = latest_5m_closes.get(symbol)
+    high = latest_highs.get(symbol)
+    timestamp = latest_timestamps.get(symbol)
 
-    return vwap, stdev, close_5m, high_5m, timestamp_5m
+    return vwap, high, timestamp
 
 
 # ===== TRADING CLIENT UTILS ===== #
