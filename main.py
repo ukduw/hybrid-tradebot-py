@@ -219,7 +219,7 @@ async def monitor_trade(setup):
                     if any(bd2 is None for bd2 in [vwap2, high_1m2, timestamp_1m2]):
                         continue
 
-                    if timestamp_1m2 != timestamp_1m:
+                    if timestamp_1m2 != timestamp_1m and not high_1m*1.15 < high_1m2 < high_1m*1.15: # tweak
                         break
 
                     await asyncio.sleep(1)
