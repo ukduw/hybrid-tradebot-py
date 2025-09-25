@@ -86,10 +86,6 @@ symbols = [setup["symbol"] for setup in cached_configs]
         # remember 1.5% gap up condition can be changed
 
 # urgent:
-# # 2. update utils
-    # bar handler: 5m -> 1m data
-    # data fetching util: only return data used in main
-# 3. update logic in main to remove unused data
 # 5. rewrite README
 
 
