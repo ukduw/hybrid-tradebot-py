@@ -48,10 +48,8 @@ latest_macd = {}
 latest_rsi = {}
 
 vwaps = {}
-vwap_stdevs = {}
-latest_5m_closes = {}
-latest_5m_highs = {}
-latest_5m_timestamps = {}
+latest_highs = {}
+latest_timestamps = {}
 
 eastern = pytz.timezone("US/Eastern")
 now = datetime.datetime.now(eastern)
@@ -200,20 +198,25 @@ class DataHandler:
         # latest_rsi[bar.symbol] = self.compute_rsi(pd.DataFrame([b.__dict__ for b in bars]))
 
         vwaps.setdefault(bar.symbol, []).append(bar.vwap)
-        if len(vwaps[bar.symbol]) > 1:
-            vwap_stdevs[bar.symbol] = statistics.stdev(vwaps[bar.symbol])
-        # NOTE: 1min bars, vwaps...
-        if len(self.bar_window[bar.symbol]) == 5:
-            last_entry = self.bar_window[bar.symbol][-1]
-            latest_5m_closes[bar.symbol] = last_entry.close
 
-            bar_highs = []
-            for bar_1m in self.bar_window[bar.symbol]:
-                bar_highs.append(bar_1m.high)
-            latest_5m_highs[bar.symbol] = max(bar_highs)
+        # VWAP STDEV (NOT IN USE):
+        #if len(vwaps[bar.symbol]) > 1:
+        #    vwap_stdevs[bar.symbol] = statistics.stdev(vwaps[bar.symbol])
 
-            latest_5m_timestamps[bar.symbol] = last_entry.timestamp
-            self.bar_window[bar.symbol].clear()
+        # 5MIN BARS (NOT IN USE):
+        #if len(self.bar_window[bar.symbol]) == 5:
+        #    last_entry = self.bar_window[bar.symbol][-1]
+        #    latest_5m_closes[bar.symbol] = last_entry.close
+
+        #    bar_highs = []
+        #    for bar_1m in self.bar_window[bar.symbol]:
+        #        bar_highs.append(bar_1m.high)
+        #    latest_5m_highs[bar.symbol] = max(bar_highs)
+
+        #    latest_5m_timestamps[bar.symbol] = last_entry.timestamp
+        #    self.bar_window[bar.symbol].clear()
+
+
 
     
     async def seed_history_recalc_on_bar(self, symbol):
