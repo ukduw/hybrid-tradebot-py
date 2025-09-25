@@ -86,6 +86,14 @@ symbols = [setup["symbol"] for setup in cached_configs]
         # remember 1.5% gap up condition can be changed
 
 # urgent:
+# 1. current vwap take profit may take far too early on big wins
+    # maybe have series of if statements for different ratio ranges
+    # for very high ratios, switch to 5m candle logic and something similar to trail stop
+        # e.g. if next 5m bar peaks higher, keep holding?
+            # for x higher highs, hold?
+            # once it sets lower high by x% OR closes red, exit?
+# 2. crypto
+
 # 5. rewrite README
 
 
