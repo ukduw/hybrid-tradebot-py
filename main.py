@@ -69,9 +69,11 @@ symbols = [setup["symbol"] for setup in cached_configs]
 
 # PRIORITY ORDER:
     # 1. MONITOR & TWEAK: 1) GHOST TICK, 2) PROFIT TAKING, 3) GAP-UP-FAKEOUT PROTECTION PARAMETERS
-        # run and test...
         # re-entry logic can wait till after PDT... (is it needed at all?)
         # try to reduce 15-20 ticker watchlist to <10-15 (averages 30-40 when market hot...)
+    # 2. CRYPTOCURRENCY TRADING
+        # no PDT
+        # look into charts, most actively traded, strategies (full algo over hybrid?)...
 
     # WRITE EVENT-DRIVEN VERSION
         # current version sufficient; low priority
