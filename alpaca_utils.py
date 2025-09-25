@@ -216,6 +216,9 @@ class DataHandler:
         #    latest_5m_timestamps[bar.symbol] = last_entry.timestamp
         #    self.bar_window[bar.symbol].clear()
 
+        last_entry = self.bar_window[bar.symbol][-1]
+        latest_highs[bar.symbol] = last_entry.high
+        latest_timestamps[bar.symbol] = last_entry.timestamp
 
 
     
