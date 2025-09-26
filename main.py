@@ -92,6 +92,10 @@ symbols = [setup["symbol"] for setup in cached_configs]
         # e.g. if next 5m bar peaks higher, keep holding?
             # for x higher highs, hold?
             # once it sets lower high by x% OR closes red, exit?
+    # otherwise, have condition triggers increment counter?
+        # e.g. x bars above condition = y% take profit
+        # split take-profit into 3?
+            # e.g. 1, 3, 5 counter, 1/3 take-profit per
 # 2. crypto
 
 # 5. rewrite README
