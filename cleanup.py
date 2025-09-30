@@ -4,7 +4,6 @@ from alpaca.data.enums import DataFeed
 from dotenv import load_dotenv
 import os
 import json
-import sys
 
 import asyncio
 
