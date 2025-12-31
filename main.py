@@ -150,6 +150,9 @@ async def monitor_trade(setup):
                             await file.write(f"{now}, {symbol}, EOD 100% Exit, {qty}, {price}" + "\n")
                         pb.push_note("Hybrid bot", f"[{symbol}] EOD, Exiting 100% position @ {price}")
 
+                async with aiofiles.open("trade-log/crypot_trade_log.txt", "a") as file:
+                    await file.write("\n")
+
                 await stop_price_quote_bar_stream(symbol)
                 return
 
