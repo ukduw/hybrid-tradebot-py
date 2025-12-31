@@ -235,6 +235,10 @@ async def monitor_trade(setup):
                         continue
 
                     if timestamp_1m2 != timestamp_1m and not high_1m*0.985 < high_1m2 < high_1m*1.015: # 1.5%, tweak
+                        # aside from tweaking the condition...
+                        # consider using a low condition too for this trailing stop
+
+                        # 1. implement 5min bar take profit logic
                         break
 
                     await asyncio.sleep(1)
