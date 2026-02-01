@@ -96,6 +96,8 @@ symbols = [setup["symbol"] for setup in cached_configs]
         # e.g. x bars above condition = y% take profit
         # split take-profit into 3?
             # e.g. 1, 3, 5 counter, 1/3 take-profit per
+    # NOTE: REFER TO CRYPTO PROFIT TAKE LOGIC
+        # potential to combine both - e.g. take profit on first spike, then trailing stop based on day high
 # 2. crypto
 
 # 5. rewrite README
