@@ -30,7 +30,7 @@ while pb_reconnect_tries < 5:
 
 
 # intput format:
-    # "{now}, {coin}, ENTRY/EXIT/skip/EOD EXIT, {qty}, {price}"
+    # "{now}, {symbol}, ENTRY/EXIT/skip/EOD EXIT, {qty}, {price}"
     # ...
 
 def daily_pl_calc():
