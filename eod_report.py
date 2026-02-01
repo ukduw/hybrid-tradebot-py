@@ -63,7 +63,7 @@ def daily_pl_calc():
     total_pl = sum(percs)
     
 
-    pb.push_note("Crypto P/L", f"{total_pl}% ({total_trades}): {", ".join(f"{key}: {item[2]}" for key, item in entry_exit.items())}")
+    pb.push_note("Stock P/L", f"{total_pl}% ({total_trades}): {", ".join(f"{key}: {item[2]}" for key, item in entry_exit.items())}")
     print(f"{total_pl}% ({total_trades}): {", ".join(f"{key}: {item[2]}" for key, item in entry_exit.items())}")
 
 
