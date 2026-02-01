@@ -41,7 +41,7 @@ def daily_pl_calc():
     now = datetime.datetime.now(eastern)
     today = now.date()
 
-    with open("trade-log/crypto_trade_log.txt", "a") as file:
+    with open("trade-log/trade_log.txt", "a") as file:
         lines = file.readlines()
 
     for l in lines:
