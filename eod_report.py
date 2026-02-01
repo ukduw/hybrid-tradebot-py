@@ -37,8 +37,8 @@ def daily_pl_calc():
     entry_exit = {}
     percs = []
 
-    universal = pytz.timezone("UTC")
-    now = datetime.datetime.now(universal)
+    eastern = pytz.timezone("US/Eastern")
+    now = datetime.datetime.now(eastern)
     today = now.date()
 
     with open("trade-log/crypto_trade_log.txt", "a") as file:
