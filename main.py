@@ -98,7 +98,8 @@ symbols = [setup["symbol"] for setup in cached_configs]
             # e.g. 1, 3, 5 counter, 1/3 take-profit per
     # NOTE: REFER TO CRYPTO PROFIT TAKE LOGIC
         # potential to combine both - e.g. take profit on first spike, then trailing stop based on day high
-# 2. crypto
+# 2. logic to protect against partial/no fill on entry and especially exit
+    # NOTE: REFER TO CRYPTO PARTIAL FILL LOGIC
 
 # 5. rewrite README
 
